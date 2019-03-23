@@ -10,6 +10,7 @@ $db = new MysqliDb(array(
     'port' => 3306,
     'charset' => 'utf8'));
 
-$data = $db->join("page_group pg", "pg.id=pc.page_group_id", "INNER")->get('page_content pc');
+$data = $db->join("page_group pg", "pg.id=pc.page_group_id", "INNER")
+    ->get('page_content pc', null, "pc.id as page_content_id, page_group_id, group_name, page_name");
 
 echo (json_encode($data));

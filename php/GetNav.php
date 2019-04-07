@@ -13,7 +13,7 @@ foreach ($data as $key => $originItem) {
     $isExist = false;
     foreach ($dataRlt as $key => $newItem) {
         if ($newItem["page_group_id"] == $originItem["page_group_id"]) {
-            array_push($newItem["page_content"], array(
+            array_push($dataRlt[$key]["page_content"], array(
                 "page_content_id" => $originItem["page_content_id"],
                 "page_name" => $originItem["page_name"],
             ));
@@ -26,8 +26,10 @@ foreach ($data as $key => $originItem) {
             "page_group_id" => $originItem["page_group_id"],
             "group_name" => $originItem["group_name"],
             "page_content" => array(
-                "page_content_id" => $originItem["page_content_id"],
-                "page_name" => $originItem["page_name"],
+                array(
+                    "page_content_id" => $originItem["page_content_id"],
+                    "page_name" => $originItem["page_name"],
+                ),
             ),
         ));
     }

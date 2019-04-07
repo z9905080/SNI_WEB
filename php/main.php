@@ -15,10 +15,10 @@ require_once 'MysqliDb.php';
 //     'port' => 3306,
 //     'charset' => 'utf8'));
 
-$db = new MysqliDb(array(
+$dbCofig = array(
     'host' => "23.92.66.131",
     'username' => 'shouting_root',
     'password' => 'U6#j&gu8V2!0',
     'db' => 'shouting_vhost24073',
     'port' => 3306,
-    'charset' => 'utf8'));
+    'charset' => 'utf8');

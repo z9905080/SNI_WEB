@@ -1,9 +1,17 @@
 <?php
 
+$pageID = $_REQUEST["page_id"];
+
+if ($pageID == "") {
+    http_response_code(404);
+    exit;
+}
+
+
 require 'main.php';
 
 $db = new MysqliDb($dbCofig);
 
-$data = $db->where("page_group_id", 1)->getOne('page_content');
+$data = $db->where("id", $pageID)->getOne('page_content');
 
 echo (json_encode($data));

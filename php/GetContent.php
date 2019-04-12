@@ -1,21 +1,19 @@
 <?php
 
-// if ( $_SERVER['REQUEST_METHOD'] !== 'POST' )
-// {
-//     http_response_code(404);
-//     exit;
-// }
 
-$rws_post = file_get_contents("php://input");
+if ( $_SERVER['REQUEST_METHOD'] !== 'POST' )
+{
+    // http_response_code(404);
+    // exit;
+}
 
-$mypost = json_decode($rws_post);
+$pageID = $_REQUEST["page_id"];
 
-$pageID = (string) $mypost['page_id'];
-
-if ($pageID === "") {
+if ($pageID == "") {
     http_response_code(404);
     exit;
 }
+
 
 require 'main.php';
 

@@ -1,11 +1,11 @@
 <?php
 
 
-if ( $_SERVER['REQUEST_METHOD'] !== 'POST' )
-{
-    http_response_code(404);
-    exit;
-}
+// if ( $_SERVER['REQUEST_METHOD'] !== 'POST' )
+// {
+//     http_response_code(404);
+//     exit;
+// }
 
 $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 

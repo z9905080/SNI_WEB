@@ -6,9 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-var_dump($data);
 
-$pageID = $data->page_id;
+$pageID = $data['page_id'];
+
 //$pageID = $_REQUEST["page_id"];
 
 if ($pageID == "") {

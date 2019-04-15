@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Message, Loading } from 'element-ui';
+import router from './router';
 
 let loading;
 function startLoading() {
@@ -18,11 +19,16 @@ function endLoading() {
 axios.interceptors.request.use(config => {
     //加載動畫
     startLoading();
+
+    if (localStorage.eleToken) {
+        //設定統一的請求header
+        config.headers.Authorization = localStorage.eleToken;
+    }
+
     return config;
 }, error => {
     return Promise.reject(error);
-}
-)
+})
 
 // 響應攔截
 axios.interceptors.response.use(response => {
@@ -33,6 +39,18 @@ axios.interceptors.response.use(response => {
     //錯誤提醒
     endLoading();
     Message.error(error.response.data);
+
+    //獲取錯誤狀態碼
+    const { status } = error.response;
+
+    if (status === 401) {
+        Message.error('token失效,請重新登入!');
+        // 清除token
+        localStorage.removeItem('eleToken');
+        // 跳轉至登入頁面
+        router.push('/login');
+    }
+
     return Promise.reject(error);
 })
 

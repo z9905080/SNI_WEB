@@ -7,7 +7,7 @@
           :model="registerUser"
           :rules="rules"
           ref="registerForm"
-          label-width="80px"
+          label-width="100px"
           class="registerForm"
         >
           <el-form-item label="用戶名" prop="name">
@@ -43,7 +43,7 @@ export default {
   name: "register",
   components: {},
   data() {
-    var validatePass2 = (rule, value, callback) => {
+    let validatePass2 = (rule, value, callback) => {
       if (value !== this.registerUser.password) {
         callback(new Error("两次输入密码不一致!"));
       } else {

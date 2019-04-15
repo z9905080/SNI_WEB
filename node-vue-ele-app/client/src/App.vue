@@ -4,6 +4,58 @@
   </div>
 </template>
 
+<script>
+import jwt_decode from 'jwt-decode'
+
+export default {
+  name: "app",
+  components: {},
+  created() {
+    if (localStorage.eleToken) {
+      const decoded = jwt_decode(localStorage.eleToken);
+      // token儲存到vuex中
+            this.$store.dispatch('setAuthenticated', !this.isEmpty(decoded));
+            this.$store.dispatch('setUser', decoded);
+    }
+  },
+  data() {
+    return {
+      loginUser: {
+        email: "",
+        password: ""
+      },
+      rules: {
+        email: [
+          {
+            type: "email",
+            required: true,
+            message: "信箱格式不正確",
+            trigger: "blur"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: "密碼不可為空",
+            trigger: "blur"
+          }
+        ]
+      }
+    };
+  },
+  methods: {
+    isEmpty(value) {
+        return (
+            value === undefined ||
+            value === null ||
+            (typeof value === 'object' && Object.keys(value).length === 0) ||
+            (typeof value === 'string' && value.trim().length === 0)
+        );
+    }
+  }
+};
+</script>
+
 <style>
 html,
 body,

@@ -2,7 +2,7 @@
   <div class="register">
     <section class="form_container">
       <div class="manage_tip">
-        <span class="title">生命之家後台管理系統</span>
+        <span class="title">生長之家後台管理系統</span>
         <el-form
           :model="registerUser"
           :rules="rules"

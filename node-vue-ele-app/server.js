@@ -7,6 +7,7 @@ const app = express();
 // 引入users.js
 const users = require("./routes/api/users");
 const profiles = require("./routes/api/profiles");
+const acticles = require("./routes/api/acticles");
 
 // DB config
 const db = require('./config/keys').mongoURI;
@@ -31,7 +32,8 @@ app.get("/", (req, res) => {
 
 // 使用routes
 app.use("/api/users", users);
-app.use('/api/profiles', profiles)
+app.use('/api/profiles', profiles);
+app.use('/api/acticles', acticles);
 
 const port = process.env.PORT || 5000;
 

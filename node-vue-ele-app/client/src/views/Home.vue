@@ -12,19 +12,19 @@
 
 <style scoped>
 .home {
-    width: 100%;
-    height: 100%;
-    background: url(../assets/showcase.jpg) no-repeat;
-    background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+  background: url(../assets/showcase.jpg) no-repeat;
+  background-size: 100% 100%;
 }
 .container {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   padding-top: 100px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
-  color: #fff;
+  color: white;
 }
 .title {
   font-size: 30px;

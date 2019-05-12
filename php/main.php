@@ -10,6 +10,13 @@ require_once 'MysqliDb.php';
 //     'port' => 3306,
 //     'charset' => 'utf8'));
 
+
+// Cross-Origin Resource Sharing Header
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: *');
+header('Cache-Control: max-age=3600');
+
 $dbCofig = array(
     'host' => "23.92.66.131",
     'username' => 'shouting_root',

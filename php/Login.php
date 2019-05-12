@@ -41,10 +41,13 @@ if ($userData != null) {
     if ($pwd == $userData["pwd"]) {
         $token = md5(RandomString());
         $db->where("user_id", $userData["id"])->delete("user_token");
+        $now = new DateTime();
+        $nowAfter1H = $now->add(new DateInterval("PT1H"));
+        
         $tokenData = array(
             'user_id' => $userData["id"],
             'token' => $token,
-            'expire_time' => $db->now("+1h"),
+            'expire_time' => $nowAfter1H->format("Y-m-d H:i:s"),
         );
         if ($db->insert("user_token", $tokenData)) {
             echo (json_encode($tokenData));

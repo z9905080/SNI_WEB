@@ -10,8 +10,8 @@
           label-width="80px"
           class="loginForm"
         >
-          <el-form-item label="信箱" prop="email">
-            <el-input type="text" v-model="loginUser.email" placeholder="請輸入email"></el-input>
+          <el-form-item label="帳號" prop="account">
+            <el-input type="text" v-model="loginUser.account" placeholder="請輸入帳號"></el-input>
           </el-form-item>
           <el-form-item label="密碼" prop="password">
             <el-input type="password" v-model="loginUser.password" placeholder="請輸入密碼"></el-input>
@@ -32,7 +32,8 @@
 </template>
 
 <script>
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode";
+import { Vue } from 'vue/types/vue';
 
 export default {
   name: "login",
@@ -40,18 +41,10 @@ export default {
   data() {
     return {
       loginUser: {
-        email: "",
-        password: ""
+        account: "", //test123
+        password: "" //test123
       },
       rules: {
-        email: [
-          {
-            type: "email",
-            required: true,
-            message: "信箱格式不正確",
-            trigger: "blur"
-          }
-        ],
         password: [
           {
             required: true,
@@ -66,33 +59,40 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/api/users/login", this.loginUser).then(res => {
-            // token
-            const { token } = res.data;
+          this.$axios
+            .post(
+              "https://sniweb.shouting.feedia.co/php/Login.php",
+              JSON.stringify(this.loginUser)
+            )
+            .then(res => {
+              console.log(res);
+              
+              // token
+              const { token } = res.data;
 
-            // 儲存至localStorage
-            localStorage.setItem('eleToken', token);
+              this.$cookies.set('sid', token);
 
-            // 解析token
-            const decoded = jwt_decode(token);
+              // // 儲存至localStorage
+              // localStorage.setItem("eleToken", token);
+              // // 解析token
+              // const decoded = jwt_decode(token);
 
-            // token儲存到vuex中
-            this.$store.dispatch('setAuthenticated', !this.isEmpty(decoded));
-            this.$store.dispatch('setUser', decoded);
-
-          });
+              // // token儲存到vuex中
+              // this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
+              // this.$store.dispatch("setUser", decoded);
+            });
 
           this.$router.push("/index");
         }
       });
     },
     isEmpty(value) {
-        return (
-            value === undefined ||
-            value === null ||
-            (typeof value === 'object' && Object.keys(value).length === 0) ||
-            (typeof value === 'string' && value.trim().length === 0)
-        );
+      return (
+        value === undefined ||
+        value === null ||
+        (typeof value === "object" && Object.keys(value).length === 0) ||
+        (typeof value === "string" && value.trim().length === 0)
+      );
     }
   }
 };

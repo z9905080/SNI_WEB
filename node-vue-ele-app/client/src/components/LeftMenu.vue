@@ -39,11 +39,17 @@ export default {
   data() {
     return {
       items: [
+        // {
+        //   icon: "fa-money",
+        //   name: "資金管理",
+        //   path: "fund",
+        //   children: [{ path: "fundlist", name: "資金流水" }]
+        // },
         {
-          icon: "fa-money",
-          name: "資金管理",
-          path: "fund",
-          children: [{ path: "fundlist", name: "資金流水" }]
+          icon: "el-icon-s-finance",
+          name: "頁籤管理",
+          path: "article",
+          children: [{ path: "navpageedit", name: "頁籤列表&編輯" }]
         },
         {
           icon: "el-icon-document",

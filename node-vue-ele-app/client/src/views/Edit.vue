@@ -6,15 +6,15 @@
           id="upload"
           ref="upload"
           action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
+          multiple
+        >
+        <!-- :on-preview="handlePreview"
           :on-success="insertImage"
           :on-remove="handleRemove"
           :before-remove="beforeRemove"
-          multiple
           :on-exceed="handleExceed"
-          :file-list="fileList"
-        >
-          <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button>
+          :file-list="fileList" -->
+          <!-- <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button> -->
         </el-upload>
         <!--
     给editor加key是因为给tinymce keep-alive以后组件切换时tinymce编辑器会显示异常，
@@ -120,25 +120,22 @@ export default {
       file_browser_callback: function(field_name, url, type, win) {
         win.document.getElementById(field_name).value = "my browser value";
       },
-      file_browser_callback_types: "file image media"
+      file_browser_callback_types: "file image media",
       /**
        * 下面方法是为tinymce添加自定义插入图片按钮
        * 借助iview的Upload组件,将图片先上传到存储云上，再将图片的存储地址放入编辑器内容
        */
-      // setup: editor => {
-      //   editor.ui.registry.addButton("imageUpload", {
-      //     // text: '插入图片',
-      //     tooltip: "插入图片",
-      //     icon: "image",
-      //     onAction: () => {
-      //       // let upload = this.$refs.upload;
-      //       // console.log(upload);
-      //       let imageBtn = this.$refs.imageBtn;
-      //       console.log(imageBtn);
-      //       imageBtn.handleClick();
-      //     }
-      //   });
-      // }
+      setup: editor => {
+        editor.ui.registry.addButton("imageUpload", {
+          tooltip: "插入图片",
+          icon: "image",
+          onAction: () => {
+            let upload = this.$refs.upload;
+            console.log(upload);
+            upload.handleClick();
+          }
+        });
+      }
     };
   },
   activated() {

@@ -9,6 +9,7 @@ import InfoShow from '@/views/InfoShow.vue'
 import ArticleList from '@/views/ArticleList.vue'
 import FundList from '@/views/FundList.vue'
 import Edit from '@/views/Edit.vue'
+import NavPageEdit from '@/views/NavPageEdit.vue'
 
 Vue.use(Router)
 
@@ -29,6 +30,7 @@ const router = new Router({
         {path: '/home', name: 'home', component: Home},
         {path: '/infoshow', name: 'infoshow', component: InfoShow},
         {path: '/articlelist', name: 'articlelist', component: ArticleList},
+        {path: '/navpageedit', name: 'navpageedit', component: NavPageEdit},
         {path: '/fundlist', name: 'fundlist', component: FundList},
         {path: '/edit', name: 'edit', component: Edit},
       ]

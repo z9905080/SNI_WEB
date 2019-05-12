@@ -16,6 +16,7 @@
     "jwt-decode": "^2.2.0",
     "tinymce": "^5.0.4",
     "vue": "^2.6.10",
+    "vue-cookies": "^1.5.13",
     "vue-froala-wysiwyg": "^2.9.5",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"

@@ -1,17 +1,17 @@
 <?php
 
-require 'setting.php';
+require 'main.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    // http_response_code(404);
-    // exit;
-}
+// if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+//     // http_response_code(404);
+//     // exit;
+// }
 
-$data = json_decode(file_get_contents('php://input'), true);
+//$data = json_decode(file_get_contents('php://input'), true);
 
-$pageID = $data['page_id'];
+//$pageID = $data['page_id'];
 
-//$pageID = $_REQUEST["page_id"];
+$pageID = $_REQUEST["page_id"];
 
 if ($pageID == "") {
     http_response_code(404);

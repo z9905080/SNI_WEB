@@ -33,7 +33,6 @@
 
 <script>
 import jwt_decode from "jwt-decode";
-import { Vue } from 'vue/types/vue';
 
 export default {
   name: "login",
@@ -41,8 +40,8 @@ export default {
   data() {
     return {
       loginUser: {
-        account: "", //test123
-        password: "" //test123
+        account: "test123", //test123
+        password: "test123" //test123
       },
       rules: {
         password: [
@@ -68,21 +67,25 @@ export default {
               console.log(res);
               
               // token
-              const { token } = res.data;
+              const { token, expire_time } = res.data;
 
-              this.$cookies.set('sid', token);
+              console.log();
+              const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/"))); //利用regular expression  將'-' 代換成 '/'
+              console.log(newDate);
+              
+              this.$cookies.set('sid', token, '7d');
 
               // // 儲存至localStorage
               // localStorage.setItem("eleToken", token);
               // // 解析token
               // const decoded = jwt_decode(token);
-
-              // // token儲存到vuex中
+              // this.$router.push("/index");
+              // // // token儲存到vuex中
               // this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
               // this.$store.dispatch("setUser", decoded);
             });
 
-          this.$router.push("/index");
+          
         }
       });
     },

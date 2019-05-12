@@ -1,7 +1,5 @@
 <?php
 
-require 'setting.php';
-
 require 'main.php';
 
 $db = new MysqliDb($dbCofig);

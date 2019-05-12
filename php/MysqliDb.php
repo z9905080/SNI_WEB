@@ -714,7 +714,7 @@ class MysqliDb
      * @param string    $tableName   The name of the database table to work with.
      * @param int|array $numRows     Array to define SQL limit in format Array ($offset, $count)
      *                               or only $count
-     * @param string    $columns     Desired columns
+     * @param string|array   $columns     Desired columns
      *
      * @return array|MysqliDb Contains the returned rows from the select query.
      * @throws Exception
@@ -1099,7 +1099,7 @@ class MysqliDb
      *
      * @param string $importTable    The database table where the data will be imported into.
      * @param string $importFile     The file to be imported. Please use double backslashes \\ and make sure you
-     * @param string $importSettings An Array defining the import settings as described in the README.md
+     * @param string|array $importSettings An Array defining the import settings as described in the README.md
      *
      * @return boolean
      * @throws Exception
@@ -1166,7 +1166,7 @@ class MysqliDb
      *
      * @param  string $importTable    The table in which the data will be imported to.
      * @param  string $importFile     The file which contains the .XML data.
-     * @param  string $importSettings An Array defining the import settings as described in the README.md
+     * @param  string|array $importSettings An Array defining the import settings as described in the README.md
      *
      * @return boolean Returns true if the import succeeded, false if it failed.
      * @throws Exception
@@ -1842,7 +1842,7 @@ class MysqliDb
         }
 
         $isInsert = preg_match('/^[INSERT|REPLACE]/', $this->_query);
-        $dataColumns = array_keys($tableData);
+        $dataColumns = array_keys($tableData) ;
         if ($isInsert) {
             if (isset ($dataColumns[0]))
                 $this->_query .= ' (`' . implode($dataColumns, '`, `') . '`) ';

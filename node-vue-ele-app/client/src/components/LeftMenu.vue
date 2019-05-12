@@ -45,10 +45,16 @@ export default {
         //   path: "fund",
         //   children: [{ path: "fundlist", name: "資金流水" }]
         // },
+        // {
+        //   icon: "fa-asterisk",
+        //   name: "信息管理",
+        //   path: "info",
+        //   children: [{ path: "infoshow", name: "个人信息" }]
+        // }
         {
-          icon: "el-icon-s-finance",
+          icon: "far fa-bookmark",
           name: "頁籤管理",
-          path: "article",
+          path: "navpage",
           children: [{ path: "navpageedit", name: "頁籤列表&編輯" }]
         },
         {
@@ -57,12 +63,6 @@ export default {
           path: "article",
           children: [{ path: "articlelist", name: "文章列表" }]
         },
-        {
-          icon: "fa-asterisk",
-          name: "信息管理",
-          path: "info",
-          children: [{ path: "infoshow", name: "个人信息" }]
-        }
       ]
     };
   }

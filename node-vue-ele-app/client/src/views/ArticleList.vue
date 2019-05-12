@@ -174,18 +174,6 @@ export default {
     handleAdd() {
       //新增
       this.$router.push('/edit');
-      // this.dialog = {
-      //   show: true,
-      //   title: "新增文章",
-      //   option: "add"
-      // };
-
-      // this.formData = {
-      //   type: "",
-      //   describe: "",
-      //   remark: "",
-      //   id: ""
-      // };
     },
     handleSizeChange(page_size) {
       //切換size

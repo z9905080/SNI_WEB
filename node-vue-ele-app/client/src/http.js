@@ -16,42 +16,46 @@ function endLoading() {
 }
 
 // 請求攔截
-axios.interceptors.request.use(config => {
-    //加載動畫
-    startLoading();
+// axios.interceptors.request.use(config => {
+//     console.log(config);
 
-    if (localStorage.eleToken) {
-        //設定統一的請求header
-        config.headers.Authorization = localStorage.eleToken;
-    }
+//     //加載動畫
+//     startLoading();
 
-    return config;
-}, error => {
-    return Promise.reject(error);
-})
+//     if (window.$cookies.isKey("sid")) {
+//         //設定統一的請求header
+//         config.headers.Authorization = window.$cookies.isKey("sid");
+//     }
 
-// 響應攔截
-axios.interceptors.response.use(response => {
-    //結束加載動畫
-    endLoading();
-    return response;
-}, error => {
-    //錯誤提醒
-    endLoading();
-    Message.error(error.response.data);
+//     return config;
+// }, error => {
+//     return Promise.reject(error);
+// })
+// console.log(axios.interceptors);
 
-    //獲取錯誤狀態碼
-    const { status } = error.response;
 
-    if (status === 401) {
-        Message.error('token失效,請重新登入!');
-        // 清除token
-        localStorage.removeItem('eleToken');
-        // 跳轉至登入頁面
-        router.push('/login');
-    }
+// // 響應攔截
+// axios.interceptors.response.use(response => {
+//     //結束加載動畫
+//     endLoading();
+//     return response;
+// }, error => {
+//     //錯誤提醒
+//     endLoading();
+//     Message.error(error.response.data);
 
-    return Promise.reject(error);
-})
+//     //獲取錯誤狀態碼
+//     const { status } = error.response;
+
+//     if (status === 401) {
+//         Message.error('token失效,請重新登入!');
+//         // 清除token
+//         localStorage.removeItem('eleToken');
+//         // 跳轉至登入頁面
+//         router.push('/login');
+//     }
+
+//     return Promise.reject(error);
+// })
 
 export default axios;

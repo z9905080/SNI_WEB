@@ -55,7 +55,7 @@ const router = new Router({
 
 // 路由守衛(router guard)
 router.beforeEach((to, from, next) => {
-  const isLogin = localStorage.eleToken ? true : false;
+  const isLogin = window.$cookies.isKey("sid") ? true : false;
   if (to.path === '/login' || to.path === '/register') {
     next();
   } else {

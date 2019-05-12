@@ -1,38 +1,41 @@
 <template>
   <div class="fillcontain">
-    <div>
-      <el-form :inline="true" ref="add_data" :model="search_data">
-        <!-- 篩選 -->
-        <el-form-item label="按照時間篩選">
-          <el-date-picker v-model="search_data.startTime" type="datetime" placeholder="选择開始时间"></el-date-picker> --
-          <el-date-picker v-model="search_data.endTime" type="datetime" placeholder="选择結束时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="small" icon="search" @click="handleSearch()">篩選</el-button>
-        </el-form-item>
-        <el-form-item class="btnRight">
-          <el-button
-          type="primary"
-          size="small"
-          icon="el-icon-plus"
-          v-if="user.identity === 'admin'"
-          @click="handleAdd()">新增文章</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
     <div class="table-container">
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
-        <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
-        <el-table-column prop="date" label="創建時間" width="320" align="center">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        <el-table-column type="expand">
+          <template>
+            <div v-for="(item, index) in pageTableData" :key="index">
+              <el-table height="300" style="width: 40%" align="center" v-for="(target, index) in item" :key="index">
+                <el-table-column label="分頁序號" align="center" width="180">
+                  {{target.page_content_id}}
+                </el-table-column>
+                <el-table-column label="分頁名稱" align="center" width="180">
+                  {{target.page_name}}
+                </el-table-column>
+                <el-table-column label="操作" prop="operation" align="center" width="320">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="info"
+                      icon="el-icon-edit"
+                      size="small"
+                      @click="handleEdit(scope.$index, scope.row)"
+                    >编辑</el-button>
+                    <!-- <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="small"
+                    @click="handleDelete(scope.$index, scope.row)"
+                    >删除</el-button>-->
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="文章類型" align="center" width="150"></el-table-column>
-        <el-table-column prop="describe" label="標題描述" align="center" width="490"></el-table-column>
-        <el-table-column prop="remark" label="備註" align="center" width="300"></el-table-column>
-        <el-table-column prop="operation" align="center" label="操作" width="320" v-if="user.identity === 'admin'">
+        <el-table-column label="分類序號" prop="page_group_id" align="center" width="100"></el-table-column>
+        <el-table-column label="群組名稱" prop="group_name" align="center" width="300"></el-table-column>
+        <el-table-column label="備註" prop="remark" align="center" width="900"></el-table-column>
+        <el-table-column label="操作" prop="operation" align="center" width="350">
           <template slot-scope="scope">
             <el-button
               type="info"
@@ -40,12 +43,12 @@
               size="small"
               @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button>
-            <el-button
+            <!-- <el-button
               type="danger"
               icon="el-icon-delete"
               size="small"
               @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button>
+            >删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -82,10 +85,6 @@ export default {
   },
   data() {
     return {
-      search_data: {
-        startTime: "",
-        endTime: ""
-      },
       filterTableData: [],
       paginations: {
         page_index: 1, //當前位於哪頁
@@ -95,12 +94,12 @@ export default {
         layout: "total, sizes, prev, pager, next, jumper" //翻頁屬性
       },
       tableData: [],
+      pageTableData: [],
       allTableData: [],
       formData: {
         page_group_id: "",
         group_name: "",
-        page_content: [],
-        id: ""
+        page_content: []
       },
       dialog: {
         show: false,
@@ -121,10 +120,14 @@ export default {
     getProfile() {
       //獲取數據
       this.$axios
-        .get("/api/acticles")
+        .get("https://sniweb.shouting.feedia.co/php/GetNav.php")
         .then(res => {
           this.allTableData = res.data;
           this.filterTableData = res.data;
+          this.allTableData.forEach((data, index) => {
+            this.pageTableData[index] = data.page_content;
+          });
+
           // 設置分頁數據
           this.setPaginations();
         })
@@ -144,7 +147,7 @@ export default {
       //編輯
       this.dialog = {
         show: true,
-        title: "修改資金信息",
+        title: "修改標題",
         option: "edit"
       };
 
@@ -170,7 +173,7 @@ export default {
     },
     handleAdd() {
       //新增
-      this.$router.push('/edit');
+      this.$router.push("/edit");
       // this.dialog = {
       //   show: true,
       //   title: "新增文章",

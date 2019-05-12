@@ -64,28 +64,14 @@ export default {
               JSON.stringify(this.loginUser)
             )
             .then(res => {
-              console.log(res);
-              
-              // token
+              // get token
               const { token, expire_time } = res.data;
-
-              console.log();
-              const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/"))); //利用regular expression  將'-' 代換成 '/'
-              console.log(newDate);
-              
-              this.$cookies.set('sid', token, '7d');
-
-              // // 儲存至localStorage
-              // localStorage.setItem("eleToken", token);
-              // // 解析token
-              // const decoded = jwt_decode(token);
-              // this.$router.push("/index");
-              // // // token儲存到vuex中
-              // this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
-              // this.$store.dispatch("setUser", decoded);
+              //利用regular expression  將'-' 代換成 '/'
+              const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/")));
+              // set cookie
+              this.$cookies.set('sid', token, newDate);
             });
-
-          
+            this.$router.push("/index");
         }
       });
     },

@@ -3,14 +3,11 @@
     <div class="table-container">
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
         <el-table-column type="expand">
-          <template>
-            <div v-for="(item, index) in pageTableData" :key="index">
-              <el-table height="300" style="width: 40%" align="center" v-for="(target, index) in item" :key="index">
-                <el-table-column label="分頁序號" align="center" width="180">
-                  {{target.page_content_id}}
+           <template slot-scope="props">
+              <el-table :data="props.row.page_content" height="300" style="width: 50%" align="center">
+                <el-table-column prop="page_content_id" label="分頁序號" align="center" width="180">
                 </el-table-column>
-                <el-table-column label="分頁名稱" align="center" width="180">
-                  {{target.page_name}}
+                <el-table-column prop="page_name" label="分頁名稱" align="center" width="180">
                 </el-table-column>
                 <el-table-column label="操作" prop="operation" align="center" width="320">
                   <template slot-scope="scope">
@@ -29,7 +26,6 @@
                   </template>
                 </el-table-column>
               </el-table>
-            </div>
           </template>
         </el-table-column>
         <el-table-column label="分類序號" prop="page_group_id" align="center" width="100"></el-table-column>
@@ -71,17 +67,17 @@
     </div>
 
     <!-- 彈出視窗 -->
-    <!-- <article-dialog :dialog="dialog" :formData="formData" @update="getProfile"></article-dialog> -->
+    <navpage-dialog :dialog="dialog" :formData="formData" @update="getProfile"></navpage-dialog>
   </div>
 </template>
 
 <script>
-// import ArticleDialog from "@/components/ArticleDialog.vue";
+import NavPageDialog from "@/components/NavPageDialog.vue";
 
 export default {
-  name: "fundlist",
+  name: "navpagelist",
   components: {
-    // "article-dialog": ArticleDialog
+    "navpage-dialog": NavPageDialog
   },
   data() {
     return {
@@ -94,7 +90,6 @@ export default {
         layout: "total, sizes, prev, pager, next, jumper" //翻頁屬性
       },
       tableData: [],
-      pageTableData: [],
       allTableData: [],
       formData: {
         page_group_id: "",
@@ -124,10 +119,6 @@ export default {
         .then(res => {
           this.allTableData = res.data;
           this.filterTableData = res.data;
-          this.allTableData.forEach((data, index) => {
-            this.pageTableData[index] = data.page_content;
-          });
-
           // 設置分頁數據
           this.setPaginations();
         })
@@ -152,13 +143,8 @@ export default {
       };
 
       this.formData = {
-        type: row.type,
-        describe: row.describe,
-        income: row.income,
-        expend: row.expend,
-        cash: row.cash,
-        remark: row.remark,
-        id: row._id
+        page_group_id: row.page_group_id,
+        group_name: row.group_name
       };
     },
     handleDelete(index, row) {

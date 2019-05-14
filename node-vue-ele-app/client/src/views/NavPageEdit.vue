@@ -15,7 +15,7 @@
                       type="info"
                       icon="el-icon-edit"
                       size="small"
-                      @click="handleEdit(scope.$index, scope.row)"
+                      @click="handleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
                     >编辑</el-button>
                     <!-- <el-button
                     type="danger"
@@ -37,7 +37,7 @@
               type="info"
               icon="el-icon-edit"
               size="small"
-              @click="handleEdit(scope.$index, scope.row)"
+              @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
             >编辑</el-button>
             <!-- <el-button
               type="danger"
@@ -134,7 +134,7 @@ export default {
         return index < this.paginations.page_size;
       });
     },
-    handleEdit(index, row) {
+    handleEdit(index, id, name) {
       //編輯
       this.dialog = {
         show: true,
@@ -143,8 +143,8 @@ export default {
       };
 
       this.formData = {
-        page_group_id: row.page_group_id,
-        group_name: row.group_name
+        id: id,
+        name: name
       };
     },
     handleDelete(index, row) {

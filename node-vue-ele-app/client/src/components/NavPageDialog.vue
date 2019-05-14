@@ -15,11 +15,11 @@
           label-width="120px"
           style="margin:10px;width:auto;"
         >
-          <el-form-item prop="page_group_id" label="分類序號:">
-            <label type="page_group_id" v-text="formData.page_group_id"></label>
+          <el-form-item prop="id" label="序號:">
+            <label type="id" v-text="formData.id"></label>
           </el-form-item>
-          <el-form-item prop="group_name" label="群組名稱:">
-            <el-input type="group_name" v-model="formData.group_name"></el-input>
+          <el-form-item prop="name" label="名稱:">
+            <el-input type="name" v-model="formData.name"></el-input>
           </el-form-item>
           <!-- <el-form-item prop="remark" label="備註:">
             <el-input type="remark" v-model="formData.remark"></el-input>

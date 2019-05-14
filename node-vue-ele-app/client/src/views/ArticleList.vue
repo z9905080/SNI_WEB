@@ -124,8 +124,10 @@ export default {
     getProfile() {
       //獲取數據
       this.$axios
-        .get("/api/acticles")
+        .get("https://sniweb.shouting.feedia.co/php/GetContent.php")
         .then(res => {
+          console.log(res);
+
           this.allTableData = res.data;
           this.filterTableData = res.data;
           // 設置分頁數據

@@ -1,6 +1,6 @@
 <?php
 
-require 'middleware/AuthToken.php';
+//require 'middleware/AuthToken.php';
 
 // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 //     // http_response_code(404);

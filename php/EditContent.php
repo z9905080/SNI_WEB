@@ -25,6 +25,8 @@ if ($db->update("page_content", array(
     "html_context" => $htmlContext,
     "page_group_id" => $pageGroupID,
 ))) {
+    echo (1);
+    exit;
     $respInst = new APIResponse(
         null,
         "編輯成功",
@@ -33,6 +35,8 @@ if ($db->update("page_content", array(
     $resp = $respInst->getAPIResponse();
     echo (json_encode($resp));
 }else {
+    echo (2);
+    exit;
     $respInst = new APIResponse(
         null,
         "編輯成功1",

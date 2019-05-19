@@ -16,25 +16,37 @@
 class APIResponse
 {
 
+
+    /**
+     * Static instance of self
+     *
+     * @var APIResponse
+     */
+    protected static $_instance;
+
     public $response = array();
     /**
+     * @param object $data
+     * @param string $message
      * @param string $code
      * @param string $status
-     * @param string $message
-     * @param object $data
      */
     public function __construct($data, $message, $code, $status = 'Y')
     {
+
         $this->response = array(
             "data" => $data,
             "message" => $message,
             "code" => $code,
             "status" => $status,
         );
+
+        self::$_instance = $this;
+        
     }
 
     public function getAPIResponse(){
-        return $this->response;
+        return self::$_instance->response;
     }
 
 }

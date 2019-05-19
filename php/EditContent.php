@@ -24,8 +24,6 @@ if ($db->update("page_content", array(
     "html_context" => $htmlContext,
     "page_group_id" => $pageGroupID,
 ))) {
-    echo 2;
-    exit;
     $respInst = new APIResponse(
         null,
         "編輯成功",

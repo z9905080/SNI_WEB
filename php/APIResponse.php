@@ -31,11 +31,12 @@ class APIResponse
             "code" => $code,
             "status" => $status,
         );
+
+        echo json_encode($this->response);
+        exit;
     }
 
     public function getAPIResponse(){
-        echo $this->response;
-        exit;
         return $this->response;
     }
 

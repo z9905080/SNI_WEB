@@ -34,6 +34,8 @@ class APIResponse
     }
 
     public function getAPIResponse(){
+        echo $this->response;
+        exit;
         return $this->response;
     }
 

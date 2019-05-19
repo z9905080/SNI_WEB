@@ -30,6 +30,8 @@ if ($db->update("page_content", array(
         "編輯成功",
         "20001",
         "Y");
+        echo 1;
+        exit;
     $resp = $respInst->getAPIResponse();
     echo ($resp['message']);
 }else {

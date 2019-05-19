@@ -1,7 +1,5 @@
 <?php
 
-require 'main.php';
-
 require 'middleware/AuthToken.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

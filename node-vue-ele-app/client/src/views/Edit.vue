@@ -2,25 +2,31 @@
   <div>
     <div class="form">
       <el-form ref="form" label-width="120px" style="margin:10px;width:auto;">
+        <H2>{{page_content.page_name}}</H2>
         <el-upload
           id="upload"
           ref="upload"
           action="https://jsonplaceholder.typicode.com/posts/"
           multiple
         >
-        <!-- :on-preview="handlePreview"
+          <!-- :on-preview="handlePreview"
           :on-success="insertImage"
           :on-remove="handleRemove"
           :before-remove="beforeRemove"
           :on-exceed="handleExceed"
-          :file-list="fileList" -->
+          :file-list="fileList"-->
           <!-- <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button> -->
         </el-upload>
         <!--
     给editor加key是因为给tinymce keep-alive以后组件切换时tinymce编辑器会显示异常，
     在activated钩子里改变key的值可以让编辑器重新创建
         -->
-        <editor id="tinymceEditor" :init="tinymceInit" v-model="content" :key="tinymceFlag"></editor>
+        <editor
+          id="tinymceEditor"
+          :init="tinymceInit"
+          v-model="page_content.html_context"
+          :key="tinymceFlag"
+        ></editor>
 
         <el-form-item class="text_right">
           <el-button type="primary" @click="onSubmit()">提交</el-button>
@@ -51,8 +57,14 @@ export default {
   data() {
     return {
       tinymceFlag: 1,
+      id: "",
       tinymceInit: {},
-      content: "",
+      page_content: {
+        html_context: "",
+        id: "",
+        page_group_id: "",
+        page_name: ""
+      },
       fileList: []
     };
   },
@@ -62,24 +74,48 @@ export default {
       let src = ""; // 图片存储地址
       tinymce.execCommand("mceInsertContent", false, `<img src=${src}>`);
     },
+    getPageContent() {
+      // 拿到網址的id
+      const url = location.href;
+      if (url.indexOf("/navpageedit/edit/") !== -1) {
+        //之後去分割字串把分割後的字串放進陣列中
+        const ary1 = url.split("/navpageedit/edit/");
+        this.id = ary1[ary1.length - 1];
+      }
+      //獲取數據
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/GetContent.php?page_id=${
+            this.id
+          }`
+        )
+        .then(res => {
+          this.page_content = res.data;
+          console.log(res.data);
+        })
+        .catch(err => console.log(err));
+    },
     onSubmit() {
-      this.$refs[form].validate(valid => {
-        if (valid) {
-          // const url = this.dialog.option === 'add' ? 'add' : `edit/${this.formData.id}`;
-          this.$axios.post(`/api/acticles/${url}`, this.formData).then(res => {
-            //添加成功
-            this.$message({
-              // message: this.dialog.option === 'add' ? "資料添加成功" : "資料編輯成功",
-              type: "success"
-            });
-            this.$emit("update");
-            this.$router.push("/articlelist");
+      //送出數據
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/EditContent.php?page_id=${
+            this.id
+          }&sid=${window.$cookies.isKey("sid")}`,
+          JSON.stringify(this.page_content)
+        )
+        .then(res => {
+          //添加成功
+          this.$message({
+            message: "資料編輯成功",
+            type: "success"
           });
-        }
-      });
+          this.$emit("update");
+          this.$router.push("/navpageedit");
+        });
     },
     onCancel() {
-      this.$router.push("/articlelist");
+      this.$router.push("/navpageedit");
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -137,6 +173,7 @@ export default {
         });
       }
     };
+    this.getPageContent();
   },
   activated() {
     this.tinymceFlag++;

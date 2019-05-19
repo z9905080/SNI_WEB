@@ -3,35 +3,44 @@
     <div class="table-container">
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
         <el-table-column type="expand">
-           <template slot-scope="props">
-              <el-table :data="props.row.page_content" height="300" style="width: 50%" align="center">
-                <el-table-column prop="page_content_id" label="分頁序號" align="center" width="180">
-                </el-table-column>
-                <el-table-column prop="page_name" label="分頁名稱" align="center" width="180">
-                </el-table-column>
-                <el-table-column label="操作" prop="operation" align="center" width="320">
-                  <template slot-scope="scope">
-                    <el-button
-                      type="info"
-                      icon="el-icon-edit"
-                      size="small"
-                      @click="handleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
-                    >编辑</el-button>
-                    <!-- <el-button
+          <template slot-scope="props">
+            <el-table
+              :data="props.row.page_content"
+              max-height="1000"
+              style="width: 100%"
+              align="center"
+            >
+              <el-table-column
+                prop="page_content_id"
+                label="分頁序號"
+                align="center"
+                style="width: 10%"
+              ></el-table-column>
+              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 20%"></el-table-column>
+              <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
+              <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
+                  >內文编辑</el-button>
+                  <!-- <el-button
                     type="danger"
                     icon="el-icon-delete"
                     size="small"
                     @click="handleDelete(scope.$index, scope.row)"
-                    >删除</el-button>-->
-                  </template>
-                </el-table-column>
-              </el-table>
+                  >删除</el-button>-->
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
-        <el-table-column label="分類序號" prop="page_group_id" align="center" width="100"></el-table-column>
-        <el-table-column label="群組名稱" prop="group_name" align="center" width="300"></el-table-column>
-        <el-table-column label="備註" prop="remark" align="center" width="900"></el-table-column>
-        <el-table-column label="操作" prop="operation" align="center" width="350">
+        <el-table-column label="分類序號" prop="page_group_id" align="center" style="width: 10%"></el-table-column>
+        <el-table-column label="群組名稱" prop="group_name" align="center" style="width: 20%"></el-table-column>
+        <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
+        <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
           <template slot-scope="scope">
             <el-button
               type="info"
@@ -99,6 +108,14 @@ export default {
       dialog: {
         show: false,
         title: "",
+        option: "edit"
+      },
+      editorData: {
+        page_id: "",
+        page_name: ""
+      },
+      editor: {
+        show: false,
         option: "edit"
       }
     };
@@ -218,6 +235,10 @@ export default {
 
       // 分頁數據的調用
       this.setPaginations();
+    },
+    handleArticleEdit(index, id, name) {
+      //內文編輯
+      this.$router.push(`/navpageedit/edit/${id}`);
     }
   }
 };

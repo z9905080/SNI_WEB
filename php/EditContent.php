@@ -17,8 +17,6 @@ $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
 
-exit;
-
 $db = new MysqliDb($dbCofig);
 
 $db->where("id", $pageID);
@@ -37,7 +35,7 @@ if ($db->update("page_content", array(
 }else {
     $respInst = new APIResponse(
         null,
-        "編輯成功",
+        "編輯成功1",
         "20001",
         "Y");
     $resp = $respInst->getAPIResponse();

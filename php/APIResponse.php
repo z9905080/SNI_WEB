@@ -16,7 +16,7 @@
 class APIResponse
 {
 
-    private $response = array();
+    public $response = array();
     /**
      * @param string $code
      * @param string $status

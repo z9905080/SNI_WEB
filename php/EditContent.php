@@ -24,11 +24,18 @@ if ($db->update("page_content", array(
     "html_context" => $htmlContext,
     "page_group_id" => $pageGroupID,
 ))) {
-    $respInst = new APIResponse(
-        null,
-        "編輯成功",
-        "20001",
-        "Y");
+    // $respInst = new APIResponse(
+    //     null,
+    //     "編輯成功",
+    //     "20001",
+    //     "Y");
+
+    $respInst = array(
+        "data" => null,
+        "message" => "編輯成功",
+        "code" => "20001",
+        "status" => "Y",
+    );
     echo 1;
     exit;
     $resp = $respInst->getAPIResponse();

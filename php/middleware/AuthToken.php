@@ -4,6 +4,8 @@ require 'main.php';
 
 $sid = $_COOKIE['sid'];
 
+echo $sid;
+
 $db = new MysqliDb($dbCofig);
 
 $token_data = $db->where("token", $sid)->getOne('user_token');
@@ -25,7 +27,7 @@ if ($token_data != null) {
 } else {
     $respInst = new APIResponse(
         null,
-        "驗證錯誤，請重新登入",
+        "驗證edt6錯誤，請重新登入",
         "10002",
         "N");
     $resp = $respInst->getAPIResponse();

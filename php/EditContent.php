@@ -16,7 +16,7 @@ $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
-echo $data;
+echo json_encode($data);
 exit;
 
 $db = new MysqliDb($dbCofig);

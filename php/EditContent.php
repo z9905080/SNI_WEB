@@ -16,7 +16,6 @@ $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
-
 $db = new MysqliDb($dbCofig);
 
 $db->where("id", $pageID);
@@ -30,11 +29,11 @@ if ($db->update("page_content", array(
         "編輯成功",
         "20001",
         "Y");
-        echo 1;
-        exit;
+    echo 1;
+    exit;
     $resp = $respInst->getAPIResponse();
     echo ($resp['message']);
-}else {
+} else {
     $respInst = new APIResponse(
         null,
         "編輯失敗",
@@ -43,5 +42,3 @@ if ($db->update("page_content", array(
     $resp = $respInst->getAPIResponse();
     echo (json_encode($resp));
 }
-
-

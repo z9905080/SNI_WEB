@@ -16,6 +16,9 @@ $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
+echo $data;
+exit;
+
 $db = new MysqliDb($dbCofig);
 
 $db->where("id", $pageID);

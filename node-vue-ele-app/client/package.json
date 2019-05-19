@@ -1,0 +1,39 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "start": "npm run serve"
+  },
+  "dependencies": {
+    "@tinymce/tinymce-vue": "^2.0.0",
+    "axios": "^0.18.0",
+    "core-js": "^2.6.5",
+    "element-ui": "^2.7.2",
+    "froala-editor": "^2.9.5",
+    "jwt-decode": "^2.2.0",
+    "tinymce": "^5.0.4",
+    "vue": "^2.6.10",
+    "vue-cookies": "^1.5.13",
+    "vue-froala-wysiwyg": "^2.9.5",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.6.0",
+    "@vue/cli-service": "^3.6.0",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

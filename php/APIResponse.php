@@ -16,7 +16,6 @@
 class APIResponse
 {
 
-
     /**
      * Static instance of self
      *
@@ -31,7 +30,7 @@ class APIResponse
      * @param string $code
      * @param string $status
      */
-    public function __construct($data, $message, $code, $status = 'Y')
+    public function __construct($data = null, $message = null, $code = null, $status = 'Y')
     {
 
         $this->response = array(
@@ -42,10 +41,11 @@ class APIResponse
         );
 
         self::$_instance = $this;
-        
+
     }
 
-    public function getAPIResponse(){
+    public function getAPIResponse()
+    {
         return self::$_instance->response;
     }
 

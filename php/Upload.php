@@ -22,8 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $msg = array();
     $msg["error"] = false;
     $msg['content'] = '';
-    $reNameFile = array("image/jpeg" => ".jpg",
+    $reNameFile = array(
+        "image/jpeg" => ".jpg",
         "image/png" => ".png",
+        "image/gif" => ".gif",
     );
     if ($_FILES['file']['error'] > 0) {
 

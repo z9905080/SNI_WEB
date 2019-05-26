@@ -3,9 +3,7 @@
 require 'main.php';
 
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-$sid = $data['sid'];
+$sid = $_REQUEST["sid"];
 
 $db = new MysqliDb($dbCofig);
 

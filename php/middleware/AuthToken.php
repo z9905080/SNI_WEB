@@ -2,7 +2,11 @@
 
 require 'main.php';
 
-$sid = $_COOKIE['sid'];
+
+$data = json_decode(file_get_contents('php://input'), true);
+
+$sid = $data['sid'];
+
 
 echo $sid;
 

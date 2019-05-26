@@ -30,7 +30,7 @@ if ($db->update("page_content", array(
     "page_group_id" => $pageGroupID,
 ))) {
     $resp = array(
-        "data" => $data,
+        "data" => null,
         "message" => "編輯成功",
         "code" => "20003",
         "status" => "Y",

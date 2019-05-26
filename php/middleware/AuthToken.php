@@ -15,22 +15,26 @@ $db->disconnect();
 if ($token_data != null) {
     $nowTime = date("Y-m-d H:i:s");
     if (strtotime($token_data['expire_time']) < strtotime($nowTimeFormat)) {
-        $respInst = new APIResponse(
-            null,
-            "登入令牌過期，請重新登入",
-            "10001",
-            "N");
-        $resp = $respInst->getAPIResponse();
+    
+        $resp = array(
+            "data" => null,
+            "message" => "登入令牌過期，請重新登入",
+            "code" => "10001",
+            "status" => "N",
+        );
+        
         echo (json_encode($resp));
         exit;
     }
 } else {
-    $respInst = new APIResponse(
-        null,
-        "驗證edt6錯誤，請重新登入",
-        "10002",
-        "N");
-    $resp = $respInst->getAPIResponse();
+
+    $resp = array(
+        "data" => null,
+        "message" => "驗證錯誤，請重新登入",
+        "code" => "10002",
+        "status" => "N",
+    );
+
     echo (json_encode($resp));
     exit;
 }

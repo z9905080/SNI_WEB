@@ -2,7 +2,7 @@
 
 require 'main.php';
 
-//require 'middleware/AuthToken.php';
+require 'middleware/AuthToken.php';
 
 // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 //     // http_response_code(404);
@@ -27,7 +27,7 @@ if ($db->update("page_content", array(
     $resp = array(
         "data" => null,
         "message" => "編輯成功",
-        "code" => "20001",
+        "code" => "20003",
         "status" => "Y",
     );
     
@@ -37,7 +37,7 @@ if ($db->update("page_content", array(
     $resp = array(
         "data" => null,
         "message" => "編輯失敗",
-        "code" => "10001",
+        "code" => "10003",
         "status" => "N",
     );
 

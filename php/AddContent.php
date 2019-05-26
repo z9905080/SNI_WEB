@@ -36,7 +36,7 @@ if ($id) {
 
     $resp = array(
         "data" => $pageContentData,
-        "message" => "新增成功",
+        "message" => "新增內文成功",
         "code" => "20004",
         "status" => "Y",
     );
@@ -47,7 +47,7 @@ if ($id) {
 
     $resp = array(
         "data" => $null,
-        "message" => "新增失敗". $db->getLastError(),
+        "message" => "新增內文失敗". $db->getLastError(),
         "code" => "10004",
         "status" => "Y",
     );

@@ -40,7 +40,7 @@ if ($id) {
 } else {
 
     $resp = array(
-        "data" => $null,
+        "data" => null,
         "message" => "新增頁籤失敗". $db->getLastError(),
         "code" => "10006",
         "status" => "Y",

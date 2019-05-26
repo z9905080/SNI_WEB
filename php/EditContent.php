@@ -25,7 +25,7 @@ if ($db->update("page_content", array(
     "page_group_id" => $pageGroupID,
 ))) {
     $resp = array(
-        "data" => null,
+        "data" => $data,
         "message" => "編輯成功",
         "code" => "20003",
         "status" => "Y",

@@ -40,14 +40,11 @@ export default {
   data() {
     return {
       form_rules: {
-        // page_group_id: [
-        //   { required: true, message: "分類序號不能为空！", trigger: "blur" }
+        // id: [
+        //   { required: true, message: "序號不能为空！", trigger: "blur" }
         // ],
-        group_name: [
-          { required: true, message: "群組名稱不能为空！", trigger: "blur" }
-        ],
-        page_name:[
-          { required: true, message: "分頁名稱不能为空！", trigger: "blur" }
+        name:[
+          { required: true, message: "名稱不能为空！", trigger: "blur" }
         ]
       }
     };

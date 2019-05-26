@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue';
 import VueCookies from 'vue-cookies';
 import ElementUI from 'element-ui';
+import { Base64 } from 'js-base64';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import axios from './http';
@@ -11,8 +12,10 @@ import store from './store'
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueCookies);
+Vue.use(Base64);
 Vue.prototype.$axios = axios;
 Vue.prototype.$cookies = VueCookies;
+
 
 new Vue({
   router,

@@ -4,19 +4,26 @@
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
         <el-table-column type="expand">
           <template slot-scope="props">
+            <el-button
+                    class="btnRight"
+                    type="success"
+                    icon="el-icon-plus"
+                    size="small"
+                    @click="handleArticleAdd(props.row.page_group_id)"
+                  >新增內文</el-button>
             <el-table
               :data="props.row.page_content"
               max-height="1000"
               style="width: 100%"
               align="center"
             >
-              <el-table-column
+              <!-- <el-table-column
                 prop="page_content_id"
                 label="分頁序號"
                 align="center"
                 style="width: 10%"
-              ></el-table-column>
-              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 20%"></el-table-column>
+              ></el-table-column> -->
+              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
               <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
               <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
                 <template slot-scope="scope">
@@ -25,7 +32,7 @@
                     icon="el-icon-edit"
                     size="small"
                     @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
-                  >內文编辑</el-button>
+                  >內文编輯</el-button>
                   <!-- <el-button
                     type="danger"
                     icon="el-icon-delete"
@@ -37,8 +44,8 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column label="分類序號" prop="page_group_id" align="center" style="width: 10%"></el-table-column>
-        <el-table-column label="群組名稱" prop="group_name" align="center" style="width: 20%"></el-table-column>
+        <!-- <el-table-column label="分類序號" prop="page_group_id" align="center" style="width: 10%"></el-table-column> -->
+        <el-table-column label="群組名稱" prop="group_name" align="center" style="width: 30%"></el-table-column>
         <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
         <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
           <template slot-scope="scope">
@@ -47,7 +54,7 @@
               icon="el-icon-edit"
               size="small"
               @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
-            >编辑</el-button>
+            >编輯</el-button>
             <!-- <el-button
               type="danger"
               icon="el-icon-delete"
@@ -239,6 +246,10 @@ export default {
     handleArticleEdit(index, id, name) {
       //內文編輯
       this.$router.push(`/navpageedit/edit/${id}`);
+    },
+    handleArticleAdd(page_group_id) {
+      //新增內文
+      this.$router.push(`/navpageedit/add/`);
     }
   }
 };

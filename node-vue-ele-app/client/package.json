@@ -13,6 +13,7 @@
     "core-js": "^2.6.5",
     "element-ui": "^2.7.2",
     "froala-editor": "^2.9.5",
+    "js-base64": "^2.5.1",
     "jwt-decode": "^2.2.0",
     "tinymce": "^5.0.4",
     "vue": "^2.6.10",

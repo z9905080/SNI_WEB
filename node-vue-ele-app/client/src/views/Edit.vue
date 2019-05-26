@@ -2,13 +2,14 @@
   <div>
     <div class="form">
       <el-form ref="form" label-width="120px" style="margin:10px;width:auto;">
-        <H2>{{page_content.page_name}}</H2>
-        <el-upload
+        <h3>內文標題:</h3>
+        <el-input class="title" v-model="page_content.page_name" placeholder="請輸入標題" required="true"></el-input>
+        <!-- <el-upload
           id="upload"
           ref="upload"
           action="https://jsonplaceholder.typicode.com/posts/"
           multiple
-        >
+        > -->
           <!-- :on-preview="handlePreview"
           :on-success="insertImage"
           :on-remove="handleRemove"
@@ -16,7 +17,7 @@
           :on-exceed="handleExceed"
           :file-list="fileList"-->
           <!-- <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button> -->
-        </el-upload>
+        <!-- </el-upload> -->
         <!--
     给editor加key是因为给tinymce keep-alive以后组件切换时tinymce编辑器会显示异常，
     在activated钩子里改变key的值可以让编辑器重新创建
@@ -56,6 +57,7 @@ export default {
   },
   data() {
     return {
+      url: '',
       tinymceFlag: 1,
       id: "",
       tinymceInit: {},
@@ -76,38 +78,42 @@ export default {
     },
     getPageContent() {
       // 拿到網址的id
-      const url = location.href;
-      if (url.indexOf("/navpageedit/edit/") !== -1) {
+      this.url = location.href;
+      //判斷是否為edit
+      if (this.url.indexOf("/navpageedit/edit/") !== -1) {
         //之後去分割字串把分割後的字串放進陣列中
-        const ary1 = url.split("/navpageedit/edit/");
+        const ary1 = this.url.split("/navpageedit/edit/");
         this.id = ary1[ary1.length - 1];
+        //獲取數據
+        this.$axios
+          .post(
+            `https://sniweb.shouting.feedia.co/php/GetContent.php?page_id=${
+              this.id
+            }`
+          )
+          .then(res => {
+            this.page_content = res.data;
+            this.page_content.page_id = res.data.id;
+          })
+          .catch(err => console.log(err));
       }
-      //獲取數據
-      this.$axios
-        .post(
-          `https://sniweb.shouting.feedia.co/php/GetContent.php?page_id=${
-            this.id
-          }`
-        )
-        .then(res => {
-          this.page_content = res.data;
-          console.log(res.data);
-        })
-        .catch(err => console.log(err));
     },
     onSubmit() {
+      const apiType = this.url.match("edit") ? 'EditContent' : 'AddContent';
       //送出數據
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/EditContent.php?page_id=${
-            this.id
-          }&sid=${window.$cookies.isKey("sid")}`,
+          `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${`${window.$cookies.get(
+            "sid"
+          )}`}`,
           JSON.stringify(this.page_content)
         )
         .then(res => {
+          console.log(res);
+
           //添加成功
           this.$message({
-            message: "資料編輯成功",
+            message: this.url.match("edit") ? "編輯成功" : "新增成功",
             type: "success"
           });
           this.$emit("update");
@@ -186,5 +192,8 @@ export default {
 .text_right {
   float: right;
   margin-top: 20px;
+}
+.title {
+  margin-bottom: 3%;
 }
 </style>

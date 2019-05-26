@@ -25,13 +25,15 @@ if ($db->update("page_content", array(
     "page_group_id" => $pageGroupID,
 ))) {
     $respInst = new APIResponse();
-    
+    echo 3;
+    exit;
     $respInst->SetResponse(
         null,
         "編輯成功",
         "20001",
         "Y");
-
+    echo 2;
+    exit;
     $resp = $respInst->getAPIResponse();
 
     // $respInst = array(

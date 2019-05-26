@@ -16,6 +16,11 @@ $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
+if ($pageID == "") {
+    http_response_code(404);
+    exit;
+}
+
 $db = new MysqliDb($dbCofig);
 
 $db->where("id", $pageID);

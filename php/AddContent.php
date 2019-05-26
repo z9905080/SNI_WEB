@@ -16,6 +16,12 @@ $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
+
+if ($pageID == "") {
+    http_response_code(404);
+    exit;
+}
+
 $db = new MysqliDb($dbCofig);
 
 $pageContentData = array(
@@ -28,20 +34,22 @@ $id = $db->insert('page_content', $pageContentData);
 if ($id) {
     $pageContentData["page_content_id"] = $id;
 
-    $respInst = new APIResponse(
-        $pageContentData,
-        "新增成功",
-        "20002",
-        "Y");
-    $resp = $respInst->getAPIResponse();
+    $resp = array(
+        "data" => $pageContentData,
+        "message" => "新增成功",
+        "code" => "20004",
+        "status" => "Y",
+    );
+    
     echo (json_encode($resp));
 
 } else {
-    $respInst = new APIResponse(
-        null,
-        "新增失敗" . $db->getLastError(),
-        "10002",
-        "N");
-    $resp = $respInst->getAPIResponse();
+
+    $resp = array(
+        "data" => $null,
+        "message" => "新增失敗". $db->getLastError(),
+        "code" => "10004",
+        "status" => "Y",
+    );
     echo (json_encode($resp));
 }

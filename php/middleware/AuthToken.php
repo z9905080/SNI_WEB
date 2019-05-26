@@ -7,9 +7,6 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 $sid = $data['sid'];
 
-
-echo $sid;
-
 $db = new MysqliDb($dbCofig);
 
 $token_data = $db->where("token", $sid)->getOne('user_token');

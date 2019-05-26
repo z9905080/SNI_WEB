@@ -24,33 +24,22 @@ if ($db->update("page_content", array(
     "html_context" => $htmlContext,
     "page_group_id" => $pageGroupID,
 ))) {
-    $respInst = new APIResponse();
-    echo 3;
-    exit;
-    $respInst->SetResponse(
-        null,
-        "編輯成功",
-        "20001",
-        "Y");
-    echo 2;
-    exit;
-    $resp = $respInst->getAPIResponse();
-
-    // $respInst = array(
-    //     "data" => null,
-    //     "message" => "編輯成功",
-    //     "code" => "20001",
-    //     "status" => "Y",
-    // );
-    echo 1;
-    exit;
-    echo ($resp['message']);
+    $resp = array(
+        "data" => null,
+        "message" => "編輯成功",
+        "code" => "20001",
+        "status" => "Y",
+    );
+    
+    echo (json_encode($resp));
 } else {
-    $respInst = new APIResponse(
-        null,
-        "編輯失敗",
-        "10001",
-        "N");
-    $resp = $respInst->getAPIResponse();
+
+    $resp = array(
+        "data" => null,
+        "message" => "編輯失敗",
+        "code" => "10001",
+        "status" => "N",
+    );
+
     echo (json_encode($resp));
 }

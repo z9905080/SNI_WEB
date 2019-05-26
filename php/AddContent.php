@@ -11,14 +11,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-$pageID = $data['page_id'];
 $pageName = $data['page_name'];
 $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
 
-if ($pageID == "") {
-    http_response_code(404);
+if (empty($pageName) || empty($htmlContext) ||empty($pageGroupID)) {
+
+    $resp = array(
+        "data" => $null,
+        "message" => "新增內文失敗,參數不得為空",
+        "code" => "10004",
+        "status" => "Y",
+    );
+    echo (json_encode($resp));
+
     exit;
 }
 

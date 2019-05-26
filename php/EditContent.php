@@ -31,7 +31,7 @@ if ($db->update("page_content", array(
 ))) {
     $resp = array(
         "data" => null,
-        "message" => "編輯成功",
+        "message" => "編輯內文成功",
         "code" => "20003",
         "status" => "Y",
     );
@@ -41,7 +41,7 @@ if ($db->update("page_content", array(
 
     $resp = array(
         "data" => null,
-        "message" => "編輯失敗",
+        "message" => "編輯內文失敗",
         "code" => "10003",
         "status" => "N",
     );

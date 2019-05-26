@@ -29,7 +29,7 @@ if ($token_data != null) {
 } else {
 
     $resp = array(
-        "data" => null,
+        "data" => $sid,
         "message" => "驗證錯誤，請重新登入",
         "code" => "10002",
         "status" => "N",

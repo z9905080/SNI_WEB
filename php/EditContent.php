@@ -24,11 +24,14 @@ if ($db->update("page_content", array(
     "html_context" => $htmlContext,
     "page_group_id" => $pageGroupID,
 ))) {
-    $respInst = new APIResponse(
+    $respInst = new APIResponse();
+    
+    $respInst->SetResponse(
         null,
         "編輯成功",
         "20001",
         "Y");
+
     $resp = $respInst->getAPIResponse();
 
     // $respInst = array(

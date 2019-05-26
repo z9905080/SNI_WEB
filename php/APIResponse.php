@@ -23,14 +23,15 @@ class APIResponse
      */
     protected static $_instance;
 
-    public $response = array();
+    public $response = null;
+
     /**
      * @param object $data
      * @param string $message
      * @param string $code
      * @param string $status
      */
-    public function __construct($data = null, $message = null, $code = null, $status = 'Y')
+    public function SetResponse($data = null, $message = null, $code = null, $status = 'Y')
     {
 
         $this->response = array(

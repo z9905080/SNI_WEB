@@ -15,15 +15,15 @@
           label-width="120px"
           style="margin:10px;width:auto;"
         >
-          <el-form-item prop="id" label="序號:">
-            <label type="id" v-text="formData.id"></label>
-          </el-form-item>
-          <el-form-item prop="name" label="名稱:">
-            <el-input type="name" v-model="formData.name"></el-input>
+          <!-- <el-form-item prop="page_group_id" label="序號:">
+            <label type="page_group_id" v-text="formData.page_group_id"></label>
+          </el-form-item> -->
+          <el-form-item prop="page_group_name" label="名稱:">
+            <el-input type="page_group_name" v-model="formData.page_group_name"></el-input>
           </el-form-item>
           <!-- <el-form-item prop="remark" label="備註:">
             <el-input type="remark" v-model="formData.remark"></el-input>
-          </el-form-item> -->
+          </el-form-item>-->
           <el-form-item class="text_right">
             <el-button type="primary" @click="onSubmit('form')">提交</el-button>
             <el-button @click="dialog.show = false">取消</el-button>
@@ -43,7 +43,7 @@ export default {
         // id: [
         //   { required: true, message: "序號不能为空！", trigger: "blur" }
         // ],
-        name:[
+        page_group_name: [
           { required: true, message: "名稱不能为空！", trigger: "blur" }
         ]
       }
@@ -55,20 +55,41 @@ export default {
   },
   methods: {
     onSubmit(form) {
+      console.log(this.formData);
+      const apiType = this.dialog.option === "edit" ? "EditNav" : "AddNav";
+
       this.$refs[form].validate(valid => {
         if (valid) {
-        //   const url = this.dialog.option === 'add' ? 'add' : `edit/${this.formData.page_group_id}`;
-          const url = `edit/${this.formData.page_group_id}`;
-          this.$axios.post(`https://sniweb.shouting.feedia.co/php/${url}`, this.formData).then(res => {
-            //添加成功
-            this.$message({
-              message: this.dialog.option === 'add' ? "資料添加成功" : "資料編輯成功",
-              type: "success"
+          this.$axios
+            .post(
+              `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${`${window.$cookies.get(
+                "sid"
+              )}`}`,
+              JSON.stringify(this.formData)
+            )
+            .then(res => {
+              console.log(res);
+
+              if (res.data.status === "Y" && res.data.data) {
+                //添加成功
+                this.$message({
+                  message: res.data.message,
+                  type: "success"
+                });
+                //隱藏彈出視窗
+                this.dialog.show = false;
+                this.$emit("update");
+              } else {
+                //添加失敗
+                this.$message({
+                  message: res.data.message,
+                  type: "error"
+                });
+                //隱藏彈出視窗
+                this.dialog.show = false;
+                this.$emit("update");
+              }
             });
-            //隱藏彈出視窗
-            this.dialog.show = false;
-            this.$emit("update");
-          });
         }
       });
     }

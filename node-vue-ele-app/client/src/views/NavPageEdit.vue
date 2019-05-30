@@ -1,16 +1,17 @@
 <template>
   <div class="fillcontain">
     <div class="table-container">
+      <el-button class="btnRight" type="primary" size="small" icon="el-icon-plus" @click="handleAdd()">添加頁籤</el-button>
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-button
-                    class="btnRight"
-                    type="success"
-                    icon="el-icon-plus"
-                    size="small"
-                    @click="handleArticleAdd(props.row.page_group_id)"
-                  >新增內文</el-button>
+              class="btnRight"
+              type="success"
+              icon="el-icon-plus"
+              size="small"
+              @click="handleArticleAdd(props.row.page_group_id)"
+            >新增內文</el-button>
             <el-table
               :data="props.row.page_content"
               max-height="1000"
@@ -22,7 +23,7 @@
                 label="分頁序號"
                 align="center"
                 style="width: 10%"
-              ></el-table-column> -->
+              ></el-table-column>-->
               <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
               <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
               <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
@@ -162,13 +163,13 @@ export default {
       //編輯
       this.dialog = {
         show: true,
-        title: "修改標題",
+        title: "修改頁籤",
         option: "edit"
       };
 
       this.formData = {
-        id: id,
-        name: name
+        page_group_id: id,
+        page_group_name: name
       };
     },
     handleDelete(index, row) {
@@ -183,19 +184,20 @@ export default {
     },
     handleAdd() {
       //新增
-      this.$router.push("/edit");
-      // this.dialog = {
-      //   show: true,
-      //   title: "新增文章",
-      //   option: "add"
-      // };
+      this.dialog = {
+        show: true,
+        title: "新增頁籤",
+        option: "add"
+      };
 
-      // this.formData = {
-      //   type: "",
-      //   describe: "",
-      //   remark: "",
-      //   id: ""
-      // };
+      this.formData = {
+        page_group_id: '',
+        page_group_name: ''
+      };
+      // this.$message({
+      //   message: res.message,
+      //   type: "error"
+      // });
     },
     handleSizeChange(page_size) {
       //切換size
@@ -249,7 +251,12 @@ export default {
     },
     handleArticleAdd(page_group_id) {
       //新增內文
-      this.$router.push(`/navpageedit/add/`);
+      this.$router.push({
+        name: "add",
+        params: {
+          page_group_id: page_group_id
+        }
+      });
     }
   }
 };

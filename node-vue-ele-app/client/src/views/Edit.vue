@@ -2,21 +2,26 @@
   <div>
     <div class="form">
       <el-form ref="form" label-width="120px" style="margin:10px;width:auto;">
-        <h3>內文標題:</h3>
-        <el-input class="title" v-model="page_content.page_name" placeholder="請輸入標題" required="true"></el-input>
+        <h2 style="font-weight:bold; margin-bottom: 10px;">內文標題:</h2>
+        <el-input
+          class="title"
+          v-model="page_content.page_name"
+          placeholder="請輸入標題"
+          required="true"
+        ></el-input>
         <!-- <el-upload
           id="upload"
           ref="upload"
           action="https://jsonplaceholder.typicode.com/posts/"
           multiple
-        > -->
-          <!-- :on-preview="handlePreview"
+        >-->
+        <!-- :on-preview="handlePreview"
           :on-success="insertImage"
           :on-remove="handleRemove"
           :before-remove="beforeRemove"
           :on-exceed="handleExceed"
-          :file-list="fileList"-->
-          <!-- <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button> -->
+        :file-list="fileList"-->
+        <!-- <el-button ref="imageBtn" size="small" type="primary">点击上传</el-button> -->
         <!-- </el-upload> -->
         <!--
     给editor加key是因为给tinymce keep-alive以后组件切换时tinymce编辑器会显示异常，
@@ -57,7 +62,7 @@ export default {
   },
   data() {
     return {
-      url: '',
+      url: "",
       tinymceFlag: 1,
       id: "",
       tinymceInit: {},
@@ -96,10 +101,13 @@ export default {
             this.page_content.page_id = res.data.id;
           })
           .catch(err => console.log(err));
+      } else {
+        this.page_content.page_group_id = this.$route.params.page_group_id;
       }
     },
     onSubmit() {
-      const apiType = this.url.match("edit") ? 'EditContent' : 'AddContent';
+      const isEdit = this.url.indexOf("/navpageedit/edit/") !== -1;
+      const apiType = isEdit ? "EditContent" : "AddContent";
       //送出數據
       this.$axios
         .post(
@@ -109,15 +117,21 @@ export default {
           JSON.stringify(this.page_content)
         )
         .then(res => {
-          console.log(res);
-
-          //添加成功
-          this.$message({
-            message: this.url.match("edit") ? "編輯成功" : "新增成功",
-            type: "success"
-          });
-          this.$emit("update");
-          this.$router.push("/navpageedit");
+          if (res.data.status === "Y" && res.data.data) {
+            //添加成功
+            this.$message({
+              message: res.data.message,
+              type: "success"
+            });
+            this.$emit("update");
+            this.$router.push("/navpageedit");
+          } else {
+            //添加失敗
+            this.$message({
+              message: res.data.message,
+              type: "error"
+            });
+          }
         });
     },
     onCancel() {
@@ -194,6 +208,6 @@ export default {
   margin-top: 20px;
 }
 .title {
-  margin-bottom: 3%;
+  margin-bottom: 2%;
 }
 </style>

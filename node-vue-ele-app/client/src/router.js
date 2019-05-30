@@ -34,8 +34,8 @@ const router = new Router({
         {path: '/slider', name: 'slider', component: Slider},
         {path: '/navpageedit', name: 'navpageedit', component: NavPageEdit},
         {path: '/fundlist', name: 'fundlist', component: FundList},
-        {path: `/navpageedit/edit/:id`, component: Edit},
-        {path: `/navpageedit/add/`, component: Edit}
+        {path: `/navpageedit/edit/:id`, name: 'edit', component: Edit},
+        {path: `/navpageedit/add/`, name: 'add', component: Edit}
       ]
     },
     {

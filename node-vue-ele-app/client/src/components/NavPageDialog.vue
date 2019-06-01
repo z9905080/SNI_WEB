@@ -40,9 +40,6 @@ export default {
   data() {
     return {
       form_rules: {
-        // id: [
-        //   { required: true, message: "序號不能为空！", trigger: "blur" }
-        // ],
         page_group_name: [
           { required: true, message: "名稱不能为空！", trigger: "blur" }
         ]
@@ -55,7 +52,6 @@ export default {
   },
   methods: {
     onSubmit(form) {
-      console.log(this.formData);
       const apiType = this.dialog.option === "edit" ? "EditNav" : "AddNav";
 
       this.$refs[form].validate(valid => {
@@ -68,8 +64,6 @@ export default {
               JSON.stringify(this.formData)
             )
             .then(res => {
-              console.log(res);
-
               if (res.data.status === "Y" && res.data.data) {
                 //添加成功
                 this.$message({

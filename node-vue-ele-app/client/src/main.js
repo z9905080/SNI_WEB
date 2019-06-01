@@ -11,7 +11,6 @@ import store from './store'
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueCookies);
-Vue.use(Base64);
 Vue.prototype.$axios = axios;
 Vue.prototype.$cookies = VueCookies;
 

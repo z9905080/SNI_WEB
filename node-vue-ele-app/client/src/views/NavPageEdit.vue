@@ -1,7 +1,13 @@
 <template>
   <div class="fillcontain">
     <div class="table-container">
-      <el-button class="btnRight" type="primary" size="small" icon="el-icon-plus" @click="handleAdd()">添加頁籤</el-button>
+      <el-button
+        class="btnRight"
+        type="primary"
+        size="small"
+        icon="el-icon-plus"
+        @click="handleAdd()"
+      >添加頁籤</el-button>
       <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -34,12 +40,12 @@
                     size="small"
                     @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
                   >內文编輯</el-button>
-                  <!-- <el-button
+                  <el-button
                     type="danger"
                     icon="el-icon-delete"
                     size="small"
                     @click="handleDelete(scope.$index, scope.row)"
-                  >删除</el-button>-->
+                  >删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -56,12 +62,12 @@
               size="small"
               @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
             >编輯</el-button>
-            <!-- <el-button
+            <el-button
               type="danger"
               icon="el-icon-delete"
               size="small"
               @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button>-->
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,7 +146,9 @@ export default {
     getProfile() {
       //獲取數據
       this.$axios
-        .get("https://sniweb.shouting.feedia.co/php/GetNav.php")
+        .get(
+          `https://sniweb.shouting.feedia.co/php/GetNav.php?&r=${new Date().getTime()}`
+        )
         .then(res => {
           this.allTableData = res.data;
           this.filterTableData = res.data;
@@ -173,14 +181,34 @@ export default {
       };
     },
     handleDelete(index, row) {
+      const deleteType = row.page_group_id ? "DeleteNav" : "DeleteContent";
+      let deleteData =
+        deleteType === "DeleteNav"
+          ? { page_group_id: row.page_group_id }
+          : { page_id: row.page_content_id };
       //刪除
       this.$axios
-        .delete(`/api/acticles/delete/${row._id}`)
+        .post(
+          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${`${window.$cookies.get(
+            "sid"
+          )}`}`,
+          JSON.stringify(deleteData)
+        )
         .then(res => {
-          this.$message("資料刪除成功");
-          this.getProfile();
-        })
-        .catch(err => console.log(`資料刪除失敗(${err})`));
+          if (res.data.status === "Y") {
+            this.$message({
+              message: res.data.message,
+              type: "warning"
+            });
+
+            this.getProfile();
+          } else {
+            this.$message({
+              message: res.data.message,
+              type: "error"
+            });
+          }
+        });
     },
     handleAdd() {
       //新增
@@ -191,8 +219,8 @@ export default {
       };
 
       this.formData = {
-        page_group_id: '',
-        page_group_name: ''
+        page_group_id: "",
+        page_group_name: ""
       };
       // this.$message({
       //   message: res.message,

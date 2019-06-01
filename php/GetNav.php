@@ -4,8 +4,8 @@ require 'main.php';
 
 $db = new MysqliDb($dbCofig);
 
-$data = $db->join("page_content pc", "pg.id=pc.page_group_id", "LEFT")
-    ->get('page_group pg', null, "pc.id as page_content_id, page_group_id, group_name, page_name");
+$data = $db->join("page_group pg", "pg.id=pc.page_group_id", "LEFT")
+    ->get('page_content pc', null, "pc.id as page_content_id, page_group_id, group_name, page_name");
 
 $dataRlt = array();
 

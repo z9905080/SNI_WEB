@@ -56,7 +56,7 @@ if ($id) {
         "data" => null,
         "message" => "新增內文失敗". $db->getLastError(),
         "code" => "10004",
-        "status" => "Y",
+        "status" => "N",
     );
     echo (json_encode($resp));
 }

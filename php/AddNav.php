@@ -21,7 +21,7 @@ if (empty($groupName)) {
 $db = new MysqliDb($dbCofig);
 
 $pageGroupData = array(
-    "group_name" => $pageName,
+    "group_name" => $groupName,
 );
 
 $id = $db->insert('page_group', $pageGroupData);
@@ -43,7 +43,7 @@ if ($id) {
         "data" => null,
         "message" => "新增頁籤失敗". $db->getLastError(),
         "code" => "10006",
-        "status" => "Y",
+        "status" => "N",
     );
     echo (json_encode($resp));
 }

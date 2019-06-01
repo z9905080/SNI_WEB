@@ -53,15 +53,27 @@ export default {
         // }
         {
           icon: "far fa-bookmark",
-          name: "頁籤管理",
+          name: "頁籤&內文管理",
           path: "navpage",
-          children: [{ path: "navpageedit", name: "頁籤列表&編輯" }]
+          children: [{ path: "/navpageedit", name: "頁籤列表&編輯" }]
+        },
+        // {
+        //   icon: "el-icon-document",
+        //   name: "文章管理",
+        //   path: "article",
+        //   children: [{ path: "/articlelist", name: "文章列表" }]
+        // },
+        {
+          icon: "fas fa-image",
+          name: "輪播圖",
+          path: "slider",
+          children: [{ path: "/slider", name: "輪播圖圖片上傳" }]
         },
         {
-          icon: "el-icon-document",
-          name: "文章管理",
-          path: "article",
-          children: [{ path: "articlelist", name: "文章列表" }]
+          icon: "fas fa-audio-description",
+          name: "跑馬燈設定",
+          path: "runaway",
+          children: [{ path: "/runaway", name: "跑馬燈設定" }]
         },
       ]
     };

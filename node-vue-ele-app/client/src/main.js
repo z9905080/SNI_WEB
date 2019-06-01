@@ -14,6 +14,7 @@ Vue.use(VueCookies);
 Vue.prototype.$axios = axios;
 Vue.prototype.$cookies = VueCookies;
 
+
 new Vue({
   router,
   store,

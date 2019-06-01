@@ -5,18 +5,10 @@
 </template>
 
 <script>
-import jwt_decode from "jwt-decode";
-
 export default {
   name: "app",
   components: {},
   created() {
-    if (localStorage.eleToken) {
-      const decoded = jwt_decode(localStorage.eleToken);
-      // token儲存到vuex中
-      this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
-      this.$store.dispatch("setUser", decoded);
-    }
   },
   methods: {
     isEmpty(value) {

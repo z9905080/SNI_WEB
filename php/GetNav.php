@@ -21,10 +21,10 @@ foreach ($pageGroupList as $index1 => $pageGroupData) {
 
     foreach ($pageContentList as $index2 => $pageContentData) {
         if ($pageContentData['page_group_id'] == $pgGroupID) {
-            array_push($newGroupData['page_content'], array(
+            $newGroupData['page_content'][] = array(
                 "page_content_id" => $pageContentData["id"],
                 "page_name" => $pageContentData["page_name"],
-            ));
+            );
         }
 
     }

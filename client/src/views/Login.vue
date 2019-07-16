@@ -70,6 +70,7 @@ export default {
               this.$cookies.set('sid', token, newDate);
             });
             this.$router.push("/index");
+            this.$router.push("/index");
         }
       });
     },

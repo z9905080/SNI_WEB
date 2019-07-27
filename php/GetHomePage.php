@@ -8,7 +8,16 @@ $pageData = $db->where("page_group_id", 1)->getOne('page_content');
 
 $carousel = $db->get('carousel');
 
-$marquee = array("跑馬燈1","跑馬燈2");
+$marquee = array();
+
+$marquee[] = array(
+    "color" => "FFFF00",
+    "value" => "跑馬燈1",
+);
+$marquee[] = array(
+    "color" => "000000",
+    "value" => "跑馬燈2",
+);
 
 $webSettingList = $db->get("web_config");
 

@@ -19,7 +19,7 @@
             <label type="page_group_id" v-text="formData.page_group_id"></label>
           </el-form-item> -->
           <el-form-item prop="page_group_name" label="名稱:">
-            <el-input type="page_group_name" v-model="formData.page_group_name"></el-input>
+            <el-input type="page_group_name" v-model="formData.page_group_name" @keydown.enter.native="onSubmit('form')"></el-input>
           </el-form-item>
           <!-- <el-form-item prop="remark" label="備註:">
             <el-input type="remark" v-model="formData.remark"></el-input>
@@ -64,7 +64,7 @@ export default {
               JSON.stringify(this.formData)
             )
             .then(res => {
-              if (res.data.status === "Y" && res.data.data) {
+              if (res.data.status === "Y" && res.data) {
                 //添加成功
                 this.$message({
                   message: res.data.message,

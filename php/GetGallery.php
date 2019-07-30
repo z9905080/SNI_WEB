@@ -1,8 +1,8 @@
 <?php
 
-// require 'main.php';
+require 'main.php';
 
-// require 'middleware/AuthToken.php';
+require 'middleware/AuthToken.php';
 
 
 $dir = "picture/";

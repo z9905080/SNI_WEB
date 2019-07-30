@@ -6,13 +6,9 @@ require 'middleware/AuthToken.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $Dir = "picture/";
+    $Dir = "picture";
     if (!is_dir($Dir)) {
         mkdir($Dir, 0777);
-    }
-    $DirNowDate = "picture/" . (new \DateTime())->format('Y_m_d');
-    if (!is_dir($DirNowDate)) {
-        mkdir($DirNowDate, 0777);
     }
 
     //private var
@@ -41,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($type == "image/jpeg" || $type == "image/png" || $type == "image/gif") {
 
             $nowTime = (new \DateTime())->format('Y-m-d_H-i-s');
-            $FilePathAndName = $DirNowDate . '/' . $nowTime . $reNameFile[$type];
+            $FilePathAndName = $Dir . '/' . $nowTime . $reNameFile[$type];
 
             if (move_uploaded_file($_FILES['file']['tmp_name'], $FilePathAndName)) {
 

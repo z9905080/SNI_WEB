@@ -19,7 +19,7 @@ function get_dir_list(&$a,$dir,$replaceDir){//&$a 檔案加總變數 傳址參�
             if (is_dir($file) && basename($file)!='.' && basename($file)!='..'){//若是資料夾 且非 . .. 就在呼叫自已一次 
                 get_dir_list($a,$file,$replaceDir);
             }else if(basename($file) != "." && basename($file) != ".."){//若非 . .. 就列出檔案
-                echo getcwd()."\\$file <BR/>";//輸出 完整檔案路徑檔名
+                echo str_replace($replaceDir,"",getcwd())."\\$file <BR/>";//輸出 完整檔案路徑檔名
                 $a+=1;//檔案總數加1
             }
         }

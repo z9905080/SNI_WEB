@@ -68,9 +68,8 @@ export default {
               const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/")));
               // set cookie
               this.$cookies.set('sid', token, newDate);
+              this.$router.push("/index");
             });
-            this.$router.push("/index");
-            this.$router.push("/index");
         }
       });
     },

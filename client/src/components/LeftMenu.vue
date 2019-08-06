@@ -67,7 +67,7 @@ export default {
           icon: "fas fa-image",
           name: "輪播圖",
           path: "slider",
-          children: [{ path: "/slider", name: "輪播圖圖片上傳" }]
+          children: [{ path: "/slider", name: "輪播圖圖片管理" }]
         },
         {
           icon: "fas fa-audio-description",

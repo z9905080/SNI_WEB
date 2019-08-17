@@ -4,9 +4,6 @@ require 'main.php';
 
 require 'middleware/AuthToken.php';
 
-
-
-
 $data = json_decode(file_get_contents('php://input'), true);
 
 $filePath = $data['file_path'];

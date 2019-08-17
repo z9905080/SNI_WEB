@@ -6,6 +6,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 use Enum\Code;
 
+
 require 'main.php';
 
 
@@ -18,7 +19,7 @@ if (count($carousel) > 0) {
     $resp = array(
         "data" => $carousel,
         "message" => "取得輪播圖成功",
-        "code" => Code::GetCarousel_Success,
+        "code" => Enum\Code::GetCarousel_Success,
         "status" => "Y",
     );
 

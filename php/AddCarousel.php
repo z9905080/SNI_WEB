@@ -5,9 +5,9 @@ require 'main.php';
 require 'middleware/AuthToken.php';
 
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$http = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$http = $_SERVER['HTTP_HOST'];
 
-echo $protocol.$http;
+echo $protocol.$http."/php";
 exit;
 
 

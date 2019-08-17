@@ -7,10 +7,12 @@ $db = new MysqliDb($dbCofig);
 
 $carousel = $db->get('carousel');
 
-echo "123:" . count($carousel);
-exit;
-
 if (count($carousel) > 0) {
+
+
+    echo "123:" . count($carousel);
+    exit;
+
     $resp = array(
         "data" => $carousel,
         "message" => "取得輪播圖成功",

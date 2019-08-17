@@ -16,7 +16,7 @@ $htmlContext = $data['html_context'];
 $pageGroupID = $data['page_group_id'];
 
 
-if (empty($pageName) || empty($htmlContext) ||empty($pageGroupID)) {
+if (empty($pageName) || empty($htmlContext) || empty($pageGroupID)) {
 
     $resp = array(
         "data" => null,
@@ -47,14 +47,13 @@ if ($id) {
         "code" => Code::AddContent_Succes,
         "status" => "Y",
     );
-    
-    echo (json_encode($resp));
 
+    echo (json_encode($resp));
 } else {
 
     $resp = array(
         "data" => null,
-        "message" => "新增內文失敗". $db->getLastError(),
+        "message" => "新增內文失敗" . $db->getLastError(),
         "code" => Code::AddContent_Fail,
         "status" => "N",
     );

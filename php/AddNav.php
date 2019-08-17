@@ -34,14 +34,13 @@ if ($id) {
         "code" => Code::AddNav_Success,
         "status" => "Y",
     );
-    
-    echo (json_encode($resp));
 
+    echo (json_encode($resp));
 } else {
 
     $resp = array(
         "data" => null,
-        "message" => "新增頁籤失敗". $db->getLastError(),
+        "message" => "新增頁籤失敗" . $db->getLastError(),
         "code" => Code::AddNav_Fail,
         "status" => "N",
     );

@@ -2,15 +2,6 @@
 
 require 'main.php';
 
-// if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-//     // http_response_code(404);
-//     // exit;
-// }
-
-//$data = json_decode(file_get_contents('php://input'), true);
-
-//$pageID = $data['page_id'];
-
 $pageID = $_REQUEST["page_id"];
 
 if ($pageID == "") {
@@ -18,7 +9,6 @@ if ($pageID == "") {
     exit;
 }
 
-require 'main.php';
 
 $db = new MysqliDb($dbCofig);
 

@@ -35,7 +35,7 @@ if ($db->update("page_content", array(
         "code" => Code::EditContent_Success,
         "status" => "Y",
     );
-    
+
     echo (json_encode($resp));
 } else {
 

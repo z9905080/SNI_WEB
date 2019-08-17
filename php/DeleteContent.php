@@ -28,7 +28,7 @@ if ($db->delete("page_content")) {
         "code" => Code::DeleteContent_Success,
         "status" => "Y",
     );
-    
+
     echo (json_encode($resp));
 } else {
 

@@ -4,11 +4,7 @@ require 'main.php';
 
 require 'middleware/AuthToken.php';
 
-$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$http = $_SERVER['HTTP_HOST'];
 
-echo $protocol.$http."/php";
-exit;
 
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -32,20 +28,24 @@ if (empty($filePath) || empty($link_url)) {
 $db = new MysqliDb($dbCofig);
 
 
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$http = $_SERVER['HTTP_HOST'];
 
 $carouselData = array(
-    "image" => "",
-    "html_context" => $htmlContext,
+    "image" => $protocol . $http . "/php" . $filePath,
+    "url" => $link_url,
 );
 
-$id = $db->insert('page_content', $pageContentData);
+
+
+$id = $db->insert('carousel', $carouselData);
 if ($id) {
-    $pageContentData["page_content_id"] = $id;
+    $carouselData["id"] = $id;
 
     $resp = array(
-        "data" => $pageContentData,
-        "message" => "新增內文成功",
-        "code" => Code::AddContent_Succes,
+        "data" => $carouselData,
+        "message" => "新增輪播圖成功",
+        "code" => Code::AddCarousel_Success,
         "status" => "Y",
     );
 
@@ -54,38 +54,9 @@ if ($id) {
 
     $resp = array(
         "data" => null,
-        "message" => "新增內文失敗" . $db->getLastError(),
-        "code" => Code::AddContent_Fail,
+        "message" => "新增輪播圖失敗" . $db->getLastError(),
+        "code" => Code::AddCarousel_Fail,
         "status" => "N",
     );
     echo (json_encode($resp));
-}
-
-
-if (file_exists($filePath)) {
-    //將檔案刪除
-    if (unlink($filePath)) {
-        $resp = array(
-            "data" => null,
-            "message" => "刪除圖片成功",
-            "code" => Code::DeletePicture_Success,
-            "status" => "Y",
-        );
-
-        echo (json_encode($resp));
-    } else {
-        $resp = array(
-            "data" => null,
-            "message" => "刪除圖片失敗",
-            "code" => Code::DeleteContent_Fail,
-            "status" => "N",
-        );
-    }
-} else {
-    $resp = array(
-        "data" => null,
-        "message" => "刪除圖片失敗,檔案不存在",
-        "code" => Code::DeleteContent_Fail,
-        "status" => "N",
-    );
 }

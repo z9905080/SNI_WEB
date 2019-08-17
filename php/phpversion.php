@@ -1,2 +1,2 @@
 <?php
-echo "PHP Version: " . phpversion();
+echo phpinfo();

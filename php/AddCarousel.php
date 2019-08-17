@@ -4,6 +4,12 @@ require 'main.php';
 
 require 'middleware/AuthToken.php';
 
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$http = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+
+echo $protocol.$http;
+exit;
+
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -25,12 +31,8 @@ if (empty($filePath) || empty($link_url)) {
 
 $db = new MysqliDb($dbCofig);
 
-$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$http = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
-echo $protocol.$http;
 
-exit;
 $carouselData = array(
     "image" => "",
     "html_context" => $htmlContext,

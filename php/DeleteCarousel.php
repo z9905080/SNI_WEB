@@ -17,22 +17,9 @@ $db = new MysqliDb($dbCofig);
 
 $db->where("id", $carouselID);
 if ($db->delete("carousel")) {
-    $resp = array(
-        "data" => null,
-        "message" => "刪除輪播圖成功",
-        "code" => Code::DeleteCarousel_Success,
-        "status" => "Y",
-    );
-
+    $resp = (new APIResponse(null, "刪除輪播圖成功", Code::DeleteCarousel_Success, "Y"))->GetAPIResponse();
     echo (json_encode($resp));
 } else {
-
-    $resp = array(
-        "data" => null,
-        "message" => "刪除輪播圖失敗",
-        "code" => Code::DeleteCarousel_Fail,
-        "status" => "N",
-    );
-
+    $resp = (new APIResponse(null, "刪除輪播圖失敗", Code::DeleteCarousel_Fail, "N"))->GetAPIResponse();
     echo (json_encode($resp));
 }

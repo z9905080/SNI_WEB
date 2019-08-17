@@ -22,22 +22,9 @@ $db = new MysqliDb($dbCofig);
 
 $db->where("id", $pageID);
 if ($db->delete("page_content")) {
-    $resp = array(
-        "data" => null,
-        "message" => "刪除內文成功",
-        "code" => Code::DeleteContent_Success,
-        "status" => "Y",
-    );
-
+    $resp = (new APIResponse(null, "刪除內文成功", Code::DeleteContent_Success, "Y"))->GetAPIResponse();
     echo (json_encode($resp));
 } else {
-
-    $resp = array(
-        "data" => null,
-        "message" => "刪除內文失敗",
-        "code" => Code::DeleteContent_Fail,
-        "status" => "N",
-    );
-
+    $resp = (new APIResponse(null, "刪除內文失敗", Code::DeleteContent_Fail, "N"))->GetAPIResponse();
     echo (json_encode($resp));
 }

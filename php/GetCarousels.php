@@ -9,16 +9,15 @@ $carousel = $db->get('carousel');
 
 if (count($carousel) > 0) {
 
-
-    echo "123:" . count($carousel);
-    exit;
-
     $resp = array(
         "data" => $carousel,
         "message" => "取得輪播圖成功",
         "code" => Code::GetCarousel_Success,
         "status" => "Y",
     );
+
+    echo "123:" . count($carousel);
+    exit;
 
     echo (json_encode($resp));
 } else {

@@ -1,6 +1,6 @@
 <?php
 
-use Enum\Code;
+use Code;
 
 require_once 'Code.php';
 

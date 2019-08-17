@@ -1,6 +1,6 @@
 <?php
 
-namespace Enum {
+//namespace Enum {
     class Code
     {
         const EditContent_Fail = "10003";
@@ -23,4 +23,4 @@ namespace Enum {
         const AddCarousel_Success = "20010";
         const GetCarousel_Success = "20011";
     }
-}
+//}

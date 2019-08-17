@@ -15,7 +15,7 @@ if (count($carousel) > 0) {
     $resp = array(
         "data" => $carousel,
         "message" => "取得輪播圖成功",
-        "code" => Enum\Code::GetCarousel_Success,
+        "code" => Code::GetCarousel_Success,
         "status" => "Y",
     );
     

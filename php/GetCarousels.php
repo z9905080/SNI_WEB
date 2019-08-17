@@ -5,12 +5,12 @@ require 'main.php';
 
 $db = new MysqliDb($dbCofig);
 
-echo 123;
-exit;
-
 $carousel = $db->get('carousel');
 
-if (count($carousel) > 0) { 
+echo "123:" . count($carousel);
+exit;
+
+if (count($carousel) > 0) {
     $resp = array(
         "data" => $carousel,
         "message" => "取得輪播圖成功",
@@ -19,7 +19,7 @@ if (count($carousel) > 0) {
     );
 
     echo (json_encode($resp));
-}else{
+} else {
     $resp = array(
         "message" => "目前沒有輪播圖，或者取得失敗",
         "code" => Code::GetCarousel_Fail,
@@ -28,4 +28,3 @@ if (count($carousel) > 0) {
 
     echo (json_encode($resp));
 }
-

@@ -1,5 +1,9 @@
 <?php
 
+use Enum\Code;
+
+require_once 'Code.php';
+
 require_once 'MysqliDb.php';
 
 // $db = new MysqliDb(array(

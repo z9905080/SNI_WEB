@@ -1,15 +1,10 @@
 <?php
 
-ini_set("display_errors", "On"); // 顯示錯誤是否打開( On=開, Off=關 )
+// ini_set("display_errors", "On"); // 顯示錯誤是否打開( On=開, Off=關 )
 
-error_reporting(E_ALL & ~E_NOTICE);
-
-use Enum\Code;
-
-require_once 'Code.php';
+// error_reporting(E_ALL & ~E_NOTICE);
 
 require 'main.php';
-
 
 $db = new MysqliDb($dbCofig);
 
@@ -23,10 +18,7 @@ if (count($carousel) > 0) {
         "code" => Enum\Code::GetCarousel_Success,
         "status" => "Y",
     );
-
-    echo "123:" . count($carousel);
-    exit;
-
+    
     echo (json_encode($resp));
 } else {
     $resp = array(

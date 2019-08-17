@@ -20,7 +20,7 @@ if ($db->delete("page_group")) {
     $resp = array(
         "data" => null,
         "message" => "刪除頁籤成功",
-        "code" => "20008",
+        "code" => Code::DeleteNav_Success,
         "status" => "Y",
     );
 
@@ -30,7 +30,7 @@ if ($db->delete("page_group")) {
     $resp = array(
         "data" => null,
         "message" => "刪除頁籤失敗",
-        "code" => "10008",
+        "code" => Code::DeleteNav_Fail,
         "status" => "N",
     );
 

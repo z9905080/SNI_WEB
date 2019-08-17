@@ -39,9 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nowTime = (new \DateTime())->format('Y-m-d_H-i-s');
             $FilePathAndName = $Dir . '/' . $nowTime . $reNameFile[$type];
 
-            if (move_uploaded_file($_FILES['file']['tmp_name'], $FilePathAndName)) {
-
+            if (file_exists($FilePathAndName)) {
+                $rand = substr(md5(rand()), 0, 6);
+                $FilePathAndName = $FilePathAndName . $rand;
             }
+
+            if (move_uploaded_file($_FILES['file']['tmp_name'], $FilePathAndName)) { }
 
             $msg["url"] = $FilePathAndName;
 

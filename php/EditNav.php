@@ -23,7 +23,7 @@ if ($db->update("page_group", array(
     $resp = array(
         "data" => null,
         "message" => "編輯頁籤成功",
-        "code" => "20005",
+        "code" => Code::EditNav_Success,
         "status" => "Y",
     );
 
@@ -33,7 +33,7 @@ if ($db->update("page_group", array(
     $resp = array(
         "data" => null,
         "message" => "編輯頁籤失敗",
-        "code" => "10005",
+        "code" => Code::EditNav_Fail,
         "status" => "N",
     );
 

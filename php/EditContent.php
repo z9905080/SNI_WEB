@@ -32,7 +32,7 @@ if ($db->update("page_content", array(
     $resp = array(
         "data" => null,
         "message" => "編輯內文成功",
-        "code" => "20003",
+        "code" => Code::EditContent_Success,
         "status" => "Y",
     );
     
@@ -42,7 +42,7 @@ if ($db->update("page_content", array(
     $resp = array(
         "data" => null,
         "message" => "編輯內文失敗",
-        "code" => "10003",
+        "code" => Code::EditContent_Fail,
         "status" => "N",
     );
 

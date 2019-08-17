@@ -21,8 +21,8 @@ if (empty($pageName) || empty($htmlContext) ||empty($pageGroupID)) {
     $resp = array(
         "data" => null,
         "message" => "新增內文失敗,參數不得為空",
-        "code" => "10004",
-        "status" => "Y",
+        "code" => Code::AddContent_Fail,
+        "status" => "N",
     );
     echo (json_encode($resp));
 
@@ -44,7 +44,7 @@ if ($id) {
     $resp = array(
         "data" => $pageContentData,
         "message" => "新增內文成功",
-        "code" => "20004",
+        "code" => Code::AddContent_Succes,
         "status" => "Y",
     );
     
@@ -55,7 +55,7 @@ if ($id) {
     $resp = array(
         "data" => null,
         "message" => "新增內文失敗". $db->getLastError(),
-        "code" => "10004",
+        "code" => Code::AddContent_Fail,
         "status" => "N",
     );
     echo (json_encode($resp));

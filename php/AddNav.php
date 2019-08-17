@@ -31,7 +31,7 @@ if ($id) {
     $resp = array(
         "data" => $pageGroupData,
         "message" => "新增頁籤成功",
-        "code" => "20006",
+        "code" => Code::AddNav_Success,
         "status" => "Y",
     );
     
@@ -42,7 +42,7 @@ if ($id) {
     $resp = array(
         "data" => null,
         "message" => "新增頁籤失敗". $db->getLastError(),
-        "code" => "10006",
+        "code" => Code::AddNav_Fail,
         "status" => "N",
     );
     echo (json_encode($resp));

@@ -25,7 +25,7 @@ if ($db->delete("page_content")) {
     $resp = array(
         "data" => null,
         "message" => "刪除內文成功",
-        "code" => "20007",
+        "code" => Code::DeleteContent_Success,
         "status" => "Y",
     );
     
@@ -35,7 +35,7 @@ if ($db->delete("page_content")) {
     $resp = array(
         "data" => null,
         "message" => "刪除內文失敗",
-        "code" => "10007",
+        "code" => Code::DeleteContent_Fail,
         "status" => "N",
     );
 

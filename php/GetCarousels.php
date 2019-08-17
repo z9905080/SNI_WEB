@@ -2,9 +2,11 @@
 
 require 'main.php';
 
+
+$db = new MysqliDb($dbCofig);
+
 echo 123;
 exit;
-$db = new MysqliDb($dbCofig);
 
 $carousel = $db->get('carousel');
 

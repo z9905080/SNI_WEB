@@ -10,11 +10,6 @@ $data = json_decode(file_get_contents('php://input'), true);
 $filePath = $data['file_path'];
 $link_url = $data['link_url'];
 
-if ($filePath == "") {
-    http_response_code(404);
-    exit;
-}
-
 if (empty($filePath) || empty($link_url)) {
 
     $resp = array(

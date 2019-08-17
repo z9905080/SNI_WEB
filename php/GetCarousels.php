@@ -6,6 +6,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 use Enum\Code;
 
+require_once 'Code.php';
 
 require 'main.php';
 

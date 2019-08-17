@@ -4,7 +4,7 @@ ini_set("display_errors", "On"); // 顯示錯誤是否打開( On=開, Off=關 )
 
 error_reporting(E_ALL & ~E_NOTICE);
 
-use Code;
+use Enum\Code;
 
 require 'main.php';
 

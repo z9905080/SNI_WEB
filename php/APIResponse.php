@@ -24,7 +24,7 @@ class APIResponse
      * @param string $code
      * @param string $status
      */
-    public function SetResponse($data = null, $message = null, $code = null, $status = 'Y')
+    public function __construct($data = null, $message = null, $code = null, $status = 'Y')
     {
 
         $this->response = array(
@@ -35,10 +35,9 @@ class APIResponse
         );
 
         self::$_instance = $this;
-
     }
 
-    public function getAPIResponse()
+    public function GetAPIResponse()
     {
         return self::$_instance->response;
     }

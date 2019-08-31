@@ -65,15 +65,15 @@ export default {
         // },
         {
           icon: "fas fa-image",
-          name: "輪播圖",
+          name: "輪播圖設定",
           path: "slider",
           children: [{ path: "/slider", name: "輪播圖圖片管理" }]
         },
         {
           icon: "fas fa-audio-description",
           name: "跑馬燈設定",
-          path: "runaway",
-          children: [{ path: "/runaway", name: "跑馬燈設定" }]
+          path: "marquee",
+          children: [{ path: "/marquee", name: "跑馬燈設定" }]
         },
       ]
     };

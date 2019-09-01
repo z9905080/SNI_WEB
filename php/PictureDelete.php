@@ -15,10 +15,7 @@ if ($filePath == "") {
 }
 
 $dir = dirname(__FILE__);
-
 $filePath = $dir . $filePath;
-
-echo dirname(__FILE__);
 
 $resp = array();
 

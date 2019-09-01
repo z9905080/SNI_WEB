@@ -17,7 +17,7 @@ if ($filePath == "") {
 $resp = array();
 
 if (file_exists($filePath)) {
-    chmod($filePath,0777);
+    chmod($filePath, 0777);
     //將檔案刪除
     if (@unlink($filePath)) {
         $resp = (new APIResponse(null, "刪除圖片成功", Code::DeletePicture_Success, "Y"))->GetAPIResponse();
@@ -25,7 +25,7 @@ if (file_exists($filePath)) {
         $resp = (new APIResponse(null, "刪除圖片失敗", Code::DeleteContent_Fail, "N"))->GetAPIResponse();
     }
 } else {
-    $resp = (new APIResponse(null, "刪除圖片失敗,檔案不存在", Code::DeleteContent_Fail, "N"))->GetAPIResponse();
+    $resp = (new APIResponse(null, "刪除圖片失敗,檔案不存在 Query:" . $filePath, Code::DeleteContent_Fail, "N"))->GetAPIResponse();
 }
 
 echo (json_encode($resp));

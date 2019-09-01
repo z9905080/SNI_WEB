@@ -14,6 +14,8 @@ if ($filePath == "") {
     exit;
 }
 
+echo __FILE__;
+
 $resp = array();
 
 if (file_exists($filePath)) {

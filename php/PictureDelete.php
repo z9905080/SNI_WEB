@@ -14,7 +14,11 @@ if ($filePath == "") {
     exit;
 }
 
-echo __FILE__;
+$dir = dirname(__FILE__);
+
+$filePath = $dir + $filePath;
+
+echo dirname(__FILE__);
 
 $resp = array();
 

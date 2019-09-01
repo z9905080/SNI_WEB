@@ -11,6 +11,7 @@ import FundList from '@/views/FundList.vue'
 import Edit from '@/views/Edit.vue'
 import NavPageEdit from '@/views/NavPageEdit.vue'
 import Slider from '@/views/Slider.vue'
+import Marquee from '@/views/Marquee.vue'
 
 Vue.use(Router)
 
@@ -35,7 +36,8 @@ const router = new Router({
         {path: '/navpageedit', name: 'navpageedit', component: NavPageEdit},
         {path: '/fundlist', name: 'fundlist', component: FundList},
         {path: `/navpageedit/edit/:id`, name: 'edit', component: Edit},
-        {path: `/navpageedit/add/`, name: 'add', component: Edit}
+        {path: `/navpageedit/add/`, name: 'add', component: Edit},
+        {path: '/marquee', name: 'marquee', component: Marquee},
       ]
     },
     {

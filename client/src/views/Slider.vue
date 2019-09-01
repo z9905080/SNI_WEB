@@ -12,7 +12,7 @@
       <el-button slot="trigger" size="small" type="primary">從電腦尋找圖片</el-button>
       <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上傳到伺服器</el-button>
       <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
-      <div slot="tip" class="el-upload__tip">只能上傳jpg/png檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
+      <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
     </el-upload>
     <el-row>
       <el-col
@@ -29,7 +29,7 @@
             <div class="bottom clearfix">
               <el-checkbox-group v-model="checkboxGroup" size="small">
                 <el-checkbox :label="`${checkboxText}${i + 1}`" circle></el-checkbox>
-                <el-button type="danger" icon="el-icon-delete" size="small" circle></el-button>
+                <el-button type="danger" icon="el-icon-delete" size="small" circle @click="deleteImage(i)"></el-button>
               </el-checkbox-group>
             </div>
           </div>
@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      uploadUrl: `https://sniweb.shouting.feedia.co/php/Upload.php?sid=${`${window.$cookies.get(
+      uploadUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${`${window.$cookies.get(
         "sid"
       )}`}`,
       url: `https://sniweb.shouting.feedia.co/php`,
@@ -75,7 +75,7 @@ export default {
         .then(res => {
           const resImages = [];
           res.data.split("<BR/>").forEach((image, index) => {
-            if (image.length === 0) {
+            if (!image.length) {
               resImages.splice(index, 1);
             } else {
               resImages.push(`${this.url}${image}`);
@@ -87,40 +87,64 @@ export default {
     },
     sendSelectImage() {
       const imageSelectData = this.getSelectImage();
-      if (!imageSelectData) {
+      if (!imageSelectData.length) {
         return;
       }
+      console.log(imageSelectData);
+
       //送出選取圖片
-      this.$axios
-        .post(
-          `https://sniweb.shouting.feedia.co/php/EditGallery.php?sid=${`${window.$cookies.get(
-            "sid"
-          )}`}`,
-          JSON.stringify(imageSelectData)
-        )
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => console.log(err));
+      // this.$axios
+      //   .post(
+      //     `https://sniweb.shouting.feedia.co/php/AddCarousels.php?sid=${`${window.$cookies.get(
+      //       "sid"
+      //     )}`}`,
+      //     JSON.stringify(imageSelectData)
+      //   )
+      //   .then(res => {
+      //     console.log(res);
+      //   })
+      //   .catch(err => console.log(err));
     },
     getSelectImage() {
       const imageSelectList = [];
       this.checkboxGroup.forEach(obj => {
-        const select = obj.replace(`${this.checkboxText}`, "");
-        const imagePath = this.images[Number(select)].replace(
+        const select = Number(obj.replace(`${this.checkboxText}`, "")) - 1;
+        const imagePath = this.images[select].replace(
           `${this.url}`,
           ""
         );
         imageSelectList.push(imagePath);
       });
-      let imageData;
-      imageSelectList.forEach(image => {
-        imageData = imageData ? `${imageData}<BR/>${image}` : `${image}`;
-      });
-      return imageData;
+      // let imageData;
+      // imageSelectList.forEach(image => {
+      //   imageData = imageData ? `${imageData}<BR/>${image}` : `${image}`;
+      // });
+      // return imageData;
+      return imageSelectList;
     },
-    deleteImage() {
-      console.log('isDelete');
+    deleteImage(index) {
+      if (!index) {
+        return;
+      }
+
+      // const image = this.images[index].replace(`${this.url}`, '');
+      const image = this.images[index];
+      console.log(index);
+      console.log(image);
+
+      //送出刪除圖片
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/PictureDelete.php?sid=${`${window.$cookies.get(
+            "sid"
+          )}`}`,
+          JSON.stringify(image)
+        )
+        .then(res => {
+          console.log(res);
+          this.getImages();
+        })
+        .catch(err => console.log(err));
     },
     submitUpload() {
       this.$refs.upload.submit();

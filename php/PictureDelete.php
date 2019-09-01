@@ -28,7 +28,7 @@ if (file_exists($filePath)) {
         $resp = (new APIResponse(null, "刪除圖片失敗", Code::DeleteContent_Fail, "N"))->GetAPIResponse();
     }
 } else {
-    $resp = (new APIResponse(null, "刪除圖片失敗,檔案不存在 Query:" . $filePath, Code::DeleteContent_Fail, "N"))->GetAPIResponse();
+    $resp = (new APIResponse(null, "刪除圖片失敗,檔案不存在", Code::DeleteContent_Fail, "N"))->GetAPIResponse();
 }
 
 echo (json_encode($resp));

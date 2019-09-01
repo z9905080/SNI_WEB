@@ -16,7 +16,7 @@ if ($filePath == "") {
 
 $dir = dirname(__FILE__);
 
-$filePath = $dir + $filePath;
+$filePath = $dir . $filePath;
 
 echo dirname(__FILE__);
 

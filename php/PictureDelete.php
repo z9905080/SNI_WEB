@@ -19,7 +19,7 @@ $resp = array();
 if (file_exists($filePath)) {
     chmod($filePath,0777);
     //將檔案刪除
-    if (unlink($filePath)) {
+    if (@unlink($filePath)) {
         $resp = (new APIResponse(null, "刪除圖片成功", Code::DeletePicture_Success, "Y"))->GetAPIResponse();
     } else {
         $resp = (new APIResponse(null, "刪除圖片失敗", Code::DeleteContent_Fail, "N"))->GetAPIResponse();

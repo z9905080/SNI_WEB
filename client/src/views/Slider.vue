@@ -1,42 +1,63 @@
 <template>
-  <div class="slider">
+  <div class="body">
+  <div class="upload">
     <el-upload
-      class="upload-demo"
-      ref="upload"
-      :action="uploadUrl"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :file-list="fileList"
-      :auto-upload="false"
-    >
-      <el-button slot="trigger" size="small" type="primary">從電腦尋找圖片</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上傳到伺服器</el-button>
-      <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
-      <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
-    </el-upload>
-    <el-row>
-      <el-col
-        :span="4"
-        :offset="2"
-        class="imageContainer"
-        v-for="(image, i) in images"
-        :key="i"
-        @click="index = i"
+        class="upload-demo"
+        ref="upload"
+        :action="uploadUrl"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList"
+        :auto-upload="false"
+        :on-success="uploadSuccess"
       >
-        <el-card :body-style="{ padding: '15px' }">
-          <img class="image" :src="image" @click="index = i" />
-          <div style="padding: 10px;">
-            <div class="bottom clearfix">
-              <el-checkbox-group v-model="checkboxGroup" size="small">
+        <el-button slot="trigger" size="small" type="primary">從電腦尋找圖片</el-button>
+        <el-button
+          style="margin-left: 10px;"
+          size="small"
+          type="success"
+          @click="submitUpload"
+        >上傳到伺服器</el-button>
+        <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
+        <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
+      </el-upload>
+  </div>
+    <div class="transfer">
+    </div>
+    <div class="slider">
+      
+      <el-row>
+        <el-col
+          :span="4"
+          :offset="2"
+          class="imageContainer"
+          v-for="(image, i) in images"
+          :key="i"
+          @click="index = i"
+        >
+          <el-card :body-style="{ padding: '15px' }">
+            <img class="image" :src="image" @click="index = i" />
+            <div style="padding: 10px;">
+              <!-- <span class="imageText">{{ `${checkboxText}${i + 1}` }}</span> -->
+              <el-checkbox-group v-model="checkboxGroup" size="small" class="imageText">
                 <el-checkbox :label="`${checkboxText}${i + 1}`" circle></el-checkbox>
-                <el-button type="danger" icon="el-icon-delete" size="small" circle @click="deleteImage(i)"></el-button>
-              </el-checkbox-group>
+                </el-checkbox-group>
+              <div class="bottom clearfix">
+                <!-- <el-button type="success" icon="el-icon-check" size="small" circle></el-button> -->
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="small"
+                  circle
+                  @click="deleteImage(i)"
+                ></el-button>
+              </div>
             </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <vueGallerySlideshow :images="images" :index="index" @close="index = null"></vueGallerySlideshow>
+          </el-card>
+        </el-col>
+      </el-row>
+      <vueGallerySlideshow :images="images" :index="index" @close="index = null"></vueGallerySlideshow>
+    </div>
   </div>
 </template>
 
@@ -49,14 +70,15 @@ export default {
   },
   data() {
     return {
-      uploadUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${`${window.$cookies.get(
+      uploadUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${window.$cookies.get(
         "sid"
-      )}`}`,
+      )}&r=${new Date().getTime()}`,
       url: `https://sniweb.shouting.feedia.co/php`,
       checkboxText: "圖片",
       index: null,
       fileList: [],
       images: [],
+      resouseImages: [],
       checkboxGroup: []
     };
   },
@@ -65,19 +87,23 @@ export default {
   },
   methods: {
     getImages() {
-      //獲取數據
+      //獲取全部圖片
       this.$axios
         .get(
-          `https://sniweb.shouting.feedia.co/php/GetGallery.php?sid=${`${window.$cookies.get(
+          `https://sniweb.shouting.feedia.co/php/GetGallery.php?sid=${window.$cookies.get(
             "sid"
-          )}`}&r=${new Date().getTime()}`
+          )}&r=${new Date().getTime()}`
         )
         .then(res => {
           const resImages = [];
-          res.data.split("<BR/>").forEach((image, index) => {
-            if (!image.length) {
+          this.resouseImages = [];
+          this.checkboxGroup = [];
+          const imageDataList = res.data.split(" <BR/>");
+          imageDataList.forEach((image, index) => {
+            if (!image) {
               resImages.splice(index, 1);
             } else {
+              this.resouseImages.push(`${image}`);
               resImages.push(`${this.url}${image}`);
             }
           });
@@ -85,63 +111,59 @@ export default {
         })
         .catch(err => console.log(err));
     },
-    sendSelectImage() {
+    uploadSuccess(file, fileList) {
+      this.getImages();
+    },
+    sendSelectImage(index) {
       const imageSelectData = this.getSelectImage();
       if (!imageSelectData.length) {
+        alert("請選取圖片");
         return;
       }
       console.log(imageSelectData);
-
-      //送出選取圖片
-      // this.$axios
-      //   .post(
-      //     `https://sniweb.shouting.feedia.co/php/AddCarousels.php?sid=${`${window.$cookies.get(
-      //       "sid"
-      //     )}`}`,
-      //     JSON.stringify(imageSelectData)
-      //   )
-      //   .then(res => {
-      //     console.log(res);
-      //   })
-      //   .catch(err => console.log(err));
+      imageSelectData.forEach((image, index) => {
+      const addCarousels = {
+        image_url: image.replace("\u005c", "/"),
+        link_url: this.url
+      }
+      // 送出選取圖片
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get("sid")}`, JSON.stringify(addCarousels)
+        )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => console.log(err));
+      });
     },
     getSelectImage() {
       const imageSelectList = [];
       this.checkboxGroup.forEach(obj => {
         const select = Number(obj.replace(`${this.checkboxText}`, "")) - 1;
-        const imagePath = this.images[select].replace(
-          `${this.url}`,
-          ""
-        );
+        const imagePath = this.resouseImages[select].replace(`${this.url}`, "");
         imageSelectList.push(imagePath);
       });
-      // let imageData;
-      // imageSelectList.forEach(image => {
-      //   imageData = imageData ? `${imageData}<BR/>${image}` : `${image}`;
-      // });
-      // return imageData;
       return imageSelectList;
     },
     deleteImage(index) {
-      if (!index) {
+      if (index === undefined || null) {
         return;
       }
-
-      // const image = this.images[index].replace(`${this.url}`, '');
-      const image = this.images[index];
-      console.log(index);
-      console.log(image);
+      const image = this.resouseImages[index].replace("\u005c", "/");
+      const deleteFile = {
+        file_path: `${image}`
+      };
 
       //送出刪除圖片
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/PictureDelete.php?sid=${`${window.$cookies.get(
+          `https://sniweb.shouting.feedia.co/php/PictureDelete.php?sid=${window.$cookies.get(
             "sid"
-          )}`}`,
-          JSON.stringify(image)
+          )}`,
+          JSON.stringify(deleteFile)
         )
         .then(res => {
-          console.log(res);
           this.getImages();
         })
         .catch(err => console.log(err));
@@ -150,10 +172,10 @@ export default {
       this.$refs.upload.submit();
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
+      // console.log(file);
     }
   }
 };
@@ -162,8 +184,14 @@ export default {
 </script>
 
 <style scoped>
-body {
+.body {
   font-family: sans-serif;
+  width: 100%;
+}
+.upload {
+  margin-top: 3%;
+  margin-left: 3%;
+  width: 80%;
 }
 .slider {
   margin-top: 3%;
@@ -184,9 +212,12 @@ body {
   object-fit: contain;
   display: block;
 }
+.imageText {
+  margin-left: 20%;
+}
 .bottom {
   margin-top: 5%;
-  margin-left: 15%;
+  margin-left: 29%;
   line-height: 12px;
 }
 .clearfix:before,
@@ -194,8 +225,11 @@ body {
   display: table;
   content: "";
 }
-
 .clearfix:after {
   clear: both;
+}
+.transfer-footer {
+  margin-left: 20px;
+  padding: 6px 5px;
 }
 </style>

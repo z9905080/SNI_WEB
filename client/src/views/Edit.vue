@@ -59,9 +59,7 @@ export default {
   data() {
     return {
       url: "",
-      imageUrl: `https://sniweb.shouting.feedia.co/php/Upload.php?sid=${`${window.$cookies.get(
-        "sid"
-      )}`}`,
+      imageUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${window.$cookies.get("sid")}`,
       tinymceFlag: 1,
       id: "",
       tinymceInit: {},
@@ -110,9 +108,7 @@ export default {
       //送出數據
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${`${window.$cookies.get(
-            "sid"
-          )}`}`,
+          `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get("sid")}`,
           JSON.stringify(this.page_content)
         )
         .then(res => {

@@ -189,9 +189,7 @@ export default {
       //刪除
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${`${window.$cookies.get(
-            "sid"
-          )}`}`,
+          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${window.$cookies.get("sid")}`,
           JSON.stringify(deleteData)
         )
         .then(res => {

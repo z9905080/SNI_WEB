@@ -58,9 +58,9 @@ export default {
         if (valid) {
           this.$axios
             .post(
-              `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${`${window.$cookies.get(
+              `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get(
                 "sid"
-              )}`}`,
+              )}`,
               JSON.stringify(this.formData)
             )
             .then(res => {

@@ -1,5 +1,38 @@
 <template>
-<el-button type="success" icon="el-icon-check" size="small" circle @click="getCarousels()"></el-button>
+  <div class="imageTable">
+    <el-table :data="tableData" style="width: 100%">
+      <!-- <el-table-column label="日期" width="180">
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        </template>
+      </el-table-column> -->
+      <el-table-column label="縮圖" width="500" align="center">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <!-- <p>姓名: {{ scope.row.name }}</p>
+            <p>住址: {{ scope.row.address }}</p>-->
+            <!-- <p>住址: {{ scope.row.imageUrl }}</p> -->
+            <!-- <p>住址: {{ scope.row }}</p> -->
+            <!-- <img class="image" :src="scope.row.imageUrl" @click="index = i" /> -->
+            <div class="demo-image__preview">
+              <el-image style="width: 100px; height: 100px" :src="scope.row.imageUrl" :preview-src-list="images"></el-image>
+            </div>
+            <div slot="reference" class="name-wrapper">
+              <el-tag size="medium" class="el-icon-picture">{{ scope.row.name }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- <vueGallerySlideshow :images="images" :index="index" @close="index = null"></vueGallerySlideshow> -->
+  </div>
 </template>
 
 <script>
@@ -11,6 +44,8 @@ export default {
   },
   data() {
     return {
+      tableData: [],
+      images: []
     };
   },
   created() {
@@ -18,7 +53,9 @@ export default {
   },
   methods: {
     getCarousels() {
-        //獲取數據
+      this.tableData = [];
+      this.images = [];
+      //獲取數據
       this.$axios
         .get(
           `https://sniweb.shouting.feedia.co/php/GetCarousels.php?sid=${window.$cookies.get(
@@ -26,24 +63,48 @@ export default {
           )}&r=${new Date().getTime()}`
         )
         .then(res => {
-            console.log(res);
-            
-        //   const resImages = [];
-        //   this.resouseImages = [];
-        //   this.checkboxGroup = [];
-        //   const imageDataList = res.data.split(" <BR/>");
-        //   imageDataList.forEach((image, index) => {
-        //     if (!image) {
-        //       resImages.splice(index, 1);
-        //     } else {
-        //       this.resouseImages.push(`${image}`);
-        //       resImages.push(`${this.url}${image}`);
-        //     }
-        //   });
-        //   this.images = resImages;
+          res.data.data.forEach((image, index) => {
+            image["imageUrl"] = `${image.url}${image.image}`;
+            this.images.push(image["imageUrl"]);
+            this.tableData.push(image);
+          });
         })
         .catch(err => console.log(err));
     },
+    handleEdit(index, row) {
+      this.$router.push(`/carousel/selectcarousel/${row.id}`);
+    },
+    handleDelete(index, row) {
+      const deleteData = {
+        carousel_id: row.id
+      };
+      //送出刪除圖片
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/DeleteCarousel.php?sid=${window.$cookies.get(
+            "sid"
+          )}`,
+          JSON.stringify(deleteData)
+        )
+        .then(res => {
+          this.getCarousels();
+          if (res.data.status === "Y") {
+            //添加成功
+            this.$message({
+              message: res.data.message,
+              type: "success"
+            });
+            this.$emit("update");
+          } else {
+            //添加失敗
+            this.$message({
+              message: res.data.message,
+              type: "error"
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    }
   }
 };
 //圖片路徑
@@ -55,7 +116,7 @@ export default {
   font-family: sans-serif;
   width: 100%;
 }
-.upload {
+.imageTable {
   margin-top: 3%;
   margin-left: 3%;
   width: 80%;
@@ -94,9 +155,5 @@ export default {
 }
 .clearfix:after {
   clear: both;
-}
-.transfer-footer {
-  margin-left: 20px;
-  padding: 6px 5px;
 }
 </style>

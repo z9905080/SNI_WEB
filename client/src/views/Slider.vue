@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-  <div class="upload">
-    <el-upload
+    <div class="upload">
+      <el-upload
         class="upload-demo"
         ref="upload"
         :action="uploadUrl"
@@ -21,11 +21,9 @@
         <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
         <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
       </el-upload>
-  </div>
-    <div class="transfer">
     </div>
+    <div class="transfer"></div>
     <div class="slider">
-      
       <el-row>
         <el-col
           :span="4"
@@ -37,20 +35,24 @@
         >
           <el-card :body-style="{ padding: '15px' }">
             <img class="image" :src="image" @click="index = i" />
+            <!-- <div class="demo-image__preview">
+              <el-image style="width: 100px; height: 100px" :src="image" :preview-src-list="images"></el-image>
+            </div> -->
             <div style="padding: 10px;">
               <!-- <span class="imageText">{{ `${checkboxText}${i + 1}` }}</span> -->
-              <el-checkbox-group v-model="checkboxGroup" size="small" class="imageText">
-                <el-checkbox :label="`${checkboxText}${i + 1}`" circle></el-checkbox>
-                </el-checkbox-group>
               <div class="bottom clearfix">
+                <el-checkbox-group v-model="checkboxGroup" size="small" class="imageText">
+                  <el-checkbox :label="`${checkboxText}${i + 1}`" circle></el-checkbox>
+                </el-checkbox-group>
                 <!-- <el-button type="success" icon="el-icon-check" size="small" circle></el-button> -->
                 <el-button
                   type="danger"
                   icon="el-icon-delete"
+                  plain
                   size="small"
-                  circle
+                  class="deleteBtn"
                   @click="deleteImage(i)"
-                ></el-button>
+                >刪除</el-button>
               </div>
             </div>
           </el-card>
@@ -117,24 +119,43 @@ export default {
     sendSelectImage(index) {
       const imageSelectData = this.getSelectImage();
       if (!imageSelectData.length) {
-        alert("請選取圖片");
+        this.$message({
+          message: '請選取圖片',
+          type: "warning",
+        });
         return;
       }
-      console.log(imageSelectData);
       imageSelectData.forEach((image, index) => {
-      const addCarousels = {
-        image_url: image.replace("\u005c", "/"),
-        link_url: this.url
-      }
-      // 送出選取圖片
-      this.$axios
-        .post(
-          `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get("sid")}`, JSON.stringify(addCarousels)
-        )
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => console.log(err));
+        const addCarousels = {
+          image_url: image.replace("\u005c", "/"),
+          link_url: this.url
+        };
+        // 送出選取圖片
+        this.$axios
+          .post(
+            `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get(
+              "sid"
+            )}`,
+            JSON.stringify(addCarousels)
+          )
+          .then(res => {
+            if (res.data.status === "Y") {
+              //添加成功
+              this.$message({
+                message: res.data.message,
+                type: "success"
+              });
+              this.$emit("update");
+              this.$router.push("/carousel");
+            } else {
+              //添加失敗
+              this.$message({
+                message: res.data.message,
+                type: "error"
+              });
+            }
+          })
+          .catch(err => console.log(err));
       });
     },
     getSelectImage() {
@@ -165,6 +186,20 @@ export default {
         )
         .then(res => {
           this.getImages();
+          if (res.data.status === "Y") {
+              //添加成功
+              this.$message({
+                message: res.data.message,
+                type: "success"
+              });
+              this.$emit("update");
+            } else {
+              //添加失敗
+              this.$message({
+                message: res.data.message,
+                type: "error"
+              });
+            }
         })
         .catch(err => console.log(err));
     },
@@ -212,13 +247,13 @@ export default {
   object-fit: contain;
   display: block;
 }
-.imageText {
-  margin-left: 20%;
-}
 .bottom {
-  margin-top: 5%;
-  margin-left: 29%;
+  margin-top: 3%;
+  margin-left: 25%;
   line-height: 12px;
+}
+.deleteBtn {
+  margin-top: 8%;
 }
 .clearfix:before,
 .clearfix:after {

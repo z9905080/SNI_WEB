@@ -64,7 +64,7 @@ export default {
               JSON.stringify(this.formData)
             )
             .then(res => {
-              if (res.data.status === "Y" && res.data) {
+              if (res.data.status === "Y") {
                 //添加成功
                 this.$message({
                   message: res.data.message,

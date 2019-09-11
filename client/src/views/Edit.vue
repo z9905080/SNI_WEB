@@ -112,7 +112,7 @@ export default {
           JSON.stringify(this.page_content)
         )
         .then(res => {
-          if (res.data.status === "Y" && res.data.data) {
+          if (res.data.status === "Y") {
             //添加成功
             this.$message({
               message: res.data.message,

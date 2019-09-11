@@ -19,7 +19,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="info">個人資訊</el-dropdown-item>
-                <el-dropdown-item command="logout">退出</el-dropdown-item>
+                <el-dropdown-item command="logout">登出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </span>

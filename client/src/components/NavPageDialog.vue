@@ -58,13 +58,13 @@ export default {
         if (valid) {
           this.$axios
             .post(
-              `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${`${window.$cookies.get(
+              `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get(
                 "sid"
-              )}`}`,
+              )}`,
               JSON.stringify(this.formData)
             )
             .then(res => {
-              if (res.data.status === "Y" && res.data) {
+              if (res.data.status === "Y") {
                 //添加成功
                 this.$message({
                   message: res.data.message,

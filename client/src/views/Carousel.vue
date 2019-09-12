@@ -1,12 +1,12 @@
 <template>
   <div class="imageTable">
     <el-table :data="tableData" style="width: 100%">
-      <!-- <el-table-column label="日期" width="180">
+      <el-table-column label="編號" width="300" align="center">
         <template slot-scope="scope">
-          <i class="el-icon-time"></i>
+          <p>{{scope.row.index + 1}}</p>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column label="縮圖" width="500" align="center">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
@@ -24,7 +24,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -65,6 +65,7 @@ export default {
         .then(res => {
           res.data.data.forEach((image, index) => {
             image["imageUrl"] = `${image.url}${image.image}`;
+            image["index"] = index;
             this.images.push(image["imageUrl"]);
             this.tableData.push(image);
           });

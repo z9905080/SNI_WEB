@@ -220,10 +220,6 @@ export default {
         page_group_id: "",
         page_group_name: ""
       };
-      // this.$message({
-      //   message: res.message,
-      //   type: "error"
-      // });
     },
     handleSizeChange(page_size) {
       //切換size

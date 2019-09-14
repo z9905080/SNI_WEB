@@ -38,8 +38,8 @@ export default {
   data() {
     return {
       loginUser: {
-        account: "test123", //test123
-        password: "test123" //test123
+        account: "", //test123
+        password: "" //test123
       },
       rules: {
         password: [

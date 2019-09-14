@@ -11,10 +11,10 @@
           class="loginForm"
         >
           <el-form-item label="帳號" prop="account">
-            <el-input type="text" v-model="loginUser.account" placeholder="請輸入帳號"></el-input>
+            <el-input type="text" v-model="loginUser.account" placeholder="請輸入帳號" @keydown.enter.native="submitForm('loginForm')"></el-input>
           </el-form-item>
           <el-form-item label="密碼" prop="password">
-            <el-input type="password" v-model="loginUser.password" placeholder="請輸入密碼"></el-input>
+            <el-input type="password" v-model="loginUser.password" placeholder="請輸入密碼" @keydown.enter.native="submitForm('loginForm')"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" class="submit_btn" @click="submitForm('loginForm')">登入</el-button>
@@ -62,13 +62,25 @@ export default {
               JSON.stringify(this.loginUser)
             )
             .then(res => {
-              // get token
-              const { token, expire_time } = res.data;
-              //利用regular expression  將'-' 代換成 '/'
-              const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/")));
-              // set cookie
-              this.$cookies.set('sid', token, newDate);
-              this.$router.push("/index");
+              if (res.data) {
+                // get token
+                const { token, expire_time } = res.data;
+                
+                //利用regular expression  將'-' 代換成 '/'
+                const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/")));
+                // set cookie
+                this.$cookies.set('sid', token, newDate);
+                this.$router.push("/index");
+                this.$message({
+                message: '歡迎進入系統',
+                type: "success"
+                });
+              } else {
+                this.$message({
+                message: '帳號或密碼輸入錯誤，請重新輸入',
+                type: "error"
+              });
+              }
             });
         }
       });

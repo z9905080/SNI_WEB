@@ -63,7 +63,6 @@ export default {
           )}&r=${new Date().getTime()}`
         )
         .then(res => {
-          console.log();
           res.data.data.forEach((image, index) => {
             image["index"] = index;
             this.tableData.push(image);
@@ -100,34 +99,34 @@ export default {
     },
     handleDelete(index, row) {
       const deleteData = {
-        carousel_id: row.id
+        marquee_id: row.id
       };
-      //送出刪除圖片
-      // this.$axios
-      //   .post(
-      //     `https://sniweb.shouting.feedia.co/php/DeleteCarousel.php?sid=${window.$cookies.get(
-      //       "sid"
-      //     )}`,
-      //     JSON.stringify(deleteData)
-      //   )
-      //   .then(res => {
-      //     this.getCarousels();
-      //     if (res.data.status === "Y") {
-      //       //添加成功
-      //       this.$message({
-      //         message: res.data.message,
-      //         type: "success"
-      //       });
-      //       this.$emit("update");
-      //     } else {
-      //       //添加失敗
-      //       this.$message({
-      //         message: res.data.message,
-      //         type: "error"
-      //       });
-      //     }
-      //   })
-      //   .catch(err => console.log(err));
+      //刪除跑馬燈
+      this.$axios
+        .post(
+          `https://sniweb.shouting.feedia.co/php/DeleteMarquee.php?sid=${window.$cookies.get(
+            "sid"
+          )}`,
+          JSON.stringify(deleteData)
+        )
+        .then(res => {
+          this.getMarquees();
+          if (res.data.status === "Y") {
+            //添加成功
+            this.$message({
+              message: res.data.message,
+              type: "success"
+            });
+            this.$emit("update");
+          } else {
+            //添加失敗
+            this.$message({
+              message: res.data.message,
+              type: "error"
+            });
+          }
+        })
+        .catch(err => console.log(err));
     }
   }
 };

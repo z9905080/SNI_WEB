@@ -133,11 +133,8 @@ export default {
       this.$router.push("/navpageedit");
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);d
     },
     handlePreview(file) {
-      console.log(file);
-      console.log(this.$refs.imageUpload);
     },
     handleExceed(files, fileList) {
       this.$message.warning(

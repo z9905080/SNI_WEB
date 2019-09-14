@@ -20,6 +20,8 @@
           </el-form-item>-->
           <el-form-item prop="text" label="文字內容:">
             <el-input type="text" v-model="formData.text" @keydown.enter.native="onSubmit('form')" :style="style"></el-input>
+          </el-form-item>
+          <el-form-item prop="color" label="文字顏色:">
             <el-color-picker v-model="formData.color"></el-color-picker>
           </el-form-item>
           <!-- <el-form-item prop="remark" label="備註:">
@@ -61,8 +63,6 @@ export default {
 
       this.$refs[form].validate(valid => {
         if (valid) {
-          console.log(this.formData);
-
           this.$axios
             .post(
               `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get(
@@ -71,8 +71,6 @@ export default {
               JSON.stringify(this.formData)
             )
             .then(res => {
-              console.log(res);
-
               if (res.data.status === "Y") {
                 //添加成功
                 this.$message({

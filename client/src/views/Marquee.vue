@@ -10,7 +10,7 @@
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="跑馬燈內容" width="400" align="center">
+      <el-table-column label="跑馬燈內容" width="1000" align="center">
         <template slot-scope="scope">
           <p>{{ scope.row.text}}</p>
         </template>

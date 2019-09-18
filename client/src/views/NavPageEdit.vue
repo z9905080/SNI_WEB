@@ -4,7 +4,7 @@
       <el-button
         class="btnRight"
         type="primary"
-        size="small"
+        size="medium"
         icon="el-icon-plus"
         @click="handleAdd()"
       >添加頁籤</el-button>
@@ -15,7 +15,7 @@
               class="btnRight"
               type="success"
               icon="el-icon-plus"
-              size="small"
+              size="medium"
               @click="handleArticleAdd(props.row.page_group_id)"
             >新增內文</el-button>
             <el-table
@@ -37,13 +37,13 @@
                   <el-button
                     type="primary"
                     icon="el-icon-edit"
-                    size="small"
+                    size="medium"
                     @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
                   >內文编輯</el-button>
                   <el-button
                     type="danger"
                     icon="el-icon-delete"
-                    size="small"
+                    size="medium"
                     @click="handleDelete(scope.$index, scope.row)"
                   >删除</el-button>
                 </template>
@@ -59,13 +59,13 @@
             <el-button
               type="info"
               icon="el-icon-edit"
-              size="small"
+              size="medium"
               @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
             >编輯</el-button>
             <el-button
               type="danger"
               icon="el-icon-delete"
-              size="small"
+              size="medium"
               @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button>
           </template>

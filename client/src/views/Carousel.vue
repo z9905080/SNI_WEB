@@ -16,7 +16,7 @@
             <!-- <p>住址: {{ scope.row }}</p> -->
             <!-- <img class="image" :src="scope.row.imageUrl" @click="index = i" /> -->
             <div class="demo-image__preview">
-              <el-image style="width: 100px; height: 100px" :src="scope.row.imageUrl" :preview-src-list="images"></el-image>
+              <el-image style="width: 200px; height: 200px" :src="scope.row.imageUrl" :preview-src-list="images"></el-image>
             </div>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium" class="el-icon-picture">{{ scope.row.name }}</el-tag>
@@ -26,8 +26,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="medium" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="medium" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -13,7 +13,7 @@
           :model="formData"
           :rules="form_rules"
           label-width="120px"
-          style="margin:10px;width:auto;"
+          style="margin:10px;width:auto;font-size:20px;"
         >
           <!-- <el-form-item prop="page_group_id" label="序號:">
             <label type="page_group_id" v-text="formData.page_group_id"></label>
@@ -25,8 +25,8 @@
             <el-input type="remark" v-model="formData.remark"></el-input>
           </el-form-item>-->
           <el-form-item class="text_right">
-            <el-button type="primary" @click="onSubmit('form')">提交</el-button>
-            <el-button @click="dialog.show = false">取消</el-button>
+            <el-button type="primary" @click="onSubmit('form')" size="medium">提交</el-button>
+            <el-button @click="dialog.show = false" size="medium">取消</el-button>
           </el-form-item>
         </el-form>
       </div>

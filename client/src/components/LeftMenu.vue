@@ -101,6 +101,7 @@ export default {
 }
 .el-menu-vertical-demo {
   width: 35px;
+  font-size: 20px;
 }
 .el-submenu .el-menu-item {
   min-width: 180px;

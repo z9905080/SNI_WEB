@@ -21,7 +21,7 @@
 
         <!-- <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div> -->
       </el-upload>
-      <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
+      <el-button style="float: right;" size="medium" type="success" @click="sendSelectImage">送出選取圖片</el-button>
     </div>
     <div class="transfer"></div>
     <div class="slider">

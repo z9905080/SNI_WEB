@@ -11,14 +11,14 @@
         :auto-upload="false"
         :on-success="uploadSuccess"
       >
-        <el-button slot="trigger" size="small" type="primary">從電腦尋找圖片</el-button>
+        <el-button slot="trigger" size="medium" type="primary">從電腦尋找圖片</el-button>
         <el-button
           style="margin-left: 10px;"
-          size="small"
+          size="medium"
           type="success"
           @click="submitUpload"
         >上傳到伺服器</el-button>
-        <el-button style="float: right;" size="small" type="success" @click="sendSelectImage">送出選取圖片</el-button>
+        <el-button style="float: right;" size="medium" type="success" @click="sendSelectImage">送出選取圖片</el-button>
         <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div>
       </el-upload>
     </div>
@@ -41,7 +41,7 @@
             <div style="padding: 10px;">
               <!-- <span class="imageText">{{ `${checkboxText}${i + 1}` }}</span> -->
               <div class="bottom clearfix">
-                <el-checkbox-group v-model="checkboxGroup" size="small" class="imageText">
+                <el-checkbox-group v-model="checkboxGroup" size="medium" class="imageText">
                   <el-checkbox :label="`${checkboxText}${i + 1}`" circle></el-checkbox>
                 </el-checkbox-group>
                 <!-- <el-button type="success" icon="el-icon-check" size="small" circle></el-button> -->
@@ -49,7 +49,7 @@
                   type="danger"
                   icon="el-icon-delete"
                   plain
-                  size="small"
+                  size="medium"
                   class="deleteBtn"
                   @click="deleteImage(i)"
                 >刪除</el-button>

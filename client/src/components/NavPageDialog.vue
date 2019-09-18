@@ -14,6 +14,7 @@
           :rules="form_rules"
           label-width="120px"
           style="margin:10px;width:auto;font-size:20px;"
+          size="medium"
         >
           <!-- <el-form-item prop="page_group_id" label="序號:">
             <label type="page_group_id" v-text="formData.page_group_id"></label>
@@ -92,4 +93,7 @@ export default {
 </script>
 
 <style scoped>
+.navpage-dialog{
+  font-size: 20px;
+}
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="form">
-      <el-form ref="form" label-width="120px" style="margin:10px;width:auto;">
-        <h2 style="font-weight:bold; margin-bottom: 10px;">內文標題:</h2>
+      <el-form ref="form" label-width="120px" style="margin:30px;width:auto;">
+        <h2 style="font-weight:bold; margin-bottom: 10px; font-size:20px">內文標題:</h2>
         <el-input
           class="title"
           v-model="page_content.page_name"

@@ -18,10 +18,10 @@
           <!-- <el-form-item prop="page_group_id" label="序號:">
             <label type="page_group_id" v-text="formData.page_group_id"></label>
           </el-form-item>-->
-          <el-form-item prop="text" label="文字內容:">
+          <el-form-item prop="text" label="文字內容:" class="title">
             <el-input type="text" v-model="formData.text" @keydown.enter.native="onSubmit('form')" :style="style"></el-input>
           </el-form-item>
-          <el-form-item prop="color" label="文字顏色:">
+          <el-form-item prop="color" label="文字顏色:" class="title">
             <el-color-picker v-model="formData.color"></el-color-picker>
           </el-form-item>
           <!-- <el-form-item prop="remark" label="備註:">
@@ -99,4 +99,7 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-size: 18px;
+}
 </style>

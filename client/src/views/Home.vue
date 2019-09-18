@@ -27,10 +27,10 @@
   color: white;
 }
 .title {
-  font-size: 30px;
+  font-size: 50px;
 }
 .lead {
   margin-top: 50px;
-  font-size: 22px;
+  font-size: 30px;
 }
 </style>

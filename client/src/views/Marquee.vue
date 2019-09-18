@@ -1,7 +1,7 @@
 <template>
   <div class="imageTable">
     <div class="upload">
-      <el-button style="float: right;" size="small" type="success" @click="handleAdd">新增跑馬燈</el-button>
+      <el-button style="float: right;" size="medium" type="success" @click="handleAdd">新增跑馬燈</el-button>
     </div>
     <el-table :data="tableData" style="width: 100%">
       <el-table-column label="編號" width="200" align="center">
@@ -17,8 +17,8 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="medium" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="medium" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

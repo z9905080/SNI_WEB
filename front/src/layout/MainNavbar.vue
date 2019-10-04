@@ -17,7 +17,7 @@
                         class="nav-link"
                         href="/"
                 >
-                    <p>首頁</p>
+                    <span>首頁</span>
                 </a>
             </li>
 

@@ -6,7 +6,7 @@
   >
     <div class="container">
       <div class="copyright">
-        © 2008-2010 Seicho-No-Ie R.O.C Missionary Headquarters All Rights Reserved   非經同意，請勿轉載
+        © 2019 Seicho-No-Ie R.O.C Missionary Headquarters All Rights Reserved   非經同意，請勿轉載
       </div>
     </div>
   </footer>

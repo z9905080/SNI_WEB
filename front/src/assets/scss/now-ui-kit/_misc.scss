@@ -7,6 +7,10 @@ body{
     -webkit-font-smoothing: antialiased;
 }
 
+span{
+    font-size: $font-size-small;
+}
+
 .main{
     position: relative;
     background: $white-color;

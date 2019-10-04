@@ -1,0 +1,27 @@
+<template>
+  <footer
+    class="footer"
+    :class="{ [`footer-${type}`]: type }"
+    :data-background-color="backgroundColor"
+  >
+    <div class="container">
+      <div class="copyright">
+        © 2008-2010 Seicho-No-Ie R.O.C Missionary Headquarters All Rights Reserved   非經同意，請勿轉載
+      </div>
+    </div>
+  </footer>
+</template>
+<script>
+export default {
+  props: {
+    backgroundColor: String,
+    type: String
+  },
+  data() {
+    return {
+      year: new Date().getFullYear()
+    };
+  }
+};
+</script>
+<style></style>

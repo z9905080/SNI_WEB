@@ -60,15 +60,19 @@
       </el-row>
       <vueGallerySlideshow :images="images" :index="index" @close="index = null"></vueGallerySlideshow>
     </div>
+    <!-- 彈出視窗 -->
+    <slider-dialog :dialog="dialog" :formData="formData" @update="getImages"></slider-dialog>
   </div>
 </template>
 
 <script>
 import VueGallerySlideshow from "vue-gallery-slideshow";
+import SliderDialog from "@/components/SliderDialog.vue";
 
 export default {
   components: {
-    vueGallerySlideshow: VueGallerySlideshow
+    "vueGallerySlideshow": VueGallerySlideshow,
+    "slider-dialog": SliderDialog
   },
   data() {
     return {
@@ -81,7 +85,15 @@ export default {
       fileList: [],
       images: [],
       resouseImages: [],
-      checkboxGroup: []
+      checkboxGroup: [],
+      dialog: {
+        show: false,
+        title: ""
+      },
+      formData: {
+        link_url: "",
+        images: ""
+      },
     };
   },
   created() {
@@ -97,6 +109,14 @@ export default {
           )}&r=${new Date().getTime()}`
         )
         .then(res => {
+          if (res.data.status && res.data.status === 'N') {
+            this.$message({
+              message: `${res.data.message}`,
+              type: "error",
+            });
+            return;
+          }
+
           const resImages = [];
           this.resouseImages = [];
           this.checkboxGroup = [];
@@ -125,38 +145,50 @@ export default {
         });
         return;
       }
-      imageSelectData.forEach((image, index) => {
-        const addCarousels = {
-          image_url: image.replace("\u005c", "/"),
-          link_url: this.url
-        };
-        // 送出選取圖片
-        this.$axios
-          .post(
-            `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get(
-              "sid"
-            )}`,
-            JSON.stringify(addCarousels)
-          )
-          .then(res => {
-            if (res.data.status === "Y") {
-              //添加成功
-              this.$message({
-                message: res.data.message,
-                type: "success"
-              });
-              this.$emit("update");
-              this.$router.push("/carousel");
-            } else {
-              //添加失敗
-              this.$message({
-                message: res.data.message,
-                type: "error"
-              });
-            }
-          })
-          .catch(err => console.log(err));
-      });
+
+      //編輯
+      this.dialog = {
+        show: true,
+        title: "新增跑馬燈網址"
+      };
+
+      this.formData = {
+        link_url: "",
+        images: imageSelectData
+      };
+
+      // imageSelectData.forEach((image, index) => {
+      //   const addCarousels = {
+      //     image_url: image.replace("\u005c", "/"),
+      //     link_url: this.url
+      //   };
+      //   // 送出選取圖片
+      //   this.$axios
+      //     .post(
+      //       `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get(
+      //         "sid"
+      //       )}`,
+      //       JSON.stringify(addCarousels)
+      //     )
+      //     .then(res => {
+      //       if (res.data.status === "Y") {
+      //         //添加成功
+      //         this.$message({
+      //           message: res.data.message,
+      //           type: "success"
+      //         });
+      //         this.$emit("update");
+      //         this.$router.push("/carousel");
+      //       } else {
+      //         //添加失敗
+      //         this.$message({
+      //           message: res.data.message,
+      //           type: "error"
+      //         });
+      //       }
+      //     })
+      //     .catch(err => console.log(err));
+      // });
     },
     getSelectImage() {
       const imageSelectList = [];

@@ -46,6 +46,8 @@ import "tinymce/plugins/textcolor";
 import "tinymce/plugins/advlist";
 import "tinymce/plugins/table";
 import "tinymce/plugins/image";
+import "tinymce/plugins/media";
+import "tinymce/plugins/link";
 import "tinymce/plugins/lists";
 import "tinymce/plugins/paste";
 import "tinymce/plugins/preview";
@@ -159,9 +161,10 @@ export default {
       statusbar: false, // 隐藏编辑器底部的状态栏
       paste_data_images: true, // 允许粘贴图像
       menubar: false, // 隐藏最上方menu
-      plugins: "advlist table lists paste preview fullscreen image ",
+      // menubar: "insert", // 隐藏最上方menu
+      plugins: "advlist table lists paste preview fullscreen image media link",
       toolbar:
-        "fontselect fontsizeselect forecolor backcolor bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | imageUpload quicklink h2 h3 blockquote table numlist bullist preview fullscreen",
+        "fontselect fontsizeselect forecolor backcolor bold italic underline strikethrough link | alignleft aligncenter alignright alignjustify | imageUpload media quicklink h2 h3 blockquote table numlist bullist preview fullscreen",
       images_upload_url: "postAcceptor.php",
       automatic_uploads: false,
       file_browser_callback: function(field_name, url, type, win) {

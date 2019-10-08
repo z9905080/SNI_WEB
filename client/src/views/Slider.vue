@@ -88,7 +88,8 @@ export default {
       checkboxGroup: [],
       dialog: {
         show: false,
-        title: ""
+        title: "",
+        option: ""
       },
       formData: {
         link_url: "",
@@ -149,46 +150,15 @@ export default {
       //編輯
       this.dialog = {
         show: true,
-        title: "新增跑馬燈網址"
+        title: "新增輪播圖網址",
+        option: "add",
+        imageUrl: this.url
       };
 
       this.formData = {
         link_url: "",
         images: imageSelectData
       };
-
-      // imageSelectData.forEach((image, index) => {
-      //   const addCarousels = {
-      //     image_url: image.replace("\u005c", "/"),
-      //     link_url: this.url
-      //   };
-      //   // 送出選取圖片
-      //   this.$axios
-      //     .post(
-      //       `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get(
-      //         "sid"
-      //       )}`,
-      //       JSON.stringify(addCarousels)
-      //     )
-      //     .then(res => {
-      //       if (res.data.status === "Y") {
-      //         //添加成功
-      //         this.$message({
-      //           message: res.data.message,
-      //           type: "success"
-      //         });
-      //         this.$emit("update");
-      //         this.$router.push("/carousel");
-      //       } else {
-      //         //添加失敗
-      //         this.$message({
-      //           message: res.data.message,
-      //           type: "error"
-      //         });
-      //       }
-      //     })
-      //     .catch(err => console.log(err));
-      // });
     },
     getSelectImage() {
       const imageSelectList = [];

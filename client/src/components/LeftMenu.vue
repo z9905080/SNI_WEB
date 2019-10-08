@@ -10,7 +10,7 @@
                 <router-link to="/home">
                     <el-menu-item index="0">
                         <i class="fa fa-margin fa-server"></i>
-                        <span slot="title" class="title">首页</span>
+                        <span slot="title" class="title">首頁</span>
                     </el-menu-item>
                 </router-link>
                 <template  v-for="item in items" >

@@ -11,15 +11,6 @@
         :auto-upload="false"
         :on-success="uploadSuccess"
       >
-        <!-- <el-button slot="trigger" size="small" type="primary">從電腦尋找圖片</el-button>
-        <el-button
-          style="margin-left: 10px;"
-          size="small"
-          type="success"
-          @click="submitUpload"
-        >上傳到伺服器</el-button>-->
-
-        <!-- <div slot="tip" class="el-upload__tip">只能上傳jpg/png/gif檔案，且不超過2MB，已上傳圖片會在下方顯示</div> -->
       </el-upload>
       <el-button style="float: right;" size="medium" type="success" @click="sendSelectImage">送出選取圖片</el-button>
     </div>
@@ -61,15 +52,19 @@
       </el-row>
       <vueGallerySlideshow :images="images" :index="index" @close="index = null"></vueGallerySlideshow>
     </div>
+    <!-- 彈出視窗 -->
+    <slider-dialog :dialog="dialog" :formData="formData" @update="getImages"></slider-dialog>
   </div>
 </template>
 
 <script>
 import VueGallerySlideshow from "vue-gallery-slideshow";
+import SliderDialog from "@/components/SliderDialog.vue";
 
 export default {
   components: {
-    vueGallerySlideshow: VueGallerySlideshow
+    vueGallerySlideshow: VueGallerySlideshow,
+    "slider-dialog": SliderDialog
   },
   data() {
     return {
@@ -83,7 +78,16 @@ export default {
       fileList: [],
       images: [],
       resouseImages: [],
-      checkboxGroup: []
+      checkboxGroup: [],
+      dialog: {
+        show: false,
+        title: "",
+        option: ""
+      },
+      formData: {
+        link_url: "",
+        images: ""
+      },
     };
   },
   created() {
@@ -127,45 +131,18 @@ export default {
         });
         return;
       }
+      //編輯
+      this.dialog = {
+        show: true,
+        title: "編輯輪播圖網址",
+        option: "edit",
+        imageUrl: this.url
+      };
 
-      // 拿到網址的id
-      const locationUrl = location.href;
-      const ary1 = locationUrl.split("/carousel/selectcarousel/");
-      this.carouselId = ary1[ary1.length - 1];
-
-      imageSelectData.forEach((image, index) => {
-        const editCarousel = {
-          carousel_id: this.carouselId,
-          image_url: image.replace("\u005c", "/"),
-          link_url: this.url
-        };
-        // 送出選取圖片
-        this.$axios
-          .post(
-            `https://sniweb.shouting.feedia.co/php/EditCarousel.php?sid=${window.$cookies.get(
-              "sid"
-            )}`,
-            JSON.stringify(editCarousel)
-          )
-          .then(res => {
-            if (res.data.status === "Y") {
-              //添加成功
-              this.$message({
-                message: res.data.message,
-                type: "success"
-              });
-              this.$emit("update");
-              this.$router.push("/carousel");
-            } else {
-              //添加失敗
-              this.$message({
-                message: res.data.message,
-                type: "error"
-              });
-            }
-          })
-          .catch(err => console.log(err));
-      });
+      this.formData = {
+        link_url: `${localStorage.link_url}`,
+        images: imageSelectData
+      };
     },
     getSelectImage() {
       const imageSelectList = [];

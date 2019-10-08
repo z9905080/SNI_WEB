@@ -16,7 +16,11 @@
             <!-- <p>住址: {{ scope.row }}</p> -->
             <!-- <img class="image" :src="scope.row.imageUrl" @click="index = i" /> -->
             <div class="demo-image__preview">
-              <el-image style="width: 200px; height: 200px" :src="scope.row.imageUrl" :preview-src-list="images"></el-image>
+              <el-image
+                style="width: 200px; height: 200px"
+                :src="scope.row.imageUrl"
+                :preview-src-list="images"
+              ></el-image>
             </div>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium" class="el-icon-picture">{{ scope.row.name }}</el-tag>
@@ -45,7 +49,8 @@ export default {
   data() {
     return {
       tableData: [],
-      images: []
+      images: [],
+      url: "https://sniweb.shouting.feedia.co/php"
     };
   },
   created() {
@@ -64,7 +69,7 @@ export default {
         )
         .then(res => {
           res.data.data.forEach((image, index) => {
-            image["imageUrl"] = `${image.url}${image.image}`;
+            image["imageUrl"] = `${this.url}${image.image}`;
             image["index"] = index;
             this.images.push(image["imageUrl"]);
             this.tableData.push(image);
@@ -73,6 +78,7 @@ export default {
         .catch(err => console.log(err));
     },
     handleEdit(index, row) {
+      localStorage.link_url = `${row.url}`;
       this.$router.push(`/carousel/selectcarousel/${row.id}`);
     },
     handleDelete(index, row) {

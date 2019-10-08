@@ -15,7 +15,7 @@
           label-width="120px"
           style="margin:10px;width:auto;"
         >
-          <el-form-item prop="link_url" label="網址:" class="title">
+          <el-form-item prop="link_url" label="連結網址:" class="title">
             <el-input
               type="link_url"
               v-model="formData.link_url"
@@ -48,20 +48,31 @@ export default {
   },
   methods: {
     onSubmit(form) {
+      const apiType =
+        this.dialog.option === "edit" ? "EditCarousel" : "AddCarousel";
+      let carouselId = null;
+      if (this.dialog.option === "edit") {
+        // 拿到網址的id
+        const locationUrl = location.href;
+        const ary1 = locationUrl.split("/carousel/selectcarousel/");
+        carouselId = ary1[ary1.length - 1];
+      }
       this.$refs[form].validate(valid => {
         if (valid) {
           this.formData.images.forEach((image, index) => {
-            const addCarousels = {
-              image_url: image.replace("\u005c", "/"),
-              link_url: this.formData.link_url
+            const imagePath = image.replace("\u005c", "/");
+            const carouselsData = {
+              image_url: `${imagePath}`,
+              link_url: this.formData.link_url,
+              carousel_id: carouselId
             };
             // 送出選取圖片
             this.$axios
               .post(
-                `https://sniweb.shouting.feedia.co/php/AddCarousel.php?sid=${window.$cookies.get(
+                `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get(
                   "sid"
                 )}`,
-                JSON.stringify(addCarousels)
+                JSON.stringify(carouselsData)
               )
               .then(res => {
                 if (res.data.status === "Y") {

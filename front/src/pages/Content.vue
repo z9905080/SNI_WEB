@@ -5,7 +5,7 @@
             <div class="container">
                 <el-carousel :interval="5000" arrow="hover" indicator-position="none">
                     <el-carousel-item v-for="(image,index) in homeContext.carousel" :key="index">
-                        <img :src="image.url+image.image" :alt="image.id" height="100%"/>
+                        <img :src="'https://sniweb.shouting.feedia.co/php'+image.image" :alt="image.id" height="100%" @click="openLink(image.url)" style="cursor:pointer;"/>
                     </el-carousel-item>
                 </el-carousel>
             </div>
@@ -88,6 +88,9 @@
                 }).then((response) => {
                     this.actionSetContent(response.data);
                 });
+            },
+            openLink(url){
+                window.location.href = url;
             }
         }
     };

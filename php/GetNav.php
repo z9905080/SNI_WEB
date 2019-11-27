@@ -51,7 +51,7 @@ foreach ($groupSort as $sIndex => $sortGroupID) {
 
 $sortRightDataRlt = array();
 foreach ($dataRlt as $key => $data) {
-    if (!in_array($data['page_group_id'], $sortDataRlt)) {
+    if (!in_array($data['page_group_id'], $groupSort)) {
         $sortRightDataRlt[] = $data;
     }
 }

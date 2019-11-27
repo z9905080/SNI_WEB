@@ -54,6 +54,6 @@ foreach ($groupSort as $sIndex => $sortGroupID ) {
     }
 }
 
-$sortDataRlt[] = $sortRightDataRlt;
+$sortDataRlt = array_merge($sortDataRlt,$sortRightDataRlt);
 
 echo (json_encode($sortDataRlt));

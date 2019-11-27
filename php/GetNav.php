@@ -58,6 +58,6 @@ foreach ($dataRlt as $key => $data) {
 
 
 
-array_merge($sortDataRlt, $sortRightDataRlt);
+$sortDataRlt = array_merge($sortDataRlt, $sortRightDataRlt);
 
 echo (json_encode($sortDataRlt));

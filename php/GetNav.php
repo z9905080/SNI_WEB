@@ -7,6 +7,16 @@ $db = new MysqliDb($dbCofig);
 // $data = $db->join("page_group pg", "pg.id=pc.page_group_id", "LEFT")
 //     ->get('page_content pc', null, "pc.id as page_content_id, page_group_id, group_name, page_name");
 
+$webSettingList = $db->get("web_config");
+
+$webSettingMap = array();
+
+foreach ($webSettingList as $key => $item) {
+    $webSettingMap[$item['data_key']] = $item['data_value'];
+}
+
+$groupSort = json_decode($webSettingMap['page_group_sort']);
+
 $pageGroupList = $db->get("page_group");
 
 $pageContentList = $db->get("page_content");
@@ -31,4 +41,19 @@ foreach ($pageGroupList as $index1 => $pageGroupData) {
     $dataRlt[] = $newGroupData;
 }
 
-echo (json_encode($dataRlt));
+$sortDataRlt = array();
+$sortRightDataRlt = array();
+foreach ($groupSort as $sIndex => $sortGroupID ) {
+    # code...
+    foreach ($dataRlt as $key => $data) {
+        if ($data['page_group_id'] == $sortGroupID){
+            $sortDataRlt[] = $data;
+        }else{
+            $sortRightDataRlt[] = $data;
+        }
+    }
+}
+
+$sortDataRlt[] = $sortRightDataRlt;
+
+echo (json_encode($sortDataRlt));

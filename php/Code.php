@@ -18,6 +18,7 @@ class Code
     const DeleteMarquee_Fail = "10015";     // 刪除跑馬燈失敗
     const GetMarquee_Fail = "10016";        // 取得跑馬燈失敗
     const EditCarousel_Fail = "10017";      // 編輯輪播圖失敗
+    const EditNavSort_Fail =  "10018";      // 編輯頁籤順序失敗
 
 
     const EditContent_Success = "20003";    // 編輯內文成功
@@ -35,7 +36,7 @@ class Code
     const DeleteMarquee_Success = "20015";  // 刪除跑馬燈成功
     const GetMarquee_Success = "10016";     // 取得跑馬燈成功
     const EditCarousel_Success = "20017";   // 編輯輪播圖成功
-
+    const EditNavSort_Success =  "20018";   // 編輯頁籤順序成功
 
 }
 //}

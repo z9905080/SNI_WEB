@@ -29,14 +29,35 @@ foreach ($pageGroupList as $index1 => $pageGroupData) {
     $newGroupData['page_group_id'] = $pgGroupID;
     $newGroupData['group_name'] = $pageGroupData['group_name'];
 
-    foreach ($pageContentList as $index2 => $pageContentData) {
-        if ($pageContentData['page_group_id'] == $pgGroupID) {
-            $newGroupData['page_content'][] = array(
-                "page_content_id" => $pageContentData["id"],
-                "page_name" => $pageContentData["page_name"],
-            );
+    $pageSortStr = $pageGroupData['page_sort'];
+    $pageSort = json_decode($pageSortStr);
+
+    foreach ($pageSort as $sIndex => $sortPageID) {
+        foreach ($pageContentList as $index2 => $pageContentData) {
+            if ($pageContentData['id'] == $sortPageID) {
+                if ($pageContentData['page_group_id'] == $pgGroupID) {
+                    $newGroupData['page_content'][] = array(
+                        "page_content_id" => $pageContentData["id"],
+                        "page_name" => $pageContentData["page_name"],
+                    );
+                }
+            }
         }
     }
+
+    foreach ($pageContentList as $index2 => $pageContentData) {
+        if (!in_array($pageContentData['id'], $pageSort)) {
+            if ($pageContentData['page_group_id'] == $pgGroupID) {
+                $newGroupData['page_content'][] = array(
+                    "page_content_id" => $pageContentData["id"],
+                    "page_name" => $pageContentData["page_name"],
+                );
+            }
+        }
+    }
+
+
+
     $dataRlt[] = $newGroupData;
 }
 
@@ -55,8 +76,6 @@ foreach ($dataRlt as $key => $data) {
         $sortRightDataRlt[] = $data;
     }
 }
-
-
 
 $sortDataRlt = array_merge($sortDataRlt, $sortRightDataRlt);
 

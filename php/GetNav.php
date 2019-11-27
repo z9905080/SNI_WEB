@@ -36,24 +36,28 @@ foreach ($pageGroupList as $index1 => $pageGroupData) {
                 "page_name" => $pageContentData["page_name"],
             );
         }
-
     }
     $dataRlt[] = $newGroupData;
 }
 
 $sortDataRlt = array();
-$sortRightDataRlt = array();
-foreach ($groupSort as $sIndex => $sortGroupID ) {
-    # code...
+foreach ($groupSort as $sIndex => $sortGroupID) {
     foreach ($dataRlt as $key => $data) {
-        if ($data['page_group_id'] == $sortGroupID){
+        if ($data['page_group_id'] == $sortGroupID) {
             $sortDataRlt[] = $data;
-        }else{
-            $sortRightDataRlt[] = $data;
         }
     }
 }
 
-$sortDataRlt = array_merge($sortDataRlt,$sortRightDataRlt);
+$sortRightDataRlt = array();
+foreach ($dataRlt as $key => $data) {
+    if (!in_array($data['page_group_id'], $sortDataRlt)) {
+        $sortRightDataRlt[] = $data;
+    }
+}
+
+
+
+array_merge($sortDataRlt, $sortRightDataRlt);
 
 echo (json_encode($sortDataRlt));

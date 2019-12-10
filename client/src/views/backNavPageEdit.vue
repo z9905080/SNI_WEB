@@ -1,84 +1,86 @@
 <template>
   <div class="fillcontain">
-    <el-button
-      class="btnRight"
-      type="primary"
-      size="medium"
-      icon="el-icon-plus"
-      @click="handleAdd()"
-    >添加頁籤</el-button>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-button
-            class="btnRight"
-            type="success"
-            icon="el-icon-plus"
-            size="medium"
-            @click="handleArticleAdd(props.row.page_group_id)"
-          >新增內文</el-button>
-          <el-table
-            :data="props.row.page_content"
-            max-height="1000"
-            style="width: 100%"
-            align="center"
-          >
-            <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
-            <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
-            <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
-              <template slot-scope="scope">
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  size="medium"
-                  @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
-                >內文编輯</el-button>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="medium"
-                  @click="handleDelete(scope.$index, scope.row)"
-                >删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column label="群組名稱" prop="group_name"></el-table-column>
-      <el-table-column label="備註" prop="remark"></el-table-column>
-      <el-table-column label="操作" prop="operation">
-        <template slot-scope="scope">
-          <el-button
-            type="info"
-            icon="el-icon-edit"
-            size="medium"
-            @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
-          >编輯</el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="medium"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分頁 -->
-    <el-row>
-      <el-col :span="24">
-        <div class="pagination">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="paginations.page_index"
-            :page-sizes="paginations.page_sizes"
-            :page-size="paginations.page_size"
-            :layout="paginations.layout"
-            :total="paginations.total"
-          ></el-pagination>
-        </div>
-      </el-col>
-    </el-row>
+      <el-button
+        class="btnRight"
+        type="primary"
+        size="medium"
+        icon="el-icon-plus"
+        @click="handleAdd()"
+      >添加頁籤</el-button>
+      <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000" class="navTable" ref="navRef">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-button
+              class="btnRight"
+              type="success"
+              icon="el-icon-plus"
+              size="medium"
+              @click="handleArticleAdd(props.row.page_group_id)"
+            >新增內文</el-button>
+            <el-table
+              :data="props.row.page_content"
+              max-height="1000"
+              style="width: 100%"
+              align="center"
+            >
+              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
+              <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
+              <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="medium"
+                    @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
+                  >內文编輯</el-button>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="medium"
+                    @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="分類序號" prop="page_group_id" align="center" style="width: 10%"></el-table-column> -->
+        <el-table-column label="群組名稱" prop="group_name" align="center" style="width: 30%"></el-table-column>
+        <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
+        <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+          <template slot-scope="scope">
+            <el-button
+              type="info"
+              icon="el-icon-edit"
+              size="medium"
+              @click="handleEdit(scope.$index, scope.row.page_group_id, scope.row.group_name)"
+            >编輯</el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="medium"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分頁 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="pagination">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="paginations.page_index"
+              :page-sizes="paginations.page_sizes"
+              :page-size="paginations.page_size"
+              :layout="paginations.layout"
+              :total="paginations.total"
+            ></el-pagination>
+          </div>
+        </el-col>
+      </el-row>
+
 
     <!-- 彈出視窗 -->
     <navpage-dialog :dialog="dialog" :formData="formData" @update="getProfile"></navpage-dialog>
@@ -86,7 +88,7 @@
 </template>
 
 <script>
-import Sortable from "sortablejs";
+import Sortable from 'sortablejs';
 import NavPageDialog from "@/components/NavPageDialog.vue";
 
 export default {
@@ -126,8 +128,8 @@ export default {
       }
     };
   },
-  mounted() {
-    this.rowDrop();
+   mounted() {
+    this.rowDrop()
     // this.columnDrop()
   },
   computed: {
@@ -141,12 +143,22 @@ export default {
   methods: {
     //行拖拽
     rowDrop() {
-      const tbody = document.querySelector(".el-table__body-wrapper tbody");
-      const _this = this;
-      Sortable.create(tbody, {
-        animation: 150,
-        ghostClass: "blue-background-class"
-      });
+      // const tbody = document.querySelector('.el-table__body')
+      // const _this = this
+      // Sortable.create(tbody, {
+      //   onEnd({ newIndex, oldIndex }) {
+      //     const currRow = _this.tableData.splice(oldIndex, 1)[0]
+      //     _this.tableData.splice(newIndex, 0, currRow)
+      //   }
+      // })
+      // const tableColumn = this.$refs.navRef;
+      const el = document.querySelectorAll(".fillcontain")
+      console.log(el);
+
+      // Sortable.create(tableColumn, {
+      //   draggable: 'th',
+      //   onEnd: this.dragReorderColumn
+      // });
     },
     getProfile() {
       //獲取數據
@@ -194,9 +206,7 @@ export default {
       //刪除
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${window.$cookies.get(
-            "sid"
-          )}`,
+          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${window.$cookies.get("sid")}`,
           JSON.stringify(deleteData)
         )
         .then(res => {

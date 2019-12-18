@@ -7,41 +7,47 @@
       icon="el-icon-plus"
       @click="handleAdd()"
     >添加頁籤</el-button>
-    <el-table :data="tableData" style="width: 100%">
+    <el-table-draggable>
+    <el-table :data="tableData" style="width: 100%" class="nav">
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-button
-            class="btnRight"
-            type="success"
-            icon="el-icon-plus"
-            size="medium"
-            @click="handleArticleAdd(props.row.page_group_id)"
-          >新增內文</el-button>
-          <el-table
-            :data="props.row.page_content"
-            max-height="1000"
-            style="width: 100%"
-            align="center"
-          >
-            <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
-            <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
-            <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
-              <template slot-scope="scope">
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  size="medium"
-                  @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
-                >內文编輯</el-button>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="medium"
-                  @click="handleDelete(scope.$index, scope.row)"
-                >删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div class="contentTable">
+            <el-button
+              class="btnRight"
+              type="success"
+              icon="el-icon-plus"
+              size="medium"
+              @click="handleArticleAdd(props.row.page_group_id)"
+            >新增內文</el-button>
+            <el-table-draggable>
+            <el-table
+              :data="props.row.page_content"
+              max-height="1000"
+              style="width: 100%"
+              align="center"
+              class="content"
+            >
+              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
+              <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
+              <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="medium"
+                    @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
+                  >內文编輯</el-button>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="medium"
+                    @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            </el-table-draggable>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="群組名稱" prop="group_name"></el-table-column>
@@ -63,6 +69,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </el-table-draggable>
     <!-- 分頁 -->
     <el-row>
       <el-col :span="24">
@@ -86,13 +93,15 @@
 </template>
 
 <script>
-import Sortable from "sortablejs";
+// import Sortable from "sortablejs";
 import NavPageDialog from "@/components/NavPageDialog.vue";
+import ElTableDraggable from 'element-ui-el-table-draggable';
 
 export default {
   name: "navpagelist",
   components: {
-    "navpage-dialog": NavPageDialog
+    "navpage-dialog": NavPageDialog,
+    ElTableDraggable
   },
   data() {
     return {
@@ -126,10 +135,6 @@ export default {
       }
     };
   },
-  mounted() {
-    this.rowDrop();
-    // this.columnDrop()
-  },
   computed: {
     user() {
       return this.$store.getters.user;
@@ -139,16 +144,9 @@ export default {
     this.getProfile();
   },
   methods: {
-    //行拖拽
-    rowDrop() {
-      const tbody = document.querySelector(".el-table__body-wrapper tbody");
-      const _this = this;
-      Sortable.create(tbody, {
-        animation: 150,
-        ghostClass: "blue-background-class"
-      });
-    },
     getProfile() {
+      console.log(ElTableDraggable);
+      
       //獲取數據
       this.$axios
         .get(

@@ -20,7 +20,7 @@
             <el-table
               :data="props.row.page_content"
               max-height="1000"
-              style="width: 100%"
+              style="width: 100%" ``
               align="center"
             >
               <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>

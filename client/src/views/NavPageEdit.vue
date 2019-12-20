@@ -24,7 +24,7 @@
       @click="handleAdd()"
     >添加頁籤</el-button>
     <el-table-draggable>
-      {{checkTableSort}}
+      {{checkNavSort}}
       <el-table :data="tableData" style="width: 100%" class="nav">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -37,6 +37,7 @@
                 @click="handleArticleAdd(props.row.page_group_id)"
               >新增內文</el-button>
               <el-table-draggable>
+                {{dragContent(props.row.page_content, props.row.page_group_id)}}
                 <el-table
                   :data="props.row.page_content"
                   max-height="1000"
@@ -112,6 +113,7 @@
 <script>
 import NavPageDialog from "@/components/NavPageDialog.vue";
 import ElTableDraggable from "element-ui-el-table-draggable";
+window['Lodash'] = require('lodash');
 
 export default {
   name: "navpagelist",
@@ -131,7 +133,10 @@ export default {
       },
       tableData: [],
       allTableData: [],
-      pageSortArr: [],
+      backupTableData: [],
+      allContentData: {},
+      navSort: [],
+      contentSort: {},
       tableDataChangeSort: false,
       formData: {
         page_group_id: "",
@@ -154,22 +159,18 @@ export default {
     };
   },
   computed: {
-    checkTableSort() {
-      if (this.pageSortArr.length) {
-        this.pageSortArr = [];
+    checkNavSort() {
+      if (this.navSort.length) {
+        this.navSort = [];
       }
-
-      // console.log("newTableData:", this.tableData);
-      // console.log("oldTableData:", this.allTableData);
       for (let i = 0; i < this.tableData.length; i++) {
         let newId = this.tableData[i].page_group_id;
         let oldId = this.allTableData[i].page_group_id;
         if (newId !== oldId) {
-          this.pageSortArr.push(newId);
+          this.navSort.push(newId);
         }
       }
-      this.tableDataChangeSort = this.pageSortArr.length ? true : false;
-      // console.log("sortTableData:", this.pageSortArr);
+      this.tableDataChangeSort = this.navSort.length ? true : false;
     },
     user() {
       return this.$store.getters.user;
@@ -179,6 +180,21 @@ export default {
     this.getProfile();
   },
   methods: {
+    dragContent(tableData, navId) {
+      let oldTableData = this.allContentData[navId];
+      for (let i = 0; i < tableData.length; i++) {
+        let newId = tableData[i].page_content_id;
+        let oldId = oldTableData[i].page_content_id;
+        if (newId !== oldId) {
+          this.contentSort[navId].push(newId);
+        }
+      }
+      if (this.contentSort[navId].length) {
+        this.tableDataChangeSort = true;
+      } else {
+        this.tableDataChangeSort = this.navSort.length ? true : false;
+      }
+    },
     getProfile() {
       //獲取數據
       this.$axios
@@ -187,6 +203,11 @@ export default {
         )
         .then(res => {
           this.allTableData = res.data;
+          this.backupTableData = Lodash.cloneDeep(this.allTableData);
+          for (let i = 0; i < this.backupTableData.length; i++) {
+            this.allContentData[this.backupTableData[i].page_group_id] = this.backupTableData[i].page_content;
+            this.contentSort[this.backupTableData[i].page_group_id] = [];
+          }
           this.filterTableData = res.data;
           // 設置分頁數據
           this.setPaginations();
@@ -319,39 +340,72 @@ export default {
       });
     },
     handleSortSend() {
-      if (!this.pageSortArr.length) {
-        return;
+      if (this.navSort.length) {
+        const navSortData = {
+          page_group_sort: `[${this.navSort}]`
+        };
+        //送出數據
+        this.$axios
+          .post(
+            `https://sniweb.shouting.feedia.co/php/EditNavSort.php?sid=${window.$cookies.get(
+              "sid"
+            )}`,
+            JSON.stringify(navSortData)
+          )
+          .then(res => {
+            if (res.data.status === "Y") {
+              //添加成功
+              this.$message({
+                message: res.data.message,
+                type: "success"
+              });
+              this.getProfile();
+              this.$emit("update");
+            } else {
+              //添加失敗
+              this.$message({
+                message: res.data.message,
+                type: "error"
+              });
+            }
+          });
       }
-      const sortData = {
-        'page_group_sort': this.pageSortArr
-      }
-      console.log(sortData);
 
-      //送出數據
-      this.$axios
-        .post(
-          `https://sniweb.shouting.feedia.co/php/EditNavSort.php?sid=${window.$cookies.get(
-            "sid"
-          )}`,
-          JSON.stringify(sortData)
-        )
-        .then(res => {
-          if (res.data.status === "Y") {
-            //添加成功
-            this.$message({
-              message: res.data.message,
-              type: "success"
-            });
-            this.getProfile();
-            this.$emit("update");
-          } else {
-            //添加失敗
-            this.$message({
-              message: res.data.message,
-              type: "error"
-            });
+      if (Object.keys(this.contentSort).length) {
+        for (let navId in this.contentSort) {
+          if (this.contentSort[navId].length) {
+            const contentSortData = {
+              page_group_id: Number(navId),
+              page_sort: `[${this.contentSort[navId]}]`
+            };
+            //送出數據
+            this.$axios
+              .post(
+                `https://sniweb.shouting.feedia.co/php/EditContentSort.php?sid=${window.$cookies.get(
+                  "sid"
+                )}`,
+                JSON.stringify(contentSortData)
+              )
+              .then(res => {
+                if (res.data.status === "Y") {
+                  //添加成功
+                  this.$message({
+                    message: res.data.message,
+                    type: "success"
+                  });
+                  this.getProfile();
+                  this.$emit("update");
+                } else {
+                  //添加失敗
+                  this.$message({
+                    message: res.data.message,
+                    type: "error"
+                  });
+                }
+              });
           }
-        });
+        }
+      }
     },
     handleSortCanel() {
       this.getProfile();

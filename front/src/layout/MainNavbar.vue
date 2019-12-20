@@ -8,7 +8,8 @@
     >
         <template slot-scope="{ toggle, isToggled }">
             <router-link class="navbar-brand" to="/">
-                {{homeContext.web_title}}
+                <img src="../../public/img/title_logo.png" style="height:50px;padding-right:10px" alt="">   
+                <img src="../../public/img/title_text.png" style="height:30px" alt="">   
             </router-link>
         </template>
         <template slot="navbar-menu">

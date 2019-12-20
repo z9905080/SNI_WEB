@@ -31,7 +31,9 @@ foreach ($pageGroupSortList as $index => $pageGroupSortID) {
 $db = new MysqliDb($dbCofig);
 
 $db->where("data_key", "page_group_sort");
-if ($db->update("web_config", $pageGroupSortStr)) {
+if ($db->update("web_config", array(
+    "data_value" => $pageGroupSortStr,
+))) {
     $resp = array(
         "data" => null,
         "message" => "編輯頁籤順序成功",

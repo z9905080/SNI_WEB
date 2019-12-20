@@ -8,20 +8,24 @@
     "start": "npm run serve"
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "^2.0.0",
-    "axios": "^0.18.0",
-    "core-js": "^2.6.5",
-    "element-ui": "^2.12.0",
-    "tinymce": "^5.0.4",
+    "@tinymce/tinymce-vue": "^2.1.0",
+    "axios": "^0.18.1",
+    "core-js": "^2.6.10",
+    "element-ui": "^2.13.0",
+    "element-ui-el-table-draggable": "^1.2.9",
+    "lodash": "^4.17.15",
+    "sortablejs": "^1.10.1",
+    "tinymce": "^5.1.3",
     "vue": "^2.6.10",
     "vue-cookies": "^1.5.13",
-    "vue-gallery-slideshow": "^1.3.2",
-    "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
+    "vue-gallery-slideshow": "^1.5.0",
+    "vue-router": "^3.1.3",
+    "vue-runtime-helpers": "^1.1.2",
+    "vuex": "^3.1.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.6.0",
-    "@vue/cli-service": "^3.6.0",
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-service": "^3.12.1",
     "vue-template-compiler": "^2.5.21"
   },
   "postcss": {

@@ -1,60 +1,76 @@
 <template>
   <div class="fillcontain">
-    <div class="table-container">
-      <el-button
-        class="btnRight"
-        type="primary"
-        size="medium"
-        icon="el-icon-plus"
-        @click="handleAdd()"
-      >添加頁籤</el-button>
-      <el-table v-if="tableData.length > 0" :data="tableData" style="width: 100%" max-height="1000">
+    <el-button
+      type="warning"
+      icon="el-icon-edit"
+      size="medium"
+      class="btnSortSend"
+      v-if="tableDataChangeSort"
+      @click="handleSortSend()"
+    >確定排序</el-button>
+    <el-button
+      type="danger"
+      icon="el-icon-delete"
+      size="medium"
+      class="btnSortCanel"
+      v-if="tableDataChangeSort"
+      @click="handleSortCanel()"
+    >取消排序</el-button>
+    <el-button
+      class="btnRight"
+      type="primary"
+      size="medium"
+      icon="el-icon-plus"
+      @click="handleAdd()"
+    >添加頁籤</el-button>
+    <el-table-draggable>
+      {{checkNavSort}}
+      <el-table :data="tableData" style="width: 100%" class="nav">
         <el-table-column type="expand">
           <template slot-scope="props">
-            <el-button
-              class="btnRight"
-              type="success"
-              icon="el-icon-plus"
-              size="medium"
-              @click="handleArticleAdd(props.row.page_group_id)"
-            >新增內文</el-button>
-            <el-table
-              :data="props.row.page_content"
-              max-height="1000"
-              style="width: 100%"
-              align="center"
-            >
-              <!-- <el-table-column
-                prop="page_content_id"
-                label="分頁序號"
-                align="center"
-                style="width: 10%"
-              ></el-table-column>-->
-              <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
-              <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
-              <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
-                <template slot-scope="scope">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                    size="medium"
-                    @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
-                  >內文编輯</el-button>
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="medium"
-                    @click="handleDelete(scope.$index, scope.row)"
-                  >删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div class="contentTable">
+              <el-button
+                class="btnRight"
+                type="success"
+                icon="el-icon-plus"
+                size="medium"
+                @click="handleArticleAdd(props.row.page_group_id)"
+              >新增內文</el-button>
+              <el-table-draggable>
+                {{dragContent(props.row.page_content, props.row.page_group_id)}}
+                <el-table
+                  :data="props.row.page_content"
+                  max-height="1000"
+                  style="width: 100%"
+                  align="center"
+                  class="content"
+                >
+                  <el-table-column prop="page_name" label="分頁名稱" align="center" style="width: 30%"></el-table-column>
+                  <el-table-column label="備註 " prop="remark" align="center" style="width: 50%"></el-table-column>
+                  <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+                    <template slot-scope="scope">
+                      <el-button
+                        type="primary"
+                        icon="el-icon-edit"
+                        size="medium"
+                        @click="handleArticleEdit(scope.$index, scope.row.page_content_id, scope.row.page_name)"
+                      >內文编輯</el-button>
+                      <el-button
+                        type="danger"
+                        icon="el-icon-delete"
+                        size="medium"
+                        @click="handleDelete(scope.$index, scope.row)"
+                      >删除</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-table-draggable>
+            </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="分類序號" prop="page_group_id" align="center" style="width: 10%"></el-table-column> -->
-        <el-table-column label="群組名稱" prop="group_name" align="center" style="width: 30%"></el-table-column>
-        <el-table-column label="備註" prop="remark" align="center" style="width: 50%"></el-table-column>
-        <el-table-column label="操作" prop="operation" align="center" style="width: 20%">
+        <el-table-column label="群組名稱" prop="group_name"></el-table-column>
+        <el-table-column label="備註" prop="remark"></el-table-column>
+        <el-table-column label="操作" prop="operation">
           <template slot-scope="scope">
             <el-button
               type="info"
@@ -71,23 +87,23 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分頁 -->
-      <el-row>
-        <el-col :span="24">
-          <div class="pagination">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page.sync="paginations.page_index"
-              :page-sizes="paginations.page_sizes"
-              :page-size="paginations.page_size"
-              :layout="paginations.layout"
-              :total="paginations.total"
-            ></el-pagination>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+    </el-table-draggable>
+    <!-- 分頁 -->
+    <el-row>
+      <el-col :span="24">
+        <div class="pagination">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="paginations.page_index"
+            :page-sizes="paginations.page_sizes"
+            :page-size="paginations.page_size"
+            :layout="paginations.layout"
+            :total="paginations.total"
+          ></el-pagination>
+        </div>
+      </el-col>
+    </el-row>
 
     <!-- 彈出視窗 -->
     <navpage-dialog :dialog="dialog" :formData="formData" @update="getProfile"></navpage-dialog>
@@ -96,11 +112,14 @@
 
 <script>
 import NavPageDialog from "@/components/NavPageDialog.vue";
+import ElTableDraggable from "element-ui-el-table-draggable";
+window['Lodash'] = require('lodash');
 
 export default {
   name: "navpagelist",
   components: {
-    "navpage-dialog": NavPageDialog
+    "navpage-dialog": NavPageDialog,
+    ElTableDraggable
   },
   data() {
     return {
@@ -114,6 +133,11 @@ export default {
       },
       tableData: [],
       allTableData: [],
+      backupTableData: [],
+      allContentData: {},
+      navSort: [],
+      contentSort: {},
+      tableDataChangeSort: false,
       formData: {
         page_group_id: "",
         group_name: "",
@@ -135,6 +159,19 @@ export default {
     };
   },
   computed: {
+    checkNavSort() {
+      if (this.navSort.length) {
+        this.navSort = [];
+      }
+      for (let i = 0; i < this.tableData.length; i++) {
+        let newId = this.tableData[i].page_group_id;
+        let oldId = this.allTableData[i].page_group_id;
+        if (newId !== oldId) {
+          this.navSort.push(newId);
+        }
+      }
+      this.tableDataChangeSort = this.navSort.length ? true : false;
+    },
     user() {
       return this.$store.getters.user;
     }
@@ -143,6 +180,21 @@ export default {
     this.getProfile();
   },
   methods: {
+    dragContent(tableData, navId) {
+      let oldTableData = this.allContentData[navId];
+      for (let i = 0; i < tableData.length; i++) {
+        let newId = tableData[i].page_content_id;
+        let oldId = oldTableData[i].page_content_id;
+        if (newId !== oldId) {
+          this.contentSort[navId].push(newId);
+        }
+      }
+      if (this.contentSort[navId].length) {
+        this.tableDataChangeSort = true;
+      } else {
+        this.tableDataChangeSort = this.navSort.length ? true : false;
+      }
+    },
     getProfile() {
       //獲取數據
       this.$axios
@@ -151,6 +203,11 @@ export default {
         )
         .then(res => {
           this.allTableData = res.data;
+          this.backupTableData = Lodash.cloneDeep(this.allTableData);
+          for (let i = 0; i < this.backupTableData.length; i++) {
+            this.allContentData[this.backupTableData[i].page_group_id] = this.backupTableData[i].page_content;
+            this.contentSort[this.backupTableData[i].page_group_id] = [];
+          }
           this.filterTableData = res.data;
           // 設置分頁數據
           this.setPaginations();
@@ -189,7 +246,9 @@ export default {
       //刪除
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${window.$cookies.get("sid")}`,
+          `https://sniweb.shouting.feedia.co/php/${deleteType}.php?sid=${window.$cookies.get(
+            "sid"
+          )}`,
           JSON.stringify(deleteData)
         )
         .then(res => {
@@ -279,6 +338,78 @@ export default {
           page_group_id: page_group_id
         }
       });
+    },
+    handleSortSend() {
+      if (this.navSort.length) {
+        const navSortData = {
+          page_group_sort: `[${this.navSort}]`
+        };
+        //送出數據
+        this.$axios
+          .post(
+            `https://sniweb.shouting.feedia.co/php/EditNavSort.php?sid=${window.$cookies.get(
+              "sid"
+            )}`,
+            JSON.stringify(navSortData)
+          )
+          .then(res => {
+            if (res.data.status === "Y") {
+              //添加成功
+              this.$message({
+                message: res.data.message,
+                type: "success"
+              });
+              this.getProfile();
+              this.$emit("update");
+            } else {
+              //添加失敗
+              this.$message({
+                message: res.data.message,
+                type: "error"
+              });
+            }
+          });
+      }
+
+      if (Object.keys(this.contentSort).length) {
+        for (let navId in this.contentSort) {
+          if (this.contentSort[navId].length) {
+            const contentSortData = {
+              page_group_id: Number(navId),
+              page_sort: `[${this.contentSort[navId]}]`
+            };
+            //送出數據
+            this.$axios
+              .post(
+                `https://sniweb.shouting.feedia.co/php/EditContentSort.php?sid=${window.$cookies.get(
+                  "sid"
+                )}`,
+                JSON.stringify(contentSortData)
+              )
+              .then(res => {
+                if (res.data.status === "Y") {
+                  //添加成功
+                  this.$message({
+                    message: res.data.message,
+                    type: "success"
+                  });
+                  this.getProfile();
+                  this.$emit("update");
+                } else {
+                  //添加失敗
+                  this.$message({
+                    message: res.data.message,
+                    type: "error"
+                  });
+                }
+              });
+          }
+        }
+      }
+    },
+    handleSortCanel() {
+      this.getProfile();
+      this.$emit("update");
     }
   }
 };
@@ -293,6 +424,14 @@ export default {
 }
 .btnRight {
   float: right;
+}
+.btnSortSend {
+  float: left;
+  margin-left: 65%;
+}
+.btnSortCanel {
+  float: left;
+  /* margin-left: 5% */
 }
 .pagination {
   text-align: right;

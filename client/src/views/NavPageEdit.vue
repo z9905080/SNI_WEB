@@ -131,7 +131,8 @@ export default {
       },
       tableData: [],
       allTableData: [],
-      pageSortArr: [],
+      navSort: [],
+      contentSort: [],
       tableDataChangeSort: false,
       formData: {
         page_group_id: "",
@@ -155,8 +156,8 @@ export default {
   },
   computed: {
     checkTableSort() {
-      if (this.pageSortArr.length) {
-        this.pageSortArr = [];
+      if (this.navSort.length) {
+        this.navSort = [];
       }
 
       // console.log("newTableData:", this.tableData);
@@ -165,11 +166,11 @@ export default {
         let newId = this.tableData[i].page_group_id;
         let oldId = this.allTableData[i].page_group_id;
         if (newId !== oldId) {
-          this.pageSortArr.push(newId);
+          this.navSort.push(newId);
         }
       }
-      this.tableDataChangeSort = this.pageSortArr.length ? true : false;
-      // console.log("sortTableData:", this.pageSortArr);
+      this.tableDataChangeSort = this.navSort.length ? true : false;
+      // console.log("sortTableData:", this.navSort);
     },
     user() {
       return this.$store.getters.user;
@@ -319,11 +320,11 @@ export default {
       });
     },
     handleSortSend() {
-      if (!this.pageSortArr.length) {
+      if (!this.navSort.length) {
         return;
       }
       const sortData = {
-        'page_group_sort': this.pageSortArr
+        'page_group_sort': `[${this.navSort}]`
       }
       console.log(sortData);
 

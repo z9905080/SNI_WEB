@@ -136,7 +136,9 @@ export default {
       backupTableData: [],
       allContentData: {},
       navSort: [],
+      otherNavSort: [],
       contentSort: {},
+      otherContentSort: {},
       tableDataChangeSort: false,
       formData: {
         page_group_id: "",
@@ -162,14 +164,19 @@ export default {
     checkNavSort() {
       if (this.navSort.length) {
         this.navSort = [];
+        this.otherNavSort = [];
       }
+      let otherNavSort = [];
       for (let i = 0; i < this.tableData.length; i++) {
         let newId = this.tableData[i].page_group_id;
-        let oldId = this.allTableData[i].page_group_id;
+        let oldId = this.backupTableData[i].page_group_id;
         if (newId !== oldId) {
           this.navSort.push(newId);
+        } else {
+          otherNavSort.push(newId);
         }
       }
+      this.otherNavSort = otherNavSort;
       this.tableDataChangeSort = this.navSort.length ? true : false;
     },
     user() {
@@ -181,14 +188,22 @@ export default {
   },
   methods: {
     dragContent(tableData, navId) {
+      if (this.contentSort[navId].length) {
+        this.contentSort[navId] = [];
+        this.otherContentSort[navId] = [];
+      }
+      let otherContentSort = [];
       let oldTableData = this.allContentData[navId];
       for (let i = 0; i < tableData.length; i++) {
         let newId = tableData[i].page_content_id;
         let oldId = oldTableData[i].page_content_id;
         if (newId !== oldId) {
           this.contentSort[navId].push(newId);
+        } else {
+          otherContentSort.push(newId);
         }
       }
+      this.otherContentSort[navId] = otherContentSort;
       if (this.contentSort[navId].length) {
         this.tableDataChangeSort = true;
       } else {
@@ -207,7 +222,9 @@ export default {
           for (let i = 0; i < this.backupTableData.length; i++) {
             this.allContentData[this.backupTableData[i].page_group_id] = this.backupTableData[i].page_content;
             this.contentSort[this.backupTableData[i].page_group_id] = [];
+            this.otherContentSort[this.backupTableData[i].page_group_id] = [];
           }
+
           this.filterTableData = res.data;
           // 設置分頁數據
           this.setPaginations();
@@ -341,8 +358,9 @@ export default {
     },
     handleSortSend() {
       if (this.navSort.length) {
+        const resultSort = [... this.navSort, ...this.otherNavSort];
         const navSortData = {
-          page_group_sort: `[${this.navSort}]`
+          page_group_sort: `[${resultSort}]`
         };
         //送出數據
         this.$axios
@@ -374,9 +392,10 @@ export default {
       if (Object.keys(this.contentSort).length) {
         for (let navId in this.contentSort) {
           if (this.contentSort[navId].length) {
+            const resultSort = [... this.contentSort[navId], ...this.otherContentSort[navId]];
             const contentSortData = {
               page_group_id: Number(navId),
-              page_sort: `[${this.contentSort[navId]}]`
+              page_sort: `[${resultSort}]`
             };
             //送出數據
             this.$axios

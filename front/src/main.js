@@ -19,12 +19,20 @@ import Vuex from 'vuex'
 import App from './App.vue';
 import router from './router';
 import NowUiKit from './plugins/now-ui-kit';
+import VueAnalytics from 'vue-analytics'
 import storeParam from './store'
 
 Vue.config.productionTip = false;
 
 Vue.use(Vuex);
 Vue.use(NowUiKit);
+Vue.use(VueAnalytics, {
+  id: 'UA-154926984-1',
+  router,
+  autoTracking: {
+    pageviewOnLoad: false
+  }
+})
 
 const store = new Vuex.Store(storeParam);
 

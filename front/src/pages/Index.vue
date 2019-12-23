@@ -15,6 +15,7 @@
               :src="'https://sniweb.shouting.feedia.co/php'+image.image"
               :alt="image.id"
               width="100%"
+              @load="changeHeight()"
               @click="openLink(image.url)"
               style="cursor:pointer;"
             />
@@ -75,9 +76,9 @@ export default {
     };
   },
   watch: {
-      homeContext(){
-          this.changeHeight();
-      }
+    homeContext() {
+      this.changeHeight();
+    }
   },
   mounted() {
     const that = this;
@@ -99,8 +100,10 @@ export default {
     },
     changeHeight() {
       if (document.getElementById("banner-img")) {
-        this.carouselHeight =
-          document.getElementById("banner-img").clientHeight + "px";
+        if (document.getElementById("banner-img").clientHeight > 0) {
+          this.carouselHeight =
+            document.getElementById("banner-img").clientHeight + "px";
+        }
       }
     }
   }

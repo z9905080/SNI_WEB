@@ -89,13 +89,13 @@
             ])
         },
         created() {
-            axios.get("https://sniweb.shouting.feedia.co/php/GetNav.php", {
+            axios.get("http://www.seicho-no-ie.org.tw/php/GetNav.php", {
                 'Cache-Control': 'max-age=3600'
             }).then(((res) => {
                 this.actionHeaderNav(res.data.filter(nav => nav.page_content));
             }));
 
-            axios.get("https://sniweb.shouting.feedia.co/php/GetHomePage.php", {
+            axios.get("http://www.seicho-no-ie.org.tw/php/GetHomePage.php", {
                 'Cache-Control': 'max-age=3600'
             }).then(((res) => {
                 this.actionUpdateContext(res.data);

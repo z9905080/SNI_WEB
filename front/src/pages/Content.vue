@@ -12,7 +12,7 @@
           <el-carousel-item v-for="(image,index) in homeContext.carousel" :key="index">
             <img
               id="banner-img"
-              :src="'https://sniweb.shouting.feedia.co/php'+image.image"
+              :src="'http://www.seicho-no-ie.org.tw/php'+image.image"
               :alt="image.id"
               width="100%"
               @load="changeHeight()"
@@ -108,7 +108,7 @@ export default {
     ]),
     getContent() {
       axios
-        .get("https://sniweb.shouting.feedia.co/php/GetContent.php", {
+        .get("http://www.seicho-no-ie.org.tw/php/GetContent.php", {
           params: {
             page_id: this.id
           }

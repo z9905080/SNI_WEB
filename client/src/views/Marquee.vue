@@ -58,7 +58,7 @@ export default {
       //獲取數據
       this.$axios
         .get(
-          `https://sniweb.shouting.feedia.co/php/GetMarquees.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/GetMarquees.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -104,7 +104,7 @@ export default {
       //刪除跑馬燈
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/DeleteMarquee.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/DeleteMarquee.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteData)
@@ -131,7 +131,7 @@ export default {
   }
 };
 //圖片路徑
-// https://sniweb.shouting.feedia.co/php/+ picture/.....
+// http://www.seicho-no-ie.org.tw/php/+ picture/.....
 </script>
 
 <style scoped>

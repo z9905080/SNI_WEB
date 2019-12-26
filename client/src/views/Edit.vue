@@ -61,7 +61,9 @@ export default {
   data() {
     return {
       url: "",
-      imageUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${window.$cookies.get("sid")}`,
+      imageUrl: `http://www.seicho-no-ie.org.tw/php/PictureUpload.php?sid=${window.$cookies.get(
+        "sid"
+      )}`,
       tinymceFlag: 1,
       id: "",
       tinymceInit: {},
@@ -77,7 +79,7 @@ export default {
   methods: {
     // 插入图片至编辑器
     insertImage(res, file) {
-      let src = `https://sniweb.shouting.feedia.co/php/${file.response.url}`; // 图片存储地址
+      let src = `http://www.seicho-no-ie.org.tw/php/${file.response.url}`; // 图片存储地址
       tinymce.execCommand("mceInsertContent", false, `<img src=${src}>`);
     },
     getPageContent() {
@@ -91,9 +93,7 @@ export default {
         //獲取數據
         this.$axios
           .post(
-            `https://sniweb.shouting.feedia.co/php/GetContent.php?page_id=${
-              this.id
-            }`
+            `http://www.seicho-no-ie.org.tw/php/GetContent.php?page_id=${this.id}`
           )
           .then(res => {
             this.page_content = res.data;
@@ -107,17 +107,24 @@ export default {
     onSubmit() {
       const isEdit = this.url.indexOf("/navpageedit/edit/") !== -1;
       const apiType = isEdit ? "EditContent" : "AddContent";
-      //送出數據
-      this.$axios
-        .post(
-          `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get("sid")}`,
-          JSON.stringify(this.page_content)
-        )
-        .then(res => {
-          if (res.data.status === "Y") {
+
+      fetch(`http://www.seicho-no-ie.org.tw/php/${apiType}.php?sid=${window.$cookies.get("sid")}`, {
+        body: JSON.stringify(this.page_content), // must match 'Content-Type' header
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        headers: {
+          "content-type": "application/json"
+        },
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer" // *client, no-referrer
+      }).then(response => {
+          return response.json();
+        })
+        .then(data=>{
+            if (data.status === "Y") {
             //添加成功
             this.$message({
-              message: res.data.message,
+              message: data.message,
               type: "success"
             });
             this.$emit("update");
@@ -125,19 +132,43 @@ export default {
           } else {
             //添加失敗
             this.$message({
-              message: res.data.message,
+              message: data.message,
               type: "error"
             });
           }
-        });
+        }); // 輸出成 json
+
+      // //送出數據
+      // this.$axios
+      //   .post(
+      //     `http://www.seicho-no-ie.org.tw/php/${apiType}.php?sid=${window.$cookies.get(
+      //       "sid"
+      //     )}`,
+      //     JSON.stringify(this.page_content)
+      //   )
+      //   .then(res => {
+      //     if (res.data.status === "Y") {
+      //       //添加成功
+      //       this.$message({
+      //         message: res.data.message,
+      //         type: "success"
+      //       });
+      //       this.$emit("update");
+      //       this.$router.push("/navpageedit");
+      //     } else {
+      //       //添加失敗
+      //       this.$message({
+      //         message: res.data.message,
+      //         type: "error"
+      //       });
+      //     }
+      //   });
     },
     onCancel() {
       this.$router.push("/navpageedit");
     },
-    handleRemove(file, fileList) {
-    },
-    handlePreview(file) {
-    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
         `当前限制选择 3 个文件，本次选择了 ${

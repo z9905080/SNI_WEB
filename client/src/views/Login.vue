@@ -58,7 +58,7 @@ export default {
         if (valid) {
           this.$axios
             .post(
-              "https://sniweb.shouting.feedia.co/php/Login.php",
+              "http://www.seicho-no-ie.org.tw/php/Login.php",
               JSON.stringify(this.loginUser)
             )
             .then(res => {

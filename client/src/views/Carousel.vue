@@ -50,7 +50,7 @@ export default {
     return {
       tableData: [],
       images: [],
-      url: "https://sniweb.shouting.feedia.co/php"
+      url: "http://www.seicho-no-ie.org.tw/php"
     };
   },
   created() {
@@ -63,7 +63,7 @@ export default {
       //獲取數據
       this.$axios
         .get(
-          `https://sniweb.shouting.feedia.co/php/GetCarousels.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/GetCarousels.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -88,7 +88,7 @@ export default {
       //送出刪除圖片
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/DeleteCarousel.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/DeleteCarousel.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteData)
@@ -115,7 +115,7 @@ export default {
   }
 };
 //圖片路徑
-// https://sniweb.shouting.feedia.co/php/+ picture/.....
+// http://www.seicho-no-ie.org.tw/php/+ picture/.....
 </script>
 
 <style scoped>

@@ -69,7 +69,7 @@ export default {
             // 送出選取圖片
             this.$axios
               .post(
-                `https://sniweb.shouting.feedia.co/php/${apiType}.php?sid=${window.$cookies.get(
+                `http://www.seicho-no-ie.org.tw/php/${apiType}.php?sid=${window.$cookies.get(
                   "sid"
                 )}`,
                 JSON.stringify(carouselsData)

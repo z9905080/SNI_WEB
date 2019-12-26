@@ -76,10 +76,10 @@ export default {
   },
   data() {
     return {
-      uploadUrl: `https://sniweb.shouting.feedia.co/php/PictureUpload.php?sid=${window.$cookies.get(
+      uploadUrl: `http://www.seicho-no-ie.org.tw/php/PictureUpload.php?sid=${window.$cookies.get(
         "sid"
       )}&r=${new Date().getTime()}`,
-      url: `https://sniweb.shouting.feedia.co/php`,
+      url: `http://www.seicho-no-ie.org.tw/php`,
       checkboxText: "圖片",
       index: null,
       fileList: [],
@@ -105,7 +105,7 @@ export default {
       //獲取全部圖片
       this.$axios
         .get(
-          `https://sniweb.shouting.feedia.co/php/GetGallery.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/GetGallery.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -181,7 +181,7 @@ export default {
       //送出刪除圖片
       this.$axios
         .post(
-          `https://sniweb.shouting.feedia.co/php/PictureDelete.php?sid=${window.$cookies.get(
+          `http://www.seicho-no-ie.org.tw/php/PictureDelete.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteFile)
@@ -215,7 +215,7 @@ export default {
   }
 };
 //圖片路徑
-// https://sniweb.shouting.feedia.co/php/+ picture/.....
+// http://www.seicho-no-ie.org.tw/php/+ picture/.....
 </script>
 
 <style scoped>

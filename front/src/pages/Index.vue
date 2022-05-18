@@ -60,7 +60,7 @@ export default {
       if (this.homeContext.marquee) {
         this.homeContext.marquee.forEach(value => {
           marqueeList.push(
-            `<span class="ml-5" style="color:${value.color}">${value.text}</span>`
+            `<span class="ml-5 font-size-em" style="color:${value.color}">${value.text}</span>`
           );
         });
       }

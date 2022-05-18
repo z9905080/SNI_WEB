@@ -8,8 +8,8 @@
     >
         <template slot-scope="{ toggle, isToggled }">
             <router-link class="navbar-brand" to="/">
-                <img src="../../public/img/title_logo.png" style="height:50px;padding-right:10px" alt="">   
-                <img src="../../public/img/title_text.png" style="height:30px" alt="">   
+                <img src="../../public/img/title_logo.png" style="height:50px;padding-right:10px" alt="">
+                <img src="../../public/img/title_text.png" style="height:30px" alt="">
             </router-link>
         </template>
         <template slot="navbar-menu">
@@ -18,7 +18,7 @@
                         class="nav-link"
                         href="/"
                 >
-                    <span>首頁</span>
+                    <span class="no-icon">首頁</span>
                 </a>
             </li>
 
@@ -89,13 +89,13 @@
             ])
         },
         created() {
-            axios.get("http://www.seicho-no-ie.org.tw/php/GetNav.php", {
+            axios.get("https://www.seicho-no-ie.org.tw/php/GetNav.php", {
                 'Cache-Control': 'max-age=3600'
             }).then(((res) => {
                 this.actionHeaderNav(res.data.filter(nav => nav.page_content));
             }));
 
-            axios.get("http://www.seicho-no-ie.org.tw/php/GetHomePage.php", {
+            axios.get("https://www.seicho-no-ie.org.tw/php/GetHomePage.php", {
                 'Cache-Control': 'max-age=3600'
             }).then(((res) => {
                 this.actionUpdateContext(res.data);

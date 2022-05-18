@@ -213,7 +213,7 @@ export default {
       //獲取數據
       this.$axios
         .get(
-          `http://www.seicho-no-ie.org.tw/php/GetNav.php?&r=${new Date().getTime()}`
+          `https://www.seicho-no-ie.org.tw/php/GetNav.php?&r=${new Date().getTime()}`
         )
         .then(res => {
           this.allTableData = res.data;
@@ -261,7 +261,7 @@ export default {
       //刪除
       this.$axios
         .post(
-          `http://www.seicho-no-ie.org.tw/php/${deleteType}.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/${deleteType}.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteData)
@@ -362,7 +362,7 @@ export default {
         //送出數據
         this.$axios
           .post(
-            `http://www.seicho-no-ie.org.tw/php/EditNavSort.php?sid=${window.$cookies.get(
+            `https://www.seicho-no-ie.org.tw/php/EditNavSort.php?sid=${window.$cookies.get(
               "sid"
             )}`,
             JSON.stringify(navSortData)
@@ -396,7 +396,7 @@ export default {
             //送出數據
             this.$axios
               .post(
-                `http://www.seicho-no-ie.org.tw/php/EditContentSort.php?sid=${window.$cookies.get(
+                `https://www.seicho-no-ie.org.tw/php/EditContentSort.php?sid=${window.$cookies.get(
                   "sid"
                 )}`,
                 JSON.stringify(contentSortData)

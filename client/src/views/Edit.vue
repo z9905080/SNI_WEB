@@ -93,7 +93,7 @@ export default {
         //獲取數據
         this.$axios
           .post(
-            `http://www.seicho-no-ie.org.tw/php/GetContent.php?page_id=${this.id}`
+            `https://www.seicho-no-ie.org.tw/php/GetContent.php?page_id=${this.id}`
           )
           .then(res => {
             this.page_content = res.data;
@@ -108,7 +108,7 @@ export default {
       const isEdit = this.url.indexOf("/navpageedit/edit/") !== -1;
       const apiType = isEdit ? "EditContent" : "AddContent";
 
-      fetch(`http://www.seicho-no-ie.org.tw/php/${apiType}.php?sid=${window.$cookies.get("sid")}`, {
+      fetch(`https://www.seicho-no-ie.org.tw/php/${apiType}.php?sid=${window.$cookies.get("sid")}`, {
         body: JSON.stringify(this.page_content), // must match 'Content-Type' header
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
         headers: {

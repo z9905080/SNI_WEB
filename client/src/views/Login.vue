@@ -58,14 +58,14 @@ export default {
         if (valid) {
           this.$axios
             .post(
-              "http://www.seicho-no-ie.org.tw/php/Login.php",
+              "https://www.seicho-no-ie.org.tw/php/Login.php",
               JSON.stringify(this.loginUser)
             )
             .then(res => {
               if (res.data) {
                 // get token
                 const { token, expire_time } = res.data;
-                
+
                 //利用regular expression  將'-' 代換成 '/'
                 const newDate = new Date(Date.parse(expire_time .replace(/-/g, "/")));
                 // set cookie

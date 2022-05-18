@@ -58,7 +58,7 @@ export default {
       //獲取數據
       this.$axios
         .get(
-          `http://www.seicho-no-ie.org.tw/php/GetMarquees.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/GetMarquees.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -104,7 +104,7 @@ export default {
       //刪除跑馬燈
       this.$axios
         .post(
-          `http://www.seicho-no-ie.org.tw/php/DeleteMarquee.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/DeleteMarquee.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteData)

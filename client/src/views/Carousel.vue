@@ -50,7 +50,7 @@ export default {
     return {
       tableData: [],
       images: [],
-      url: "http://www.seicho-no-ie.org.tw/php"
+      url: "https://www.seicho-no-ie.org.tw/php"
     };
   },
   created() {
@@ -63,7 +63,7 @@ export default {
       //獲取數據
       this.$axios
         .get(
-          `http://www.seicho-no-ie.org.tw/php/GetCarousels.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/GetCarousels.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -88,7 +88,7 @@ export default {
       //送出刪除圖片
       this.$axios
         .post(
-          `http://www.seicho-no-ie.org.tw/php/DeleteCarousel.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/DeleteCarousel.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteData)

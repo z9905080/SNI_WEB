@@ -68,10 +68,10 @@ export default {
   },
   data() {
     return {
-      uploadUrl: `http://www.seicho-no-ie.org.tw/php/PictureUpload.php?sid=${window.$cookies.get(
+      uploadUrl: `https://www.seicho-no-ie.org.tw/php/PictureUpload.php?sid=${window.$cookies.get(
         "sid"
       )}&r=${new Date().getTime()}`,
-      url: `http://www.seicho-no-ie.org.tw/php`,
+      url: `https://www.seicho-no-ie.org.tw/php`,
       carouselId: "",
       checkboxText: "圖片",
       index: null,
@@ -98,7 +98,7 @@ export default {
       //獲取全部圖片
       this.$axios
         .get(
-          `http://www.seicho-no-ie.org.tw/php/GetGallery.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/GetGallery.php?sid=${window.$cookies.get(
             "sid"
           )}&r=${new Date().getTime()}`
         )
@@ -165,7 +165,7 @@ export default {
       //送出刪除圖片
       this.$axios
         .post(
-          `http://www.seicho-no-ie.org.tw/php/PictureDelete.php?sid=${window.$cookies.get(
+          `https://www.seicho-no-ie.org.tw/php/PictureDelete.php?sid=${window.$cookies.get(
             "sid"
           )}`,
           JSON.stringify(deleteFile)

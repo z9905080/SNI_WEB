@@ -124,7 +124,7 @@ export default {
     getProfile() {
       //獲取數據
       this.$axios
-        .get("http://www.seicho-no-ie.org.tw/php/GetContent.php")
+        .get("https://www.seicho-no-ie.org.tw/php/GetContent.php")
         .then(res => {
           this.allTableData = res.data;
           this.filterTableData = res.data;

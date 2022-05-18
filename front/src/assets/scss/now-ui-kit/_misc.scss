@@ -7,7 +7,16 @@ body{
     -webkit-font-smoothing: antialiased;
 }
 
-span{
+//span{
+//    font-size: $font-size-small;
+//}
+
+.nav-item .no-icon{
+    font-size: $font-size-small;
+}
+
+.font-size-em{
+    font-size: $font-size-small;
     font-size: $font-size-small;
 }
 

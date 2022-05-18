@@ -12,7 +12,7 @@
           <el-carousel-item v-for="(image,index) in homeContext.carousel" :key="index">
             <img
               id="banner-img"
-              :src="'http://www.seicho-no-ie.org.tw/php'+image.image"
+              :src="'https://www.seicho-no-ie.org.tw/php'+image.image"
               :alt="image.id"
               width="100%"
               @load="changeHeight()"

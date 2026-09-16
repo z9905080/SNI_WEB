@@ -1,0 +1,10 @@
+.git
+legacy
+bin
+tmp
+.env
+**/node_modules
+web/dist
+web/test-results
+web/playwright-report
+docs

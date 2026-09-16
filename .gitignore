@@ -1,3 +1,21 @@
 node_modules/
-/node-vue-ele-app/node_modules/*
-/node-vue-ele-app/client/node_modules/*
+/legacy/node-vue-ele-app/node_modules/
+/legacy/node-vue-ele-app/client/node_modules/
+
+# Go
+/bin/
+/tmp/
+/sniweb
+coverage.out
+
+# 前端
+/web/dist/
+/web/test-results/
+/web/playwright-report/
+
+# embed 用的前端產物（保留 .gitkeep）
+/backend/internal/site/webdist/dist/*
+!/backend/internal/site/webdist/dist/.gitkeep
+
+# 環境變數
+.env

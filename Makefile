@@ -57,7 +57,13 @@ sample-images:
 
 dev: sample-images
 	@trap 'kill 0' INT TERM EXIT; \
-	(set -a; . ./.env; set +a; $(MISE) go run ./backend/cmd/sniweb serve) & \
+	( set -a; \
+	  while IFS='=' read -r key val; do \
+	    case "$$key" in ''|'#'*) continue ;; esac; \
+	    export "$$key=$$val"; \
+	  done < .env; \
+	  set +a; \
+	  $(MISE) go run ./backend/cmd/sniweb serve ) & \
 	$(MISE) pnpm --dir web dev & \
 	wait
 

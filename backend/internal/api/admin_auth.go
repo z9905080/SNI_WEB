@@ -66,8 +66,9 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	accountKey := strings.ToLower(account)
 	ip := auth.ClientIP(r)
-	if s.ipLimiter.Blocked(ip) || s.accountLimiter.Blocked(account) {
+	if s.ipLimiter.Blocked(ip) || s.accountLimiter.Blocked(accountKey) {
 		writeError(w, r, http.StatusTooManyRequests, "too_many_requests", "嘗試次數過多，請 15 分鐘後再試")
 		return
 	}
@@ -75,7 +76,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 
 	u, raw, exp, err := s.Sessions.Login(r.Context(), account, req.Password)
 	if errors.Is(err, auth.ErrInvalidCredentials) {
-		s.accountLimiter.Add(account)
+		s.accountLimiter.Add(accountKey)
 		writeError(w, r, http.StatusUnauthorized, "invalid_credentials", "帳號或密碼錯誤")
 		return
 	}
@@ -83,7 +84,7 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 		s.internalError(w, r, err)
 		return
 	}
-	s.accountLimiter.Reset(account)
+	s.accountLimiter.Reset(accountKey)
 	auth.SetCookie(w, raw, exp, s.CookieSecure)
 	writeJSON(w, http.StatusOK, map[string]auth.User{"user": u})
 }

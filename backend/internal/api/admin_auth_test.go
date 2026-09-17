@@ -75,6 +75,17 @@ func TestAccountRateLimit(t *testing.T) {
 	expectStatus(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": "admin", "password": "password1"}), 200)
 }
 
+func TestAccountRateLimitCaseInsensitive(t *testing.T) {
+	h := newHarness(t)
+	h.login()
+	variants := []string{"admin", "Admin", "ADMIN"}
+	for i := 0; i < 10; i++ {
+		account := variants[i%len(variants)]
+		expectStatus(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": account, "password": "bad"}), 401)
+	}
+	expectError(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": "admin", "password": "password1"}), 429, "too_many_requests")
+}
+
 func TestIPRateLimit(t *testing.T) {
 	h := newHarness(t)
 	for i := 0; i < 20; i++ {

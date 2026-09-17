@@ -69,7 +69,17 @@ func (s *Server) Routes() http.Handler {
 	s.admin(mux, "GET /api/v1/admin/pages/{id}", s.getAdminPage)
 	s.admin(mux, "PATCH /api/v1/admin/pages/{id}", s.updatePage)
 	s.admin(mux, "DELETE /api/v1/admin/pages/{id}", s.deletePage)
-	// admin media routes（後續 task 加入）
+	s.admin(mux, "GET /api/v1/admin/carousels", s.listCarousels)
+	s.admin(mux, "POST /api/v1/admin/carousels", s.createCarousel)
+	s.admin(mux, "PATCH /api/v1/admin/carousels/{id}", s.updateCarousel)
+	s.admin(mux, "DELETE /api/v1/admin/carousels/{id}", s.deleteCarousel)
+	s.admin(mux, "GET /api/v1/admin/marquees", s.listMarquees)
+	s.admin(mux, "POST /api/v1/admin/marquees", s.createMarquee)
+	s.admin(mux, "PATCH /api/v1/admin/marquees/{id}", s.updateMarquee)
+	s.admin(mux, "DELETE /api/v1/admin/marquees/{id}", s.deleteMarquee)
+	s.admin(mux, "GET /api/v1/admin/settings", s.getSettings)
+	s.admin(mux, "PUT /api/v1/admin/settings", s.putSettings)
+	// admin image routes（後續 task 加入）
 
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, http.StatusNotFound, "not_found", "找不到此 API")

@@ -38,6 +38,35 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 | `make fmt` | 以 golangci-lint（gofumpt）自動排版 |
 | `make build` | 建置 `bin/sniweb` |
 
+### 前後端一起開發
+
+```bash
+make up
+cp .env.example .env
+make dev          # Go :8080 + Vite :5173（/api、/php/picture 代理到 Go）
+```
+
+開啟 http://localhost:5173 。前端指令：
+
+| 指令 | 說明 |
+|---|---|
+| `pnpm --dir web test` | Vitest |
+| `pnpm --dir web typecheck` | TypeScript 型別檢查 |
+| `make web` | 建置前端並放入 Go embed 目錄 |
+| `make e2e` | 重設本機資料庫後執行 Playwright |
+
+## 部署（Zeabur）
+
+1. 建立 MySQL 服務，匯入舊資料並執行上方「資料庫」段落的 SQL。
+2. 以 repo 根目錄的 `Dockerfile` 建立 app 服務，設定環境變數：
+   `DATABASE_URL`、`PUBLIC_BASE_URL`（例如 `https://www.seicho-no-ie.org.tw`），
+   以及 `STORAGE_DRIVER`（`disk` 或 `s3`）與對應變數、`GA_MEASUREMENT_ID`、`COUNTER_SCRIPT_URL`。
+3. 使用 `disk` 時掛載 Volume 到 `/data`：首次掛載會清空目錄，掛載後再把舊的 `php/picture/*` 放進 `/data/picture/`；重新部署時會短暫停機。
+4. 在 app 服務的終端機執行 `/sniweb user create --account <帳號> --name <暱稱>` 建立管理者。
+5. 服務不會自動 migrate，schema 變更需手動執行。
+
+`COUNTER_SCRIPT_URL` 若只有 `http://` 版本，在 https 網站上會被瀏覽器封鎖（混合內容），需改用供應商的 https 網址。
+
 ## 資料庫
 
 沿用舊站的 7 張表，應用程式不會自動修改 schema。部署前需手動執行：

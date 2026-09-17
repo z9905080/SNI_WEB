@@ -15,6 +15,7 @@ func TestCarouselEndpoints(t *testing.T) {
 		{"image": "javascript:alert(1)", "url": ""},
 		{"image": "/php/picture/a.jpg", "url": "javascript:alert(1)"},
 		{"image": "/php/picture/a.jpg", "url": "//evil.example"},
+		{"image": "/php/picture/a.jpg", "url": "/\\evil.com"},
 	} {
 		expectError(t, h.do("POST", "/api/v1/admin/carousels", bad), 400, "validation")
 	}

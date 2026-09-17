@@ -25,6 +25,9 @@ func validLink(s string) bool {
 	if s == "" || isHTTPURL(s) {
 		return true
 	}
+	if strings.ContainsRune(s, '\\') {
+		return false
+	}
 	return strings.HasPrefix(s, "/") && !strings.HasPrefix(s, "//")
 }
 

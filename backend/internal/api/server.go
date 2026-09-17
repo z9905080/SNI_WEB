@@ -59,7 +59,17 @@ func (s *Server) Routes() http.Handler {
 	mux.Handle("POST /api/v1/admin/auth/login", s.csrf(http.HandlerFunc(s.login)))
 	s.admin(mux, "POST /api/v1/admin/auth/logout", s.logout)
 	s.admin(mux, "GET /api/v1/admin/auth/me", s.me)
-	// admin content routes（後續 task 加入）
+	s.admin(mux, "GET /api/v1/admin/groups", s.listGroups)
+	s.admin(mux, "POST /api/v1/admin/groups", s.createGroup)
+	s.admin(mux, "PATCH /api/v1/admin/groups/{id}", s.renameGroup)
+	s.admin(mux, "DELETE /api/v1/admin/groups/{id}", s.deleteGroup)
+	s.admin(mux, "PUT /api/v1/admin/groups/order", s.setGroupOrder)
+	s.admin(mux, "PUT /api/v1/admin/groups/{id}/pages/order", s.setPageOrder)
+	s.admin(mux, "POST /api/v1/admin/pages", s.createPage)
+	s.admin(mux, "GET /api/v1/admin/pages/{id}", s.getAdminPage)
+	s.admin(mux, "PATCH /api/v1/admin/pages/{id}", s.updatePage)
+	s.admin(mux, "DELETE /api/v1/admin/pages/{id}", s.deletePage)
+	// admin media routes（後續 task 加入）
 
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, http.StatusNotFound, "not_found", "找不到此 API")

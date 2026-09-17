@@ -10,6 +10,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -152,6 +153,8 @@ func expectError(t *testing.T, resp *http.Response, status int, code string) err
 	}
 	return e
 }
+
+func itoa(n int64) string { return strconv.FormatInt(n, 10) }
 
 func mustURL(s string) *url.URL {
 	u, err := url.Parse(s)

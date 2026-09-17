@@ -40,3 +40,9 @@ export async function api<T>(path: string, { method = 'GET', body, signal }: Opt
   }
   return data as T
 }
+
+// 4xx 不重試（例如 401、404），其他錯誤重試一次
+export function retryUnlessClientError(failureCount: number, error: unknown) {
+  if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false
+  return failureCount < 1
+}

@@ -24,15 +24,18 @@ function signature(html: string) {
       else add(`${attr.name}="${attr.value}"`)
     }
   }
-  // 標籤之間的縮排換行（純空白文字節點）不算內容；只有節點本身有非空白字元時才保留、並把內部連續空白正規化成一個空格
+  // 結構容器（body/table/tbody/…）之間的縮排換行是純排版雜訊，直接忽略；
+  // 其他容器（p/span/div/td/li/標題……）內的純空白文字節點仍可能是有意義的分隔（例如英數字之間的空白）或
+  // 舊站常見的尾端 &nbsp;，要保留，只把連續空白正規化成一個空格。
+  const structuralContainers = new Set(['body', 'table', 'tbody', 'thead', 'tfoot', 'tr', 'ul', 'ol', 'colgroup'])
   const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT)
-  const parts: string[] = []
+  let text = ''
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     const value = node.nodeValue ?? ''
-    if (value.trim() === '') continue
-    parts.push(value.replace(/\s+/g, ' ').trim())
+    const isWhitespaceOnly = value.trim() === ''
+    if (isWhitespaceOnly && structuralContainers.has(node.parentElement?.localName ?? '')) continue
+    text += value.replace(/\s+/g, ' ')
   }
-  const text = parts.join('')
   return { counts, text }
 }
 

@@ -21,4 +21,9 @@ describe('detectLoss', () => {
     expect(detectLoss('<p>一段文字</p>', '<p>一段</p>')).toEqual(['文字內容'])
     expect(detectLoss('<p><span>a</span><span>b</span></p>', '<p><span>ab</span></p>')).toEqual(['<span>'])
   })
+
+  it('inline 內容裡有意義的空白不會被忽略', () => {
+    expect(detectLoss('<p><b>a</b> <b>b</b></p>', '<p><b>a</b><b>b</b></p>')).toEqual(['文字內容'])
+    expect(detectLoss('<p>x</p><p>y&nbsp;</p>', '<p>x</p><p>y</p>')).toEqual(['文字內容'])
+  })
 })

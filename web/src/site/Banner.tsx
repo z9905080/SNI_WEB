@@ -30,7 +30,7 @@ export default function Banner({ items }: { items: Carousel[] }) {
         <div className="flex">
           {items.map((c, i) => (
             <div key={c.id} aria-roledescription="slide" aria-label={`第 ${i + 1} 張，共 ${items.length} 張`} className="min-w-0 flex-[0_0_100%]">
-              <SlideLink url={c.url}>
+              <SlideLink url={c.url} index={i + 1} total={items.length}>
                 <img
                   src={c.image}
                   alt=""
@@ -77,12 +77,18 @@ function ArrowButton({ label, side, onClick }: { label: string; side: 'left' | '
   )
 }
 
-function SlideLink({ url, children }: { url: string; children: ReactNode }) {
+function SlideLink({ url, index, total, children }: { url: string; index: number; total: number; children: ReactNode }) {
   if (!url) return children
+  const label = `前往連結（輪播圖第 ${index} 張，共 ${total} 張）`
   const to = internalPath(url, window.location)
-  if (to) return <Link to={to}>{children}</Link>
+  if (to)
+    return (
+      <Link to={to} aria-label={label}>
+        {children}
+      </Link>
+    )
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
+    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={label}>
       {children}
     </a>
   )

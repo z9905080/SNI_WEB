@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/z9905080/SNI_WEB/backend/internal/content"
 	"github.com/z9905080/SNI_WEB/backend/internal/store"
 )
 
@@ -105,6 +106,61 @@ func TestUploadRejections(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Origin", testOrigin)
 	expectError(t, h.send(req), 400, "invalid_upload")
+}
+
+// TestUploadPartExceedsTotalLimit 讓「總大小上限」剛好在讀取某個 files part 內容途中被觸發
+// （而不是在 NextPart 讀取表頭時），驗證此路徑也回 413 too_large 而非 400。
+//
+// 作法：先送一個非 files 欄位（會被整批跳過，但底層仍要讀掉它的內容），大小抓到只剩
+// remainder 位元組額度給下一個 files 欄位；files 欄位實際內容大於 remainder，
+// 讀到一半就會撞到 http.MaxBytesReader 的總量限制。
+func TestUploadPartExceedsTotalLimit(t *testing.T) {
+	h := newHarness(t)
+	h.login()
+
+	const totalLimit = maxUploadFiles * (content.MaxImageBytes + 64<<10)
+	const remainder = 100 << 10 // 讀到 files 欄位時，總量只剩這麼多額度
+
+	// 用 0 位元組的墊檔量測固定的 multipart 表頭／分隔線開銷（開銷與資料長度無關）。
+	overheadBuf := &bytes.Buffer{}
+	overheadMW := multipart.NewWriter(overheadBuf)
+	if _, err := overheadMW.CreateFormFile("pad", "pad.bin"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := overheadMW.CreateFormFile("files", "big.bin"); err != nil {
+		t.Fatal(err)
+	}
+	overhead := overheadBuf.Len()
+
+	fillerSize := totalLimit - remainder - overhead
+	if fillerSize < 0 {
+		t.Fatalf("fillerSize 為負數：%d", fillerSize)
+	}
+
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+	pad, err := mw.CreateFormFile("pad", "pad.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pad.Write(make([]byte, fillerSize)); err != nil {
+		t.Fatal(err)
+	}
+	final, err := mw.CreateFormFile("files", "big.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := final.Write(make([]byte, remainder+(1<<20))); err != nil {
+		t.Fatal(err)
+	}
+	if err := mw.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	req, _ := http.NewRequest("POST", h.srv.URL+"/api/v1/admin/images", &buf)
+	req.Header.Set("Content-Type", mw.FormDataContentType())
+	req.Header.Set("Origin", testOrigin)
+	expectError(t, h.send(req), 413, "too_large")
 }
 
 func TestImageUsagesEndpoint(t *testing.T) {

@@ -212,12 +212,14 @@ func (s *Store) DeletePage(ctx context.Context, id int64) error {
 
 func (s *Store) UpdateSettings(ctx context.Context, v Settings) error {
 	return s.inTx(ctx, func(q *dbgen.Queries) error {
-		for key, val := range map[string]string{
-			KeyWebTitle:    v.WebTitle,
-			KeyWebSubTitle: v.WebSubTitle,
-			KeyFacebookURL: v.FacebookURL,
-		} {
-			if err := setConfig(ctx, q, key, val); err != nil {
+		// 固定順序取得列鎖，避免多個併發呼叫以不同順序鎖定造成 deadlock。
+		pairs := []struct{ key, val string }{
+			{KeyWebTitle, v.WebTitle},
+			{KeyWebSubTitle, v.WebSubTitle},
+			{KeyFacebookURL, v.FacebookURL},
+		}
+		for _, p := range pairs {
+			if err := setConfig(ctx, q, p.key, p.val); err != nil {
 				return err
 			}
 		}

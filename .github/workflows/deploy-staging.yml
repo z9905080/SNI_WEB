@@ -1,0 +1,40 @@
+name: 部署測試站
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 快速測試
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+      # make lint／test-short 會呼叫 pnpm 但不會安裝相依套件，CI 上必須先裝
+      - run: mise exec -- pnpm --dir web install --frozen-lockfile
+      - run: make lint
+      - run: make test-short
+
+  deploy:
+    name: 部署
+    needs: test
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+      - name: 登入 Zeabur
+        run: npx --yes zeabur@latest auth login --token "$ZEABUR_TOKEN"
+        env:
+          ZEABUR_TOKEN: ${{ secrets.ZEABUR_TOKEN }}
+      - name: 部署
+        run: |
+          npx --yes zeabur@latest deploy -i=false \
+            --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
+            --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
+            --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"

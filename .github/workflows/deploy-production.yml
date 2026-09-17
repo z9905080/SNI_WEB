@@ -1,0 +1,52 @@
+name: 部署正式站
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: 完整測試
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+      # --wait 等 MySQL healthcheck 通過再往下跑，否則 make e2e 的 db-reset 會連不上
+      - name: 啟動 MySQL 與 MinIO
+        run: docker compose up -d --wait
+      # make lint／test 會呼叫 pnpm 但不會安裝相依套件，CI 上必須先裝
+      - run: mise exec -- pnpm --dir web install --frozen-lockfile
+      - run: make lint
+      - run: make test
+      - run: make e2e
+      # 設定沒有 html reporter，失敗時有用的是 trace（trace: 'retain-on-failure'）
+      - name: 保留失敗時的 Playwright trace
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-traces
+          path: web/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  deploy:
+    name: 部署
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - name: 登入 Zeabur
+        run: npx --yes zeabur@latest auth login --token "$ZEABUR_TOKEN"
+        env:
+          ZEABUR_TOKEN: ${{ secrets.ZEABUR_TOKEN }}
+      - name: 部署
+        run: |
+          npx --yes zeabur@latest deploy -i=false \
+            --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
+            --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
+            --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"

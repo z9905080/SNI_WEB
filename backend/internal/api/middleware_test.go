@@ -46,6 +46,7 @@ func TestBuildCSP(t *testing.T) {
 		"object-src 'none'",
 		"base-uri 'self'",
 		"frame-ancestors 'self'",
+		"upgrade-insecure-requests",
 	} {
 		if !strings.Contains(csp, want) {
 			t.Errorf("CSP 缺少 %q\n%s", want, csp)

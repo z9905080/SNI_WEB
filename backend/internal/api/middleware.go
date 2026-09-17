@@ -99,5 +99,6 @@ func BuildCSP(counterScriptURL string) string {
 		"object-src 'none'",
 		"base-uri 'self'",
 		"frame-ancestors 'self'",
+		"upgrade-insecure-requests",
 	}, "; ")
 }

@@ -50,7 +50,7 @@ export default function PageView({ query, greeting, groupName }: Props) {
 
 function Skeleton() {
   return (
-    <div aria-label="載入中" aria-busy="true" className="animate-pulse">
+    <div role="status" aria-label="載入中" aria-busy="true" className="animate-pulse">
       <div className="mx-auto aspect-[16/7] max-w-6xl bg-brand-soft sm:mt-6 sm:rounded-md" />
       <div className="mx-auto max-w-[42rem] space-y-4 px-4 py-12">
         <div className="h-8 w-1/3 rounded bg-slate-200" />

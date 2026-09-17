@@ -21,7 +21,7 @@ const renderView = (query: UseQueryResult<PageData>, props: { greeting?: string;
 
 it('載入中顯示骨架', () => {
   renderView(q({ isPending: true }))
-  expect(screen.getByLabelText('載入中')).toBeInTheDocument()
+  expect(screen.getByRole('status', { name: '載入中' })).toBeInTheDocument()
 })
 
 it('錯誤時顯示訊息並可重試', async () => {

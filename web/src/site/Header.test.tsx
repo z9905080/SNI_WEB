@@ -27,6 +27,19 @@ function setup(path = '/') {
   return user
 }
 
+it('空頁籤的群組不標示可展開的下拉選單', () => {
+  const emptyMenu: Group[] = [{ id: 9, name: '空群組', pages: [] }]
+  render(
+    <MemoryRouter>
+      <Header title="生長之家" subtitle="一句簡單的感謝" menu={emptyMenu} />
+    </MemoryRouter>,
+  )
+  const nav = screen.getByRole('navigation', { name: '主選單' })
+  const trigger = within(nav).getByRole('button', { name: '空群組' })
+  expect(trigger).not.toHaveAttribute('aria-expanded')
+  expect(trigger).not.toHaveAttribute('aria-controls')
+})
+
 it('滑過群組顯示頁面，點擊後導覽並關閉', async () => {
   const user = setup()
   const nav = screen.getByRole('navigation', { name: '主選單' })

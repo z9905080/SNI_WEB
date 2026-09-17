@@ -65,8 +65,8 @@ export default function Header({ title, subtitle, menu }: Props) {
                 <button
                   type="button"
                   data-active={g.id === activeGroupId || undefined}
-                  aria-expanded={open === g.id}
-                  aria-controls={`menu-${g.id}`}
+                  aria-expanded={g.pages.length > 0 ? open === g.id : undefined}
+                  aria-controls={g.pages.length > 0 ? `menu-${g.id}` : undefined}
                   onClick={() => setOpen(g.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'ArrowDown') {

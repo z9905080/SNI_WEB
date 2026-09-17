@@ -45,7 +45,9 @@ func (s *Server) Routes() http.Handler {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 	})
 	mux.HandleFunc("GET /readyz", func(w http.ResponseWriter, r *http.Request) {
-		if err := s.Ping(r.Context()); err != nil {
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+		if err := s.Ping(ctx); err != nil {
 			writeError(w, r, http.StatusServiceUnavailable, "not_ready", "資料庫無法連線")
 			return
 		}

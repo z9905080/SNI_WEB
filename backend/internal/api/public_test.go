@@ -1,7 +1,11 @@
 package api
 
 import (
+	"context"
+	"net/http"
+	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/z9905080/SNI_WEB/backend/internal/store"
 )
@@ -69,4 +73,27 @@ func TestHealthAndUnknownAPI(t *testing.T) {
 	expectStatus(t, h.do("GET", "/readyz", nil), 200)
 	expectError(t, h.do("GET", "/api/v1/nope", nil), 404, "not_found")
 	expectError(t, h.do("DELETE", "/api/v1/site", nil), 404, "not_found")
+}
+
+func TestReadyzTimesOutOnSlowPing(t *testing.T) {
+	slow := func(ctx context.Context) error {
+		<-ctx.Done()
+		return ctx.Err()
+	}
+	s := New(Deps{Ping: slow})
+	srv := httptest.NewServer(Wrap(s.Routes(), "default-src 'self'"))
+	t.Cleanup(srv.Close)
+
+	start := time.Now()
+	resp, err := http.Get(srv.URL + "/readyz")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if elapsed := time.Since(start); elapsed > 3*time.Second {
+		t.Fatalf("/readyz 應在約 2 秒逾時，實際花了 %v", elapsed)
+	}
+	if resp.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("status = %d，want 503", resp.StatusCode)
+	}
 }

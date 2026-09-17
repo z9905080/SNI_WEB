@@ -7,9 +7,10 @@ import (
 
 func TestNormalizeDSN(t *testing.T) {
 	cases := map[string][]string{
-		"root:pw@tcp(127.0.0.1:3306)/sniweb":           {"root:pw@tcp(127.0.0.1:3306)/sniweb?", "parseTime=true", "clientFoundRows=true", "charset=utf8mb4"},
-		"mysql://root:p%40ss@mysql.zeabur:3306/zeabur": {"root:p@ss@tcp(mysql.zeabur:3306)/zeabur?", "parseTime=true", "charset=utf8mb4"},
-		"u:p@tcp(h:1)/d?charset=utf8mb4&timeout=5s":    {"charset=utf8mb4", "timeout=5s", "parseTime=true"},
+		"root:pw@tcp(127.0.0.1:3306)/sniweb":            {"root:pw@tcp(127.0.0.1:3306)/sniweb?", "parseTime=true", "clientFoundRows=true", "charset=utf8mb4", "timeout=5s", "readTimeout=30s", "writeTimeout=30s"},
+		"mysql://root:p%40ss@mysql.zeabur:3306/zeabur":  {"root:p@ss@tcp(mysql.zeabur:3306)/zeabur?", "parseTime=true", "charset=utf8mb4", "timeout=5s", "readTimeout=30s", "writeTimeout=30s"},
+		"u:p@tcp(h:1)/d?charset=utf8mb4&timeout=5s":     {"charset=utf8mb4", "timeout=5s", "parseTime=true", "readTimeout=30s", "writeTimeout=30s"},
+		"u:p@tcp(h:1)/d?readTimeout=1m&writeTimeout=2m": {"readTimeout=1m0s", "writeTimeout=2m0s", "timeout=5s"},
 	}
 	for in, wants := range cases {
 		got, err := NormalizeDSN(in)

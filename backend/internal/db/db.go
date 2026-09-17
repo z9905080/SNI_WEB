@@ -36,6 +36,16 @@ func NormalizeDSN(dsn string) (string, error) {
 	cfg.ParseTime = true
 	cfg.Loc = time.UTC
 	cfg.ClientFoundRows = true
+	// 沒有明確設定時給預設逾時，避免半死的連線讓請求無限期卡住
+	if cfg.Timeout == 0 {
+		cfg.Timeout = 5 * time.Second
+	}
+	if cfg.ReadTimeout == 0 {
+		cfg.ReadTimeout = 30 * time.Second
+	}
+	if cfg.WriteTimeout == 0 {
+		cfg.WriteTimeout = 30 * time.Second
+	}
 	out := cfg.FormatDSN()
 	if !strings.Contains(out, "charset=") {
 		sep := "?"

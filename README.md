@@ -45,9 +45,10 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 ```sql
 ALTER TABLE `user` MODIFY `pwd` varchar(255) NOT NULL COMMENT '密碼（bcrypt）';
 INSERT INTO `web_config` (`data_key`, `data_value`) VALUES ('facebook_url', '');
+DELETE FROM `user_token`;
 ```
 
-舊密碼（MD5）與舊 session 無法沿用，請用下列指令重設。
+舊密碼（MD5）與舊 session 無法沿用；`DELETE FROM user_token` 清掉舊格式的登入紀錄（新版以 SHA-256 雜湊比對，舊資料列不會被用到，純粹是遷移時的清理）。請用下列指令重設密碼。
 
 ## 帳號管理
 

@@ -79,7 +79,10 @@ func (s *Server) Routes() http.Handler {
 	s.admin(mux, "DELETE /api/v1/admin/marquees/{id}", s.deleteMarquee)
 	s.admin(mux, "GET /api/v1/admin/settings", s.getSettings)
 	s.admin(mux, "PUT /api/v1/admin/settings", s.putSettings)
-	// admin image routes（後續 task 加入）
+	s.admin(mux, "GET /api/v1/admin/images", s.listImages)
+	s.admin(mux, "POST /api/v1/admin/images", s.uploadImages)
+	s.admin(mux, "GET /api/v1/admin/images/{name}/usages", s.imageUsages)
+	s.admin(mux, "DELETE /api/v1/admin/images/{name}", s.deleteImage)
 
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, http.StatusNotFound, "not_found", "找不到此 API")

@@ -1983,7 +1983,7 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:8080', trace: 'retain-on-failure' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'go run ./backend/cmd/sniweb serve',
+    command: 'mise exec -- go run ./backend/cmd/sniweb serve',
     cwd: '..',
     url: 'http://localhost:8080/readyz',
     reuseExistingServer: false,

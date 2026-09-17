@@ -25,3 +25,47 @@ body {
     scroll-behavior: smooth;
   }
 }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee linear infinite;
+}
+
+/* 舊站內容：Tailwind preflight 會清掉預設樣式，這裡補回常用排版 */
+.legacy-content {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 640px) {
+  .legacy-content { font-size: 1.125rem; }
+}
+.legacy-content p { margin: 0 0 1em; }
+.legacy-content :is(h1, h2, h3, h4) { font-family: var(--font-serif); font-weight: 700; line-height: 1.4; margin: 1.6em 0 0.6em; }
+.legacy-content h1 { font-size: 1.75em; }
+.legacy-content h2 { font-size: 1.5em; }
+.legacy-content h3 { font-size: 1.25em; }
+.legacy-content h4 { font-size: 1.1em; }
+.legacy-content a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 0.2em; }
+.legacy-content ul { list-style: disc; padding-left: 1.5em; margin: 0 0 1em; }
+.legacy-content ol { list-style: decimal; padding-left: 1.5em; margin: 0 0 1em; }
+.legacy-content blockquote { border-left: 4px solid var(--color-brand-soft); padding-left: 1em; color: #475569; }
+.legacy-content hr { margin: 2em 0; border-color: #e2e8f0; }
+.legacy-content img { display: inline-block; max-width: 100%; height: auto; }
+/* 舊內容多寫死 width/height，以 !important 蓋過行內樣式，改為 16:9 自適應 */
+.legacy-content iframe {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+.legacy-content .table-scroll { overflow-x: auto; margin: 1em 0; }
+.legacy-content table { border-collapse: collapse; }
+.legacy-content td,
+.legacy-content th { padding: 0.4em 0.6em; vertical-align: top; }

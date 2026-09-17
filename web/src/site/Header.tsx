@@ -41,7 +41,11 @@ export default function Header({ title, subtitle, menu }: Props) {
     requestAnimationFrame(() => document.querySelector<HTMLElement>(`#menu-${id} a`)?.focus())
 
   return (
-    <header className={`sticky top-0 z-40 border-b bg-white transition-[border-color] ${compact ? 'border-slate-200' : 'border-transparent'}`}>
+    <header
+      className={`sticky top-0 z-40 border-b transition-[border-color,background-color] ${
+        compact ? 'border-slate-200 bg-white' : 'border-transparent bg-gradient-to-b from-sky/20 via-sky/5 to-white'
+      }`}
+    >
       <div className={`mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 transition-[height] ${compact ? 'h-14' : 'h-20'}`}>
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <img src="/logo.png" alt="" className={`w-auto transition-[height] ${compact ? 'h-9' : 'h-12'}`} />

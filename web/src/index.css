@@ -63,6 +63,8 @@
   --color-paper: #f7f8fc;
   --color-ink: #1c2233;
   --color-olive: #6e8b3d;
+  /* 取樣自舊站頁首漸層藍（linear-gradient 底色 rgb(74,158,218)），首頁頁首用來呼應舊站色調 */
+  --color-sky: #4a9eda;
 }
 
 body {

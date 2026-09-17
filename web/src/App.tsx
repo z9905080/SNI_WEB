@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router'
+import SiteApp from '@/site/SiteApp'
 
 const AdminApp = lazy(() => import('@/admin/AdminApp'))
 
@@ -14,7 +15,7 @@ export default function App() {
           </Suspense>
         }
       />
-      <Route path="*" element={<p className="p-8">前台建置中</p>} />
+      <Route path="*" element={<SiteApp />} />
     </Routes>
   )
 }

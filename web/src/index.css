@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Noto Sans TC', system-ui, sans-serif;
+  --font-serif: 'Noto Serif TC', 'Songti TC', serif;
+  --color-brand: #2230b8;
+  --color-brand-dark: #10185c;
+  --color-brand-soft: #e9ecfa;
+  --color-paper: #f7f8fc;
+  --color-ink: #1c2233;
+  --color-olive: #6e8b3d;
+}
+
+body {
+  @apply bg-paper font-sans text-ink antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type { ImageItem } from '@/shared/types'
 import { adminKeys, uploadImage } from '../api'
 
@@ -40,6 +41,11 @@ export function useUploader() {
         }
       }
       if (saved.length) await qc.invalidateQueries({ queryKey: adminKeys.images })
+      const failed = queue.length - saved.length
+      if (queue.length > 0) {
+        if (failed === 0) toast.success(`已上傳 ${saved.length} 張圖片`)
+        else toast.error(`${failed} 張圖片上傳失敗`)
+      }
       return saved
     },
     [qc],

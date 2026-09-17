@@ -235,7 +235,7 @@ func (s *Server) putSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := s.Store.UpdateSettings(r.Context(), v); err != nil {
-		s.internalError(w, r, err)
+		s.storeError(w, r, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"settings": v})

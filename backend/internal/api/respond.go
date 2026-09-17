@@ -9,6 +9,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/go-sql-driver/mysql"
+
 	"github.com/z9905080/SNI_WEB/backend/internal/store"
 )
 
@@ -57,6 +59,19 @@ func (s *Server) storeError(w http.ResponseWriter, r *http.Request, err error) {
 	case errors.Is(err, store.ErrContentTooLong):
 		writeError(w, r, http.StatusBadRequest, "content_too_long", "內容過長（上限約 65KB），請分成多個頁面")
 	default:
+		var myErr *mysql.MySQLError
+		if errors.As(err, &myErr) {
+			switch myErr.Number {
+			case 1366, 3988:
+				// 1366：incorrect string value（文字協定）；3988：MySQL 8 對 prepared statement
+				// 參數做 utf8mb4→utf8mb3 collation 轉換時，字元不在目標字集範圍內（例如表情符號）。
+				writeError(w, r, http.StatusBadRequest, "unsupported_characters", "內容含有無法儲存的字元（例如表情符號），請移除後再試")
+				return
+			case 1406:
+				writeError(w, r, http.StatusBadRequest, "too_long", "內容過長，請縮短後再試")
+				return
+			}
+		}
 		s.internalError(w, r, err)
 	}
 }

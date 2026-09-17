@@ -77,6 +77,12 @@ func TestGroupEndpoints(t *testing.T) {
 	expectError(t, h.do("DELETE", "/api/v1/admin/groups/"+itoa(g.ID), nil), 404, "not_found")
 }
 
+func TestGroupNameUnsupportedCharacters(t *testing.T) {
+	h := newHarness(t)
+	h.login()
+	expectError(t, h.do("POST", "/api/v1/admin/groups", map[string]string{"name": "感謝🙏"}), 400, "unsupported_characters")
+}
+
 func TestPageEndpoints(t *testing.T) {
 	h := newHarness(t, contentFixture, contentPages)
 	h.login()

@@ -102,3 +102,9 @@ func TestSettingsEndpoints(t *testing.T) {
 		t.Fatalf("公開 API 應反映新設定：%+v", site.Settings)
 	}
 }
+
+func TestSettingsUnsupportedCharacters(t *testing.T) {
+	h := newHarness(t)
+	h.login()
+	expectError(t, h.do("PUT", "/api/v1/admin/settings", store.Settings{WebTitle: "感謝🙏"}), 400, "unsupported_characters")
+}

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router'
 import { Toaster } from '@/components/ui/sonner'
 import { RequireAuth, useRedirectOn401 } from './auth'
+import GroupsPage from './groups/GroupsPage'
 import LoginPage from './LoginPage'
 
 const Todo = ({ name }: { name: string }) => <p>{name}（建置中）</p>
@@ -13,7 +14,7 @@ export default function AdminApp() {
         <Route path="login" element={<LoginPage />} />
         <Route element={<RequireAuth />}>
           <Route index element={<Navigate to="groups" replace />} />
-          <Route path="groups" element={<Todo name="頁籤與頁面" />} />
+          <Route path="groups" element={<GroupsPage />} />
           <Route path="pages/new" element={<Todo name="新增頁面" />} />
           <Route path="pages/:id" element={<Todo name="編輯頁面" />} />
           <Route path="carousels" element={<Todo name="輪播圖" />} />

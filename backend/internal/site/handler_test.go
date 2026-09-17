@@ -29,7 +29,9 @@ func newTestHandler(t *testing.T, dist fstest.MapFS) *Handler {
 	if err != nil {
 		t.Fatal(err)
 	}
-	disk.Put(context.Background(), "c.jpg", strings.NewReader("jpg"), 3, "image/jpeg")
+	if err := disk.Put(context.Background(), "c.jpg", strings.NewReader("jpg"), 3, "image/jpeg"); err != nil {
+		t.Fatal(err)
+	}
 	return New(dist, store.New(conn), disk, "https://example.org", PublicConfig{GAMeasurementID: "G-1"})
 }
 

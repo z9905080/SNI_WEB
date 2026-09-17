@@ -79,7 +79,7 @@ func (s *Store) inTx(ctx context.Context, fn func(q *dbgen.Queries) error) error
 		return err
 	}
 	if err := fn(s.q.WithTx(tx)); err != nil {
-		tx.Rollback()
+		_ = tx.Rollback() // 回傳原本的錯誤；rollback 失敗時 driver 會關閉連線
 		return err
 	}
 	if err := tx.Commit(); err != nil {

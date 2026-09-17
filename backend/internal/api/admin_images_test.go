@@ -29,7 +29,9 @@ func (h *harness) upload(files ...namedFile) *http.Response {
 		if err != nil {
 			h.t.Fatal(err)
 		}
-		fw.Write(f.data)
+		if _, err := fw.Write(f.data); err != nil {
+			h.t.Fatal(err)
+		}
 	}
 	mw.Close()
 	req, _ := http.NewRequest("POST", h.srv.URL+"/api/v1/admin/images", &buf)

@@ -45,7 +45,7 @@ func (d *Disk) Put(_ context.Context, name string, r io.ReadSeeker, _ int64, _ s
 		err = cerr
 	}
 	if err != nil {
-		d.root.Remove(name)
+		_ = d.root.Remove(name) // 盡力清除殘檔，回傳原本的錯誤
 	}
 	return err
 }

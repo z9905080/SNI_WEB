@@ -46,8 +46,7 @@ func NewS3(o S3Options) *S3 {
 }
 
 func httpStatus(err error) int {
-	var re *awshttp.ResponseError
-	if errors.As(err, &re) {
+	if re, ok := errors.AsType[*awshttp.ResponseError](err); ok {
 		return re.HTTPStatusCode()
 	}
 	return 0

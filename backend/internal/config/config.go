@@ -64,7 +64,7 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	c.CookieSecure = secure
 
-	for _, o := range strings.Split(getenv("DEV_ORIGINS"), ",") {
+	for o := range strings.SplitSeq(getenv("DEV_ORIGINS"), ",") {
 		if o = strings.TrimRight(strings.TrimSpace(o), "/"); o != "" {
 			c.DevOrigins = append(c.DevOrigins, o)
 		}

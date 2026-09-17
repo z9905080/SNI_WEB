@@ -69,7 +69,7 @@ func (h *Handler) serveIndex(w http.ResponseWriter, r *http.Request) {
 		hdr.Set("X-Robots-Tag", "noindex")
 	}
 	w.WriteHeader(status)
-	w.Write(RenderIndex(h.index, m, h.public))
+	_, _ = w.Write(RenderIndex(h.index, m, h.public))
 }
 
 // meta 依路徑組出 meta 與 HTTP status；資料庫錯誤只記 log，仍回傳可用的頁面。

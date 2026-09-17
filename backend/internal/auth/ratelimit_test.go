@@ -9,7 +9,7 @@ func TestLimiter(t *testing.T) {
 	now := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 	l := NewLimiter(3, 15*time.Minute, func() time.Time { return now })
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		if l.Blocked("a") {
 			t.Fatalf("第 %d 次前不應被擋", i+1)
 		}

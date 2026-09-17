@@ -35,8 +35,12 @@ func TestDisk(t *testing.T) {
 		t.Fatalf("got %v", err)
 	}
 
-	os.WriteFile(filepath.Join(dir, ".DS_Store"), []byte("x"), 0o644)
-	os.Mkdir(filepath.Join(dir, "sub"), 0o755)
+	if err := os.WriteFile(filepath.Join(dir, ".DS_Store"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Mkdir(filepath.Join(dir, "sub"), 0o755); err != nil {
+		t.Fatal(err)
+	}
 
 	objs, err := d.List(ctx)
 	if err != nil {

@@ -7,8 +7,10 @@ import (
 	"github.com/z9905080/SNI_WEB/backend/internal/store"
 )
 
-const contentFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', ''), (2, '活動', '[11,10]')`
-const contentPages = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (10, 2, 'A', '<p>a</p>'), (11, 2, 'B', '')`
+const (
+	contentFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', ''), (2, '活動', '[11,10]')`
+	contentPages   = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (10, 2, 'A', '<p>a</p>'), (11, 2, 'B', '')`
+)
 
 type groupsBody struct {
 	Groups []store.Group `json:"groups"`

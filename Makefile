@@ -18,8 +18,7 @@ test-short:
 	go test -short ./...
 
 lint:
-	@test -z "$$(gofmt -l backend)" || (gofmt -l backend; exit 1)
-	go vet ./...
+	golangci-lint run ./...
 
 build:
 	CGO_ENABLED=0 go build -trimpath -o bin/sniweb ./backend/cmd/sniweb

@@ -9,9 +9,11 @@ import (
 	"testing"
 )
 
-const writeFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', ''), (2, '活動', '[11,10]'), (3, '空', '')`
-const writePages = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (10, 2, 'A', ''), (11, 2, 'B', ''), (12, 1, 'H', '')`
-const writeConfig = `INSERT INTO web_config (data_key, data_value) VALUES ('page_group_sort', '[2,1,3]')`
+const (
+	writeFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', ''), (2, '活動', '[11,10]'), (3, '空', '')`
+	writePages   = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (10, 2, 'A', ''), (11, 2, 'B', ''), (12, 1, 'H', '')`
+	writeConfig  = `INSERT INTO web_config (data_key, data_value) VALUES ('page_group_sort', '[2,1,3]')`
+)
 
 var ctx = context.Background()
 

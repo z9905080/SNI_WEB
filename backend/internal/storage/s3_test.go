@@ -23,7 +23,7 @@ func TestS3(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { ctr.Terminate(context.Background()) })
+	t.Cleanup(func() { _ = ctr.Terminate(context.Background()) })
 	hostPort, err := ctr.ConnectionString(ctx)
 	if err != nil {
 		t.Fatal(err)

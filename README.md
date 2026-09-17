@@ -4,7 +4,12 @@
 
 ## 本機開發
 
-需要 Go 1.25+、Docker、Node.js 24+、pnpm。
+需要 Docker 與 [mise](https://mise.jdx.dev/)。工具鏈版本固定在 `mise.toml`（Go 1.27、golangci-lint v2、Node.js 24、pnpm 10）：
+
+```bash
+brew install mise   # 其他安裝方式見 mise 官網
+mise install
+```
 
 ```bash
 make up                      # MySQL（含 schema 與範例資料）+ MinIO
@@ -28,7 +33,8 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 | `make gen` | 由 `backend/internal/db/queries/*.sql` 產生 sqlc 程式碼 |
 | `make test` | 全部測試（需要 Docker） |
 | `make test-short` | 略過需要 Docker 的測試 |
-| `make lint` | gofmt 與 go vet |
+| `make lint` | golangci-lint（含 gofumpt 排版檢查，設定在 `.golangci.yml`） |
+| `golangci-lint fmt ./...` | 以 gofumpt 自動排版 |
 | `make build` | 建置 `bin/sniweb` |
 
 ## 資料庫

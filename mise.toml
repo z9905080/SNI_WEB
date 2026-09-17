@@ -1,0 +1,7 @@
+# 開發工具鏈版本：`mise install` 安裝，進入目錄後自動切換
+[tools]
+go = "1.27.1"
+# 用上面的 Go 編譯，確保 golangci-lint 能檢查 go 1.27 的模組
+"go:github.com/golangci/golangci-lint/v2/cmd/golangci-lint" = "2.13.2"
+node = "24"
+pnpm = "10.30.3"

@@ -14,7 +14,7 @@
 
 ## Global Constraints
 
-- Node.js 24+、pnpm 10（`web/package.json` 的 `packageManager` 固定版本）。
+- 工具鏈版本以 repo 根目錄的 `mise.toml` 為準（Go 1.27、golangci-lint v2、Node.js 24、pnpm 10.30.3）；`web/package.json` 的 `packageManager` 與其一致。
 - 所有 API 呼叫走 `/api/v1`，同網域，`credentials: 'same-origin'`；錯誤格式 `{"error":{"code","message","request_id?"}}`，`message` 可直接顯示。
 - 前台 bundle 不可包含後台程式碼與 Tiptap：`/admin/*` 一律 `React.lazy`。
 - `web/index.html` 的 `<head>` 必須含 `<!--sni:head-->`，且不可自帶 `<title>`。
@@ -351,8 +351,7 @@ test-short:
 	pnpm --dir web test
 
 lint:
-	@test -z "$$(gofmt -l backend)" || (gofmt -l backend; exit 1)
-	go vet ./...
+	golangci-lint run ./...
 	pnpm --dir web typecheck
 
 # 建置前端並複製到 Go embed 目錄
@@ -404,7 +403,7 @@ RUN pnpm install --frozen-lockfile
 COPY web/ ./
 RUN pnpm build
 
-FROM golang:1.25-alpine AS server
+FROM golang:1.27-alpine AS server
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download

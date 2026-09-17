@@ -57,8 +57,7 @@ func (s *Server) uploadImages(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, io.EOF) {
 			break
 		}
-		var tooBig *http.MaxBytesError
-		if errors.As(err, &tooBig) {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 			writeError(w, r, http.StatusRequestEntityTooLarge, "too_large", "上傳資料太大")
 			return
 		}
@@ -75,8 +74,7 @@ func (s *Server) uploadImages(w http.ResponseWriter, r *http.Request) {
 		}
 		data, err := io.ReadAll(io.LimitReader(part, content.MaxImageBytes+1))
 		if err != nil {
-			var tooBig *http.MaxBytesError
-			if errors.As(err, &tooBig) {
+			if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 				writeError(w, r, http.StatusRequestEntityTooLarge, "too_large", "上傳資料太大")
 				return
 			}

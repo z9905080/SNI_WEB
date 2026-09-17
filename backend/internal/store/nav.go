@@ -2,6 +2,8 @@ package store
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/z9905080/SNI_WEB/backend/internal/content"
 	"github.com/z9905080/SNI_WEB/backend/internal/db/dbgen"
@@ -66,7 +68,7 @@ func (s *Store) Nav(ctx context.Context) ([]Group, error) {
 func (s *Store) HomePage(ctx context.Context) (Page, bool, error) {
 	g, err := s.q.GetGroup(ctx, HomeGroupID)
 	if err != nil {
-		if notFound(err) == ErrNotFound {
+		if errors.Is(err, sql.ErrNoRows) {
 			return Page{}, false, nil
 		}
 		return Page{}, false, err

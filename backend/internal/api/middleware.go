@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -62,7 +63,7 @@ func Wrap(h http.Handler, csp string) http.Handler {
 		start := time.Now()
 		defer func() {
 			if v := recover(); v != nil {
-				if v == http.ErrAbortHandler {
+				if err, ok := v.(error); ok && errors.Is(err, http.ErrAbortHandler) {
 					panic(v)
 				}
 				slog.ErrorContext(r.Context(), "panic", "err", fmt.Sprint(v), "request_id", id)

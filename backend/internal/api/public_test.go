@@ -6,10 +6,12 @@ import (
 	"github.com/z9905080/SNI_WEB/backend/internal/store"
 )
 
-const publicFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', '[2,1]'), (2, '活動', '')`
-const publicPages = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (1, 1, '舊消息', '<p>1</p>'), (2, 1, '最新消息', '<p>2</p>'), (3, 2, '練成會', '<p>3</p>')`
-const publicConfig = `INSERT INTO web_config (data_key, data_value) VALUES ('web_title', '生長之家'), ('web_sub_title', '感謝'), ('facebook_url', 'https://fb'), ('page_group_sort', '[2,1]')`
-const publicMedia = `INSERT INTO carousel (id, image, url) VALUES (1, '/php/picture/a.jpg', '')`
+const (
+	publicFixture = `INSERT INTO page_group (id, group_name, page_sort) VALUES (1, '首頁', '[2,1]'), (2, '活動', '')`
+	publicPages   = `INSERT INTO page_content (id, page_group_id, page_name, html_context) VALUES (1, 1, '舊消息', '<p>1</p>'), (2, 1, '最新消息', '<p>2</p>'), (3, 2, '練成會', '<p>3</p>')`
+	publicConfig  = `INSERT INTO web_config (data_key, data_value) VALUES ('web_title', '生長之家'), ('web_sub_title', '感謝'), ('facebook_url', 'https://fb'), ('page_group_sort', '[2,1]')`
+	publicMedia   = `INSERT INTO carousel (id, image, url) VALUES (1, '/php/picture/a.jpg', '')`
+)
 
 type siteBody struct {
 	store.Settings

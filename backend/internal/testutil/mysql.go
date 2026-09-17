@@ -79,7 +79,7 @@ func MySQL(t *testing.T) (*sql.DB, string) {
 	t.Cleanup(func() {
 		conn.Close()
 		if a, err := sql.Open("mysql", baseDSN); err == nil {
-			a.Exec("DROP DATABASE `" + name + "`")
+			_, _ = a.Exec("DROP DATABASE `" + name + "`")
 			a.Close()
 		}
 	})

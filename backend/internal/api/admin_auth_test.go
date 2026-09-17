@@ -66,7 +66,7 @@ func TestSessionExpiryAndSliding(t *testing.T) {
 func TestAccountRateLimit(t *testing.T) {
 	h := newHarness(t)
 	h.login()
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		expectStatus(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": "admin", "password": "bad"}), 401)
 	}
 	expectError(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": "admin", "password": "password1"}), 429, "too_many_requests")
@@ -79,7 +79,7 @@ func TestAccountRateLimitCaseInsensitive(t *testing.T) {
 	h := newHarness(t)
 	h.login()
 	variants := []string{"admin", "Admin", "ADMIN"}
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		account := variants[i%len(variants)]
 		expectStatus(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": account, "password": "bad"}), 401)
 	}
@@ -88,7 +88,7 @@ func TestAccountRateLimitCaseInsensitive(t *testing.T) {
 
 func TestIPRateLimit(t *testing.T) {
 	h := newHarness(t)
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		expectStatus(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": fmt.Sprintf("u%d", i), "password": "bad"}), 401)
 	}
 	expectError(t, h.do("POST", "/api/v1/admin/auth/login", map[string]string{"account": "other", "password": "bad"}), 429, "too_many_requests")

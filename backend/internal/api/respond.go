@@ -26,7 +26,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
 	if v != nil {
-		json.NewEncoder(w).Encode(v)
+		_ = json.NewEncoder(w).Encode(v) // 標頭已送出，編碼失敗（多半是用戶端斷線）也無法再回應
 	}
 }
 
@@ -59,8 +59,7 @@ func (s *Server) storeError(w http.ResponseWriter, r *http.Request, err error) {
 	case errors.Is(err, store.ErrContentTooLong):
 		writeError(w, r, http.StatusBadRequest, "content_too_long", "內容過長（上限約 65KB），請分成多個頁面")
 	default:
-		var myErr *mysql.MySQLError
-		if errors.As(err, &myErr) {
+		if myErr, ok := errors.AsType[*mysql.MySQLError](err); ok {
 			switch myErr.Number {
 			case 1366, 3988:
 				// 1366：incorrect string value（文字協定）；3988：MySQL 8 對 prepared statement
@@ -79,8 +78,7 @@ func (s *Server) storeError(w http.ResponseWriter, r *http.Request, err error) {
 func decodeJSON(w http.ResponseWriter, r *http.Request, dst any) bool {
 	r.Body = http.MaxBytesReader(w, r.Body, maxJSONBytes)
 	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-		var tooBig *http.MaxBytesError
-		if errors.As(err, &tooBig) {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 			writeError(w, r, http.StatusRequestEntityTooLarge, "too_large", "資料太大")
 		} else {
 			writeError(w, r, http.StatusBadRequest, "invalid_json", "資料格式錯誤")

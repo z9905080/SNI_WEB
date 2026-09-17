@@ -46,13 +46,9 @@ func RenderIndex(index []byte, m Meta, pc PublicConfig) []byte {
 	if m.NoIndex {
 		tag("name", "robots", "noindex")
 	}
-	// 用 Encoder 並關閉 HTML escaping：json.Marshal 預設會把 <、>、& 轉成 < 等，
-	// 但 counterScriptUrl 這類外部設定值需要原樣輸出（見 meta_test.go 的期望值）。
-	var cfg bytes.Buffer
-	enc := json.NewEncoder(&cfg)
-	enc.SetEscapeHTML(false)
-	_ = enc.Encode(pc)
-	fmt.Fprintf(&b, `<script id="sni-config" type="application/json">%s</script>`, bytes.TrimRight(cfg.Bytes(), "\n"))
+	// json.Marshal 會把 <、>、& 轉成 < 等，放進 <script> 內是安全的
+	cfg, _ := json.Marshal(pc)
+	fmt.Fprintf(&b, `<script id="sni-config" type="application/json">%s</script>`, cfg)
 	return bytes.Replace(index, []byte(HeadPlaceholder), []byte(b.String()), 1)
 }
 

@@ -23,7 +23,7 @@ func TestRenderIndex(t *testing.T) {
 		`<meta property="og:type" content="website">`,
 		`<meta property="og:image" content="https://example.org/php/picture/a.jpg">`,
 		`<meta name="twitter:card" content="summary_large_image">`,
-		`<script id="sni-config" type="application/json">{"gaMeasurementId":"G-TEST","counterScriptUrl":"https://c.example/x.php?a=1&b=</script>"}</script>`,
+		`<script id="sni-config" type="application/json">{"gaMeasurementId":"G-TEST","counterScriptUrl":"https://c.example/x.php?a=1\u0026b=\u003c/script\u003e"}</script>`,
 		`<div id="root"></div>`,
 	} {
 		if !strings.Contains(out, want) {
@@ -32,6 +32,9 @@ func TestRenderIndex(t *testing.T) {
 	}
 	if strings.Contains(out, HeadPlaceholder) || strings.Contains(out, "robots") {
 		t.Errorf("不應殘留佔位符或 robots：%s", out)
+	}
+	if n := strings.Count(out, "</script>"); n != 1 {
+		t.Errorf("應只有 sni-config 自己的收尾標籤，got %d 個 </script>\n%s", n, out)
 	}
 }
 

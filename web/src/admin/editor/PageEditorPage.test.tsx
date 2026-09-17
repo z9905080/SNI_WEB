@@ -1,26 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { Toaster } from '@/components/ui/sonner'
 import PageEditorPage from './PageEditorPage'
-
-// jsdom 沒有 ProseMirror／Radix Popper 需要的量測 API
-document.createRange ??= () => {
-  const range = new Range()
-  range.getBoundingClientRect = () => ({ top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }) as DOMRect
-  range.getClientRects = () => [] as unknown as DOMRectList
-  return range
-}
-Element.prototype.getBoundingClientRect ??= () =>
-  ({ top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }) as DOMRect
-Element.prototype.scrollIntoView ??= () => {}
-window.matchMedia ??= () =>
-  ({ matches: false, media: '', addEventListener: () => {}, removeEventListener: () => {} }) as unknown as MediaQueryList
-Element.prototype.hasPointerCapture ??= () => false
-Element.prototype.setPointerCapture ??= () => {}
-Element.prototype.releasePointerCapture ??= () => {}
+import './testJsdomPolyfills'
 
 const json = (status: number, body: unknown) => new Response(body === null ? null : JSON.stringify(body), { status })
 
@@ -72,7 +57,7 @@ function renderPage(initialPath: string) {
       <Toaster />
     </QueryClientProvider>,
   )
-  return { user: userEvent.setup(), router }
+  return { user: userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never }), router }
 }
 
 it('新增頁面：預設群組來自網址參數，儲存成功後導向新網址且不會被攔截', async () => {
@@ -102,38 +87,53 @@ it('載入時偵測到遺失格式，預設進入原始碼模式並顯示警告'
   expect(screen.getByRole('button', { name: 'HTML 原始碼' })).toHaveAttribute('aria-pressed', 'true')
 })
 
-it('從原始碼模式切換到視覺編輯時，格式遺失需要先確認', async () => {
-  const { user } = renderPage('/admin/pages/5')
-  await screen.findByRole('status')
+// AlertDialog 內容同樣是透過 Radix Portal 掛載（用 useState+useLayoutEffect 補第二輪
+// render），全部測試檔平行跑、CPU 競爭嚴重時這個掛載偶爾會變慢；用寬鬆的 timeout
+// （外加拉長這個 it 本身的逾時）當作保險，避免把單純的排程延遲誤判成邏輯錯誤。
+// 這裡跟 ToolbarTableMenu.test.tsx 的 DropdownMenu 不同：多次跑 shuffle 驗證過，
+// AlertDialog 沒有觀察到「同一檔案第二個以上的 Editor 之後就卡死不觸發」的問題。
+it(
+  '從原始碼模式切換到視覺編輯時，格式遺失需要先確認',
+  async () => {
+    const { user } = renderPage('/admin/pages/5')
+    await screen.findByRole('status')
 
-  await user.click(screen.getByRole('button', { name: '視覺編輯' }))
-  const dialog = await screen.findByRole('alertdialog')
-  expect(within(dialog).getByText('切換到視覺編輯？')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '視覺編輯' }))
+    const dialog = await screen.findByRole('alertdialog', {}, { timeout: 8000 })
+    expect(within(dialog).getByText('切換到視覺編輯？')).toBeInTheDocument()
 
-  await user.click(within(dialog).getByRole('button', { name: '取消' }))
-  expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'HTML 原始碼' })).toHaveAttribute('aria-pressed', 'true')
+    await user.click(within(dialog).getByRole('button', { name: '取消' }))
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'HTML 原始碼' })).toHaveAttribute('aria-pressed', 'true')
 
-  await user.click(screen.getByRole('button', { name: '視覺編輯' }))
-  await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '切換到視覺編輯' }))
-  expect(screen.getByRole('button', { name: '視覺編輯' })).toHaveAttribute('aria-pressed', 'true')
-})
+    await user.click(screen.getByRole('button', { name: '視覺編輯' }))
+    const confirmDialog = await screen.findByRole('alertdialog', {}, { timeout: 8000 })
+    await user.click(within(confirmDialog).getByRole('button', { name: '切換到視覺編輯' }))
+    expect(screen.getByRole('button', { name: '視覺編輯' })).toHaveAttribute('aria-pressed', 'true')
+  },
+  10000,
+)
 
-it('修改後嘗試離開頁面會被攔截，確認捨棄後才真的離開', async () => {
-  const { user, router } = renderPage('/admin/pages/6')
-  const nameInput = await screen.findByLabelText('頁面名稱')
-  await user.type(nameInput, '！')
+it(
+  '修改後嘗試離開頁面會被攔截，確認捨棄後才真的離開',
+  async () => {
+    const { user, router } = renderPage('/admin/pages/6')
+    const nameInput = await screen.findByLabelText('頁面名稱')
+    await user.type(nameInput, '！')
 
-  await user.click(screen.getByRole('link', { name: '返回列表' }))
-  const dialog = await screen.findByRole('alertdialog')
-  expect(within(dialog).getByText('還有變更沒有儲存')).toBeInTheDocument()
-  expect(router.state.location.pathname).toBe('/admin/pages/6')
+    await user.click(screen.getByRole('link', { name: '返回列表' }))
+    const dialog = await screen.findByRole('alertdialog', {}, { timeout: 8000 })
+    expect(within(dialog).getByText('還有變更沒有儲存')).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/admin/pages/6')
 
-  await user.click(within(dialog).getByRole('button', { name: '取消' }))
-  expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
-  expect(router.state.location.pathname).toBe('/admin/pages/6')
+    await user.click(within(dialog).getByRole('button', { name: '取消' }))
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/admin/pages/6')
 
-  await user.click(screen.getByRole('link', { name: '返回列表' }))
-  await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '捨棄變更並離開' }))
-  expect(router.state.location.pathname).toBe('/admin/groups')
-})
+    await user.click(screen.getByRole('link', { name: '返回列表' }))
+    const leaveDialog = await screen.findByRole('alertdialog', {}, { timeout: 8000 })
+    await user.click(within(leaveDialog).getByRole('button', { name: '捨棄變更並離開' }))
+    expect(router.state.location.pathname).toBe('/admin/groups')
+  },
+  10000,
+)

@@ -1,17 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { afterEach, expect, it, vi } from 'vitest'
+import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
+import { expect, it, vi } from 'vitest'
+import './testJsdomPolyfills'
 import VideoDialog from './VideoDialog'
 
-window.matchMedia ??= () =>
-  ({ matches: false, media: '', addEventListener: () => {}, removeEventListener: () => {} }) as unknown as MediaQueryList
-Element.prototype.hasPointerCapture ??= () => false
-Element.prototype.scrollIntoView ??= () => {}
-
-afterEach(() => vi.unstubAllGlobals())
-
 it('允許的網址可以插入，並清空輸入框；不允許的網址顯示錯誤且無法送出', async () => {
-  const user = userEvent.setup()
+  const user = userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never })
   const onInsert = vi.fn()
   render(<VideoDialog open onOpenChange={() => {}} onInsert={onInsert} />)
 

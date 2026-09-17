@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"sync"
 	"testing"
 	"time"
@@ -150,4 +151,12 @@ func expectError(t *testing.T, resp *http.Response, status int, code string) err
 		t.Fatalf("錯誤回應 %+v，want code %s", e, code)
 	}
 	return e
+}
+
+func mustURL(s string) *url.URL {
+	u, err := url.Parse(s)
+	if err != nil {
+		panic(err)
+	}
+	return u
 }

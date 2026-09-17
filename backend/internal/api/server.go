@@ -56,7 +56,10 @@ func (s *Server) Routes() http.Handler {
 	mux.HandleFunc("GET /api/v1/home", s.getHome)
 	mux.HandleFunc("GET /api/v1/pages/{id}", s.getPage)
 
-	// admin routes（後續 task 加入）
+	mux.Handle("POST /api/v1/admin/auth/login", s.csrf(http.HandlerFunc(s.login)))
+	s.admin(mux, "POST /api/v1/admin/auth/logout", s.logout)
+	s.admin(mux, "GET /api/v1/admin/auth/me", s.me)
+	// admin content routes（後續 task 加入）
 
 	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, http.StatusNotFound, "not_found", "找不到此 API")

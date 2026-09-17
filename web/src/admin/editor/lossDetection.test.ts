@@ -26,4 +26,12 @@ describe('detectLoss', () => {
     expect(detectLoss('<p><b>a</b> <b>b</b></p>', '<p><b>a</b><b>b</b></p>')).toEqual(['文字內容'])
     expect(detectLoss('<p>x</p><p>y&nbsp;</p>', '<p>x</p><p>y</p>')).toEqual(['文字內容'])
   })
+
+  it('容器內區塊元素之間的縮排換行是排版雜訊，不算遺失', () => {
+    expect(
+      detectLoss('<table><tr><td>\n<p>x</p>\n</td></tr></table>', '<table><tr><td><p>x</p></td></tr></table>'),
+    ).toEqual([])
+    expect(detectLoss('<blockquote>\n<p>x</p>\n</blockquote>', '<blockquote><p>x</p></blockquote>')).toEqual([])
+    expect(detectLoss('<div>\n<p>x</p>\n</div>', '<div><p>x</p></div>')).toEqual([])
+  })
 })

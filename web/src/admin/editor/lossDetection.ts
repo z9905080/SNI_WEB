@@ -3,6 +3,17 @@ const aliases: Record<string, string> = { b: 'strong', i: 'em', strike: 's', del
 // 解析或 Tiptap 會自動補上／調整的結構
 const ignoredTags = new Set(['tbody', 'colgroup', 'col'])
 
+// 區塊層級標籤：父元素若有這些子元素，代表容器是區塊排版，子元素之間的縮排換行是排版雜訊
+const BLOCK_TAGS = new Set([
+  'p', 'div', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th', 'ul', 'ol', 'li',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'figure', 'figcaption',
+  'section', 'article', 'header', 'footer', 'hr', 'form',
+])
+
+function hasBlockChild(el: Element | null): boolean {
+  return !!el && Array.from(el.children).some((c) => BLOCK_TAGS.has(c.localName))
+}
+
 // 交給瀏覽器正規化 CSS（#e03e2d 與 rgb(224, 62, 45) 視為相同）
 function styleDeclarations(style: string): string[] {
   const el = document.createElement('div')
@@ -24,16 +35,16 @@ function signature(html: string) {
       else add(`${attr.name}="${attr.value}"`)
     }
   }
-  // 結構容器（body/table/tbody/…）之間的縮排換行是純排版雜訊，直接忽略；
-  // 其他容器（p/span/div/td/li/標題……）內的純空白文字節點仍可能是有意義的分隔（例如英數字之間的空白）或
+  // 父元素底下若有任一區塊層級的子元素，代表這個容器是用區塊排版的（如 body/table/td/blockquote/div），
+  // 這種容器內、區塊子元素之間的縮排換行是純排版雜訊，直接忽略；
+  // 其他容器（p/span/li/標題……純 inline 內容）內的純空白文字節點仍可能是有意義的分隔（例如英數字之間的空白）或
   // 舊站常見的尾端 &nbsp;，要保留，只把連續空白正規化成一個空格。
-  const structuralContainers = new Set(['body', 'table', 'tbody', 'thead', 'tfoot', 'tr', 'ul', 'ol', 'colgroup'])
   const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT)
   let text = ''
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     const value = node.nodeValue ?? ''
     const isWhitespaceOnly = value.trim() === ''
-    if (isWhitespaceOnly && structuralContainers.has(node.parentElement?.localName ?? '')) continue
+    if (isWhitespaceOnly && hasBlockChild(node.parentElement)) continue
     text += value.replace(/\s+/g, ' ')
   }
   return { counts, text }

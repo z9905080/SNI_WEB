@@ -4,23 +4,23 @@
 
 ## 本機開發
 
-需要 Docker 與 [mise](https://mise.jdx.dev/)。工具鏈版本固定在 `mise.toml`（Go 1.27、golangci-lint v2、Node.js 24、pnpm 10）：
+需要 Docker 與 [mise](https://mise.jdx.dev/)（工具鏈版本固定在 `mise.toml`：Go 1.27、golangci-lint v2、Node.js 24、pnpm 10）：
 
 ```bash
 brew install mise   # 其他安裝方式見 mise 官網
-mise install
+make install        # 安裝 mise.toml 固定的版本
 ```
 
 ```bash
 make up                      # MySQL（含 schema 與範例資料）+ MinIO
 cp .env.example .env
 set -a; . ./.env; set +a
-go run ./backend/cmd/sniweb serve
+mise exec -- go run ./backend/cmd/sniweb serve
 ```
 
 範例資料的管理者帳號：`admin` / `admin1234`（只供本機使用）。
 
-在 macOS 上若使用 OrbStack，需要 Docker 的測試（`make test`、`go test ./backend/internal/store/`、`go test ./backend/cmd/sniweb/` 等）要先設定：
+所有 `make` 指令都透過 `mise exec --` 呼叫，固定使用 `mise.toml` 的版本，不需要先啟用 mise shell 整合。在 macOS 上若使用 OrbStack，`make` 會自動偵測並設定 `DOCKER_HOST`；直接執行 `go test`／`go run`（不透過 `make`）時才需要自行設定：
 
 ```bash
 export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
@@ -30,11 +30,12 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 
 | 指令 | 說明 |
 |---|---|
+| `make install` | 安裝 `mise.toml` 固定的工具鏈版本 |
 | `make gen` | 由 `backend/internal/db/queries/*.sql` 產生 sqlc 程式碼 |
 | `make test` | 全部測試（需要 Docker） |
 | `make test-short` | 略過需要 Docker 的測試 |
 | `make lint` | golangci-lint（含 gofumpt 排版檢查，設定在 `.golangci.yml`） |
-| `golangci-lint fmt ./...` | 以 gofumpt 自動排版 |
+| `make fmt` | 以 golangci-lint（gofumpt）自動排版 |
 | `make build` | 建置 `bin/sniweb` |
 
 ## 資料庫

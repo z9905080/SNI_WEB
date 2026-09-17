@@ -326,12 +326,26 @@ Expected: 測試 PASS；建置成功；`grep` 輸出 `1`（Vite 保留註解）�
 
 - [ ] **Step 5: 更新 Makefile**
 
-把 `Makefile` 整個改為（在後端版本上加入前端 target）：
+把 `Makefile` 整個改為（在後端版本上加入前端 target；沿用 `$(MISE)` 包裝，確保 Go、Node.js、pnpm 都固定用 `mise.toml` 的版本，不需要先啟用 mise shell 整合）：
 
 ```make
 SQLC_VERSION ?= v1.30.0
+MISE := mise exec --
 
-.PHONY: up down gen test test-short lint build web dev sample-images db-reset e2e
+# OrbStack 的 Docker socket 不會被 testcontainers-go 自動偵測到；
+# 若尚未設定 DOCKER_HOST 且該 socket 存在，自動補上（其他 Docker 環境不受影響）
+ifndef DOCKER_HOST
+ORBSTACK_SOCK := $(HOME)/.orbstack/run/docker.sock
+ifneq ($(wildcard $(ORBSTACK_SOCK)),)
+export DOCKER_HOST := unix://$(ORBSTACK_SOCK)
+endif
+endif
+
+.PHONY: install up down gen test test-short lint fmt build web dev sample-images db-reset e2e
+
+# 安裝 mise.toml 固定的工具鏈版本（Go、golangci-lint、Node.js、pnpm）
+install:
+	mise install
 
 up:
 	docker compose up -d
@@ -340,29 +354,32 @@ down:
 	docker compose down
 
 gen:
-	go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate
+	$(MISE) go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate
 
 test:
-	go test -race ./...
-	pnpm --dir web test
+	$(MISE) go test -race ./...
+	$(MISE) pnpm --dir web test
 
 test-short:
-	go test -short ./...
-	pnpm --dir web test
+	$(MISE) go test -short ./...
+	$(MISE) pnpm --dir web test
 
 lint:
-	golangci-lint run ./...
-	pnpm --dir web typecheck
+	$(MISE) golangci-lint run ./...
+	$(MISE) pnpm --dir web typecheck
+
+fmt:
+	$(MISE) golangci-lint fmt ./...
 
 # 建置前端並複製到 Go embed 目錄
 web:
-	pnpm --dir web install --frozen-lockfile
-	pnpm --dir web build
+	$(MISE) pnpm --dir web install --frozen-lockfile
+	$(MISE) pnpm --dir web build
 	find backend/internal/site/webdist/dist -mindepth 1 ! -name .gitkeep -exec rm -rf {} +
 	cp -R web/dist/. backend/internal/site/webdist/dist/
 
 build: web
-	CGO_ENABLED=0 go build -trimpath -o bin/sniweb ./backend/cmd/sniweb
+	$(MISE) env CGO_ENABLED=0 go build -trimpath -o bin/sniweb ./backend/cmd/sniweb
 
 sample-images:
 	mkdir -p tmp/picture
@@ -371,8 +388,8 @@ sample-images:
 
 dev: sample-images
 	@trap 'kill 0' INT TERM EXIT; \
-	(set -a; . ./.env; set +a; go run ./backend/cmd/sniweb serve) & \
-	pnpm --dir web dev & \
+	(set -a; . ./.env; set +a; $(MISE) go run ./backend/cmd/sniweb serve) & \
+	$(MISE) pnpm --dir web dev & \
 	wait
 
 # 把本機資料庫重設為 seed 狀態（E2E 前使用）
@@ -383,11 +400,11 @@ db-reset:
 	  mysql -uroot -psniweb sniweb < /docker-entrypoint-initdb.d/02-seed.sql'
 
 e2e: web sample-images db-reset
-	pnpm --dir web exec playwright install --with-deps chromium
-	pnpm --dir web e2e
+	$(MISE) pnpm --dir web exec playwright install --with-deps chromium
+	$(MISE) pnpm --dir web e2e
 ```
 
-Run: `make web && ls backend/internal/site/webdist/dist && go build ./...`
+Run: `make web && ls backend/internal/site/webdist/dist && make build`
 Expected: 列出 `.gitkeep`、`index.html`、`assets`、`favicon.png` 等；Go 建置成功。
 
 - [ ] **Step 6: Dockerfile**

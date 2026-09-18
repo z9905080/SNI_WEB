@@ -187,3 +187,20 @@ func TestStaticAssetGzip(t *testing.T) {
 		}
 	})
 }
+
+// 部署後舊的雜湊檔名會消失。若掉進 SPA fallback 回傳 HTML，拿著舊 index.html 的
+// 瀏覽器會把它當成 JS 解析，錯誤訊息看不出真正原因。
+func TestMissingAssetIsNotHTML(t *testing.T) {
+	h := newTestHandler(t, testDist)
+	resp, body := get(t, h, "GET", "/assets/index-gone9.js")
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("status = %d，want 404", resp.StatusCode)
+	}
+	if ct := resp.Header.Get("Content-Type"); strings.Contains(ct, "text/html") {
+		t.Errorf("Content-Type = %q，不該回傳 HTML", ct)
+	}
+	if strings.Contains(body, "<div id=\"root\">") || strings.Contains(body, "<!doctype html") {
+		t.Errorf("body 回傳了 SPA 的 HTML：%.80s", body)
+	}
+}

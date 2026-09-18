@@ -10,7 +10,14 @@ export default function App() {
       <Route
         path="/admin/*"
         element={
-          <Suspense fallback={null}>
+          {/* 後台 chunk 有 1MB 以上，載入慢時 fallback 若為 null 會是一片白，看起來像壞掉 */}
+          <Suspense
+            fallback={
+              <p role="status" className="flex min-h-screen items-center justify-center text-muted-foreground">
+                載入中…
+              </p>
+            }
+          >
             <AdminApp />
           </Suspense>
         }

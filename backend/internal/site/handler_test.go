@@ -1,10 +1,12 @@
 package site
 
 import (
+	"compress/gzip"
 	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -116,4 +118,72 @@ func TestSPAHandlerWithoutBuild(t *testing.T) {
 	if resp, _ := get(t, h, "GET", "/php/picture/c.jpg"); resp.StatusCode != 200 {
 		t.Fatalf("圖片仍應可用，得到 %d", resp.StatusCode)
 	}
+}
+
+func TestStaticAssetGzip(t *testing.T) {
+	// 需要夠大且可壓縮的內容，太小的檔案壓完反而變大，precompress 會略過
+	big := strings.Repeat("export const x = 'seicho-no-ie';\n", 500)
+	dist := fstest.MapFS{
+		"index.html":        {Data: []byte(indexTmpl)},
+		"assets/big-1.js":   {Data: []byte(big)},
+		"assets/tiny-1.js":  {Data: []byte("console.log(1)")},
+		"assets/logo-1.png": {Data: []byte("\x89PNG not really")},
+	}
+	h := newTestHandler(t, dist)
+
+	t.Run("接受 gzip 時回傳壓縮內容", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/assets/big-1.js", nil)
+		req.Header.Set("Accept-Encoding", "gzip, deflate")
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+
+		if got := rec.Header().Get("Content-Encoding"); got != "gzip" {
+			t.Fatalf("Content-Encoding = %q，want gzip", got)
+		}
+		if got := rec.Header().Get("Vary"); got != "Accept-Encoding" {
+			t.Errorf("Vary = %q，want Accept-Encoding", got)
+		}
+		if rec.Body.Len() >= len(big) {
+			t.Errorf("壓縮後 %d bytes 沒有比原始 %d bytes 小", rec.Body.Len(), len(big))
+		}
+		// Content-Length 必須是壓縮後的長度，否則用戶端會讀不完整
+		if got := rec.Header().Get("Content-Length"); got != strconv.Itoa(rec.Body.Len()) {
+			t.Errorf("Content-Length = %q，實際 body %d bytes", got, rec.Body.Len())
+		}
+		zr, err := gzip.NewReader(rec.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out, err := io.ReadAll(zr)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(out) != big {
+			t.Error("解壓後的內容與原始檔案不符")
+		}
+	})
+
+	t.Run("不接受 gzip 時回傳原始內容", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/assets/big-1.js", nil)
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+		if got := rec.Header().Get("Content-Encoding"); got != "" {
+			t.Errorf("Content-Encoding = %q，未要求壓縮時應為空", got)
+		}
+		if rec.Body.String() != big {
+			t.Error("內容與原始檔案不符")
+		}
+	})
+
+	t.Run("壓不小的檔案與圖片不壓縮", func(t *testing.T) {
+		for _, p := range []string{"/assets/tiny-1.js", "/assets/logo-1.png"} {
+			req := httptest.NewRequest("GET", p, nil)
+			req.Header.Set("Accept-Encoding", "gzip")
+			rec := httptest.NewRecorder()
+			h.ServeHTTP(rec, req)
+			if got := rec.Header().Get("Content-Encoding"); got != "" {
+				t.Errorf("%s 的 Content-Encoding = %q，應為空", p, got)
+			}
+		}
+	})
 }

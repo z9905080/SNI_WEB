@@ -1,11 +1,14 @@
 package site
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"errors"
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"path"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,15 +23,73 @@ var pagePath = regexp.MustCompile(`^/page/([1-9][0-9]{0,17})$`)
 type Handler struct {
 	dist    fs.FS
 	index   []byte // nil 代表前端尚未建置
+	gzipped map[string]gzipAsset
 	store   *store.Store
 	images  storage.Storage
 	baseURL string
 	public  PublicConfig
 }
 
+type gzipAsset struct {
+	body        []byte
+	contentType string
+}
+
 func New(dist fs.FS, st *store.Store, images storage.Storage, baseURL string, pc PublicConfig) *Handler {
 	index, _ := fs.ReadFile(dist, "index.html")
-	return &Handler{dist: dist, index: index, store: st, images: images, baseURL: baseURL, public: pc}
+	return &Handler{
+		dist: dist, index: index, gzipped: precompress(dist),
+		store: st, images: images, baseURL: baseURL, public: pc,
+	}
+}
+
+// precompress 在啟動時壓好靜態資源。內容在建置時就固定，先壓完可以省下每次請求的 CPU；
+// 後台的 JS chunk 有 1MB 以上，未壓縮傳輸在連線不穩時會讓畫面空白數秒。
+func precompress(dist fs.FS) map[string]gzipAsset {
+	types := map[string]string{
+		".js":   "text/javascript; charset=utf-8",
+		".css":  "text/css; charset=utf-8",
+		".svg":  "image/svg+xml",
+		".json": "application/json",
+	}
+	out := map[string]gzipAsset{}
+	_ = fs.WalkDir(dist, ".", func(name string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil //nolint:nilerr // 個別檔案讀不到就跳過，不影響服務啟動
+		}
+		ct, ok := types[strings.ToLower(path.Ext(name))]
+		if !ok {
+			return nil
+		}
+		raw, err := fs.ReadFile(dist, name)
+		if err != nil {
+			return nil //nolint:nilerr
+		}
+		var buf bytes.Buffer
+		zw, err := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+		if err != nil {
+			return nil //nolint:nilerr
+		}
+		if _, err := zw.Write(raw); err != nil || zw.Close() != nil {
+			return nil //nolint:nilerr
+		}
+		// 壓不小就不留，直接走原本的檔案服務
+		if buf.Len() >= len(raw) {
+			return nil
+		}
+		out[name] = gzipAsset{body: buf.Bytes(), contentType: ct}
+		return nil
+	})
+	return out
+}
+
+func acceptsGzip(r *http.Request) bool {
+	for enc := range strings.SplitSeq(r.Header.Get("Accept-Encoding"), ",") {
+		if name, _, _ := strings.Cut(enc, ";"); strings.TrimSpace(name) == "gzip" {
+			return true
+		}
+	}
+	return false
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +109,19 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(name, "assets/") {
 				cache = "public, max-age=31536000, immutable"
 			}
-			w.Header().Set("Cache-Control", cache)
+			hdr := w.Header()
+			hdr.Set("Cache-Control", cache)
+			hdr.Set("Vary", "Accept-Encoding")
+			if a, ok := h.gzipped[name]; ok && acceptsGzip(r) {
+				hdr.Set("Content-Type", a.contentType)
+				hdr.Set("Content-Encoding", "gzip")
+				hdr.Set("Content-Length", strconv.Itoa(len(a.body)))
+				w.WriteHeader(http.StatusOK)
+				if r.Method != http.MethodHead {
+					_, _ = w.Write(a.body)
+				}
+				return
+			}
 			http.ServeFileFS(w, r, h.dist, name)
 			return
 		}

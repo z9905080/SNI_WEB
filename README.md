@@ -59,7 +59,7 @@ make dev          # Go :8080 + Vite :5173（/api、/php/picture 代理到 Go）
 
 ## 部署（Zeabur）
 
-GitHub Actions 會自動部署：推到 `rewrite/react-go` 部署測試站，打 `v*` tag 部署正式站（見 `.github/workflows/`）。
+GitHub Actions 會自動部署：推到 `master` 部署測試站，打 `v*` tag 部署正式站（見 `.github/workflows/`）。
 
 資料庫遷移由**服務啟動時自動套用**，不是 CI 的步驟。Zeabur 沒有 job 型別的服務，`zeabur deploy` 也只上傳並觸發、建置是非同步的，`zeabur service exec` 在這個服務上無法使用（實測重試 31 次、10 分鐘全部回 `INTERNAL_ERROR`），因此沒有可靠的時機從 CI 執行遷移。goose 以資料表加鎖，多副本同時啟動是安全的。
 

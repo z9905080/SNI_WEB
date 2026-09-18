@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE `carousel` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '流水號',
   `image` text NOT NULL COMMENT '圖片網址',
@@ -50,3 +51,12 @@ CREATE TABLE `web_config` (
   `data_value` text NOT NULL COMMENT '值',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- +goose Down
+DROP TABLE IF EXISTS `web_config`;
+DROP TABLE IF EXISTS `user_token`;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `page_group`;
+DROP TABLE IF EXISTS `page_content`;
+DROP TABLE IF EXISTS `marquee`;
+DROP TABLE IF EXISTS `carousel`;

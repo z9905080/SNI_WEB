@@ -26,6 +26,7 @@ import (
 
 const usage = `用法：
   sniweb serve
+  sniweb migrate
   sniweb user create --account <帳號> --name <暱稱> [--password-stdin]
   sniweb user passwd --account <帳號> [--password-stdin]
 `
@@ -44,6 +45,8 @@ func run(ctx context.Context, args []string, stdin io.Reader, stdout, stderr io.
 	switch {
 	case len(args) == 1 && args[0] == "serve":
 		err = serve(ctx, getenv, stderr)
+	case len(args) == 1 && args[0] == "migrate":
+		err = migrateCmd(ctx, stdout, getenv)
 	case len(args) >= 2 && args[0] == "user":
 		err = userCmd(ctx, args[1], args[2:], stdin, stdout, stderr, getenv)
 	}

@@ -1,5 +1,6 @@
 SQLC_VERSION ?= v1.30.0
 MISE := mise exec --
+LOCAL_DSN := root:sniweb@tcp(127.0.0.1:3306)/sniweb
 
 # OrbStack 的 Docker socket 不會被 testcontainers-go 自動偵測到；
 # 若尚未設定 DOCKER_HOST 且該 socket 存在，自動補上（其他 Docker 環境不受影響）
@@ -69,10 +70,10 @@ dev: sample-images
 
 # 把本機資料庫重設為 seed 狀態（E2E 前使用）
 db-reset:
-	docker compose exec -T mysql sh -c '\
-	  mysql -uroot -psniweb -e "DROP DATABASE IF EXISTS sniweb; CREATE DATABASE sniweb CHARACTER SET utf8mb4" && \
-	  mysql -uroot -psniweb sniweb < /docker-entrypoint-initdb.d/01-schema.sql && \
-	  mysql -uroot -psniweb sniweb < /docker-entrypoint-initdb.d/02-seed.sql'
+	docker compose exec -T mysql mysql -uroot -psniweb \
+	  -e "DROP DATABASE IF EXISTS sniweb; CREATE DATABASE sniweb CHARACTER SET utf8mb4"
+	DATABASE_URL='$(LOCAL_DSN)' $(MISE) go run ./backend/cmd/sniweb migrate
+	docker compose exec -T mysql mysql -uroot -psniweb sniweb < backend/internal/db/seed.sql
 
 e2e: web sample-images db-reset
 	$(MISE) pnpm --dir web exec playwright install --with-deps chromium

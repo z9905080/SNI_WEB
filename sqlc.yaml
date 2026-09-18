@@ -1,7 +1,7 @@
 version: "2"
 sql:
   - engine: mysql
-    schema: backend/internal/db/schema.sql
+    schema: backend/internal/db/migrations
     queries: backend/internal/db/queries
     gen:
       go:

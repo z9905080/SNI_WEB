@@ -7,9 +7,9 @@ services:
     command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     ports:
       - "3306:3306"
+    # 不用 docker-entrypoint-initdb.d：遷移檔含 goose 的 Down 區塊，MySQL 會把
+    # 那些 DROP TABLE 當成一般語句執行。schema 一律由 `make db-reset` 走 goose 套用。
     volumes:
-      - ./backend/internal/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      - ./backend/internal/db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
       - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-psniweb"]

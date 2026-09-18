@@ -68,7 +68,10 @@ func MySQL(t *testing.T) (*sql.DB, string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	Exec(t, loader, db.Schema)
+	// 走正式環境同一條遷移路徑，遷移檔壞掉時測試就會抓到
+	if _, _, err := db.Migrate(context.Background(), loader); err != nil {
+		t.Fatalf("套用遷移失敗：%v", err)
+	}
 	loader.Close()
 
 	dsn := baseDSN + name

@@ -31,6 +31,7 @@ func TestRunUsage(t *testing.T) {
 		{"create 缺 name", []string{"user", "create", "--account", "a", "--password-stdin"}},
 		{"passwd 缺 account", []string{"user", "passwd", "--password-stdin"}},
 		{"未知 flag", []string{"user", "passwd", "--account", "a", "--bogus"}},
+		{"migrate 多餘參數", []string{"migrate", "up"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -46,6 +47,17 @@ func TestServeRequiresConfig(t *testing.T) {
 	code, _, errOut := runCmd(t, nil, "", "serve")
 	if code != 1 || !strings.Contains(errOut, "DATABASE_URL") {
 		t.Fatalf("code=%d stderr=%q", code, errOut)
+	}
+}
+
+// migrate 只該要求 DATABASE_URL，不必湊齊 serve 用的其他設定
+func TestMigrateRequiresOnlyDatabaseURL(t *testing.T) {
+	code, _, errOut := runCmd(t, nil, "", "migrate")
+	if code != 1 || !strings.Contains(errOut, "DATABASE_URL") {
+		t.Fatalf("code=%d stderr=%q", code, errOut)
+	}
+	if strings.Contains(errOut, "PUBLIC_BASE_URL") {
+		t.Fatalf("migrate 不該要求 PUBLIC_BASE_URL：%q", errOut)
 	}
 }
 

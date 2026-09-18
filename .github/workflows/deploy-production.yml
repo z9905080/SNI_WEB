@@ -50,3 +50,11 @@ jobs:
             --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
             --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
             --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"
+      # 在容器內執行，資料庫不必對外開放，也不需要把 DB 帳密放進 GitHub
+      # 映像是 distroless 沒有 shell，所以直接呼叫 binary 而非 sh -c
+      - name: 套用資料庫遷移
+        run: |
+          npx --yes zeabur@latest service exec -i=false \
+            --id "${{ vars.ZEABUR_SERVICE_ID }}" \
+            --env-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}" \
+            -- /sniweb migrate

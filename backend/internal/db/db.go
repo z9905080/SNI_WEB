@@ -4,7 +4,7 @@ package db
 import (
 	"context"
 	"database/sql"
-	_ "embed"
+	"embed"
 	"fmt"
 	"net/url"
 	"strings"
@@ -13,8 +13,10 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-//go:embed schema.sql
-var Schema string
+// Migrations 是 goose 的遷移檔；sqlc 也從同一個目錄推導 schema，兩者不會分歧。
+//
+//go:embed migrations/*.sql
+var Migrations embed.FS
 
 // NormalizeDSN 接受 go-sql-driver DSN 或 mysql:// URL，並強制 parseTime、UTC、clientFoundRows 與 utf8mb4。
 func NormalizeDSN(dsn string) (string, error) {

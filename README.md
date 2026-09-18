@@ -12,7 +12,8 @@ make install        # 安裝 mise.toml 固定的版本
 ```
 
 ```bash
-make up                      # MySQL（含 schema 與範例資料）+ MinIO
+make up                      # 啟動 MySQL + MinIO
+make db-reset                # 套用遷移並匯入範例資料
 cp .env.example .env
 set -a; . ./.env; set +a
 mise exec -- go run ./backend/cmd/sniweb serve
@@ -42,6 +43,7 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 
 ```bash
 make up
+make db-reset
 cp .env.example .env
 make dev          # Go :8080 + Vite :5173（/api、/php/picture 代理到 Go）
 ```
@@ -57,19 +59,30 @@ make dev          # Go :8080 + Vite :5173（/api、/php/picture 代理到 Go）
 
 ## 部署（Zeabur）
 
-1. 建立 MySQL 服務，匯入舊資料並執行上方「資料庫」段落的 SQL。
+GitHub Actions 會自動部署：推到 `rewrite/react-go` 部署測試站，打 `v*` tag 部署正式站（見 `.github/workflows/`）。兩者都會在部署後於容器內執行 `/sniweb migrate`，所以資料庫不需要對外開放，GitHub 也不必存放 DB 帳密。
+
+首次建立環境時：
+
+1. 建立 MySQL 服務。schema 由 `/sniweb migrate` 建立，不需要手動匯入；若是從舊站搬遷，另見下方「資料庫」段落。
 2. 以 repo 根目錄的 `Dockerfile` 建立 app 服務，設定環境變數：
    `DATABASE_URL`、`PUBLIC_BASE_URL`（例如 `https://www.seicho-no-ie.org.tw`），
    以及 `STORAGE_DRIVER`（`disk` 或 `s3`）與對應變數、`GA_MEASUREMENT_ID`、`COUNTER_SCRIPT_URL`。
 3. 使用 `disk` 時掛載 Volume 到 `/data`：首次掛載會清空目錄，掛載後再把舊的 `php/picture/*` 放進 `/data/picture/`；重新部署時會短暫停機。
 4. 在 app 服務的終端機執行 `/sniweb user create --account <帳號> --name <暱稱>` 建立管理者。
-5. 服務不會自動 migrate，schema 變更需手動執行。
+5. GitHub repo 需設定 secret `ZEABUR_TOKEN`，以及 `staging`／`production` 兩個 Environment，各自帶
+   `ZEABUR_PROJECT_ID`、`ZEABUR_SERVICE_ID`、`ZEABUR_ENVIRONMENT_ID` 三個變數。
 
 `COUNTER_SCRIPT_URL` 若只有 `http://` 版本，在 https 網站上會被瀏覽器封鎖（混合內容），需改用供應商的 https 網址。
 
 ## 資料庫
 
-沿用舊站的 7 張表，應用程式不會自動修改 schema。部署前需手動執行：
+沿用舊站的 7 張表。schema 以 [goose](https://github.com/pressly/goose) 管理，遷移檔放在
+`backend/internal/db/migrations/`，由 `sniweb migrate` 套用（記錄在 `goose_db_version` 表，可重複執行）。
+
+sqlc 的 `schema` 也指向同一個目錄，因此產生的程式碼與實際 schema 不會分歧。要改 schema 就新增
+`0002_xxx.sql`（含 `-- +goose Up`／`-- +goose Down` 兩段），再跑 `make gen`。
+
+**從舊站搬遷時**，匯入舊資料後另需手動執行下列 SQL（新建的資料庫不需要）：
 
 ```sql
 ALTER TABLE `user` MODIFY `pwd` varchar(255) NOT NULL COMMENT '密碼（bcrypt）';

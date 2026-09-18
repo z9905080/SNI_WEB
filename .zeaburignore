@@ -1,0 +1,24 @@
+# Zeabur CLI 上傳時的排除清單。
+# CLI 只看這個檔案，不看 .dockerignore；而且一旦這個檔案存在，.gitignore 就不再生效，
+# 因此 .gitignore 的項目必須一併列出。
+
+# build 用不到，但佔上傳體積 98%（85.9 MB -> 1.1 MB）
+legacy/
+docs/
+
+node_modules/
+/bin/
+/tmp/
+/sniweb
+coverage.out
+
+/web/dist/
+/web/test-results/
+/web/playwright-report/
+
+# embed 用的前端產物由 Dockerfile 產生，但保留 .gitkeep
+/backend/internal/site/webdist/dist/*
+!/backend/internal/site/webdist/dist/.gitkeep
+
+.env
+/.webwright/

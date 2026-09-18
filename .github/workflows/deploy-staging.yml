@@ -2,7 +2,7 @@ name: 部署測試站
 
 on:
   push:
-    branches: [main]
+    branches: [rewrite/react-go]
   workflow_dispatch:
 
 concurrency:

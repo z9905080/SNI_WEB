@@ -40,21 +40,32 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v7
+      - name: 安裝 Zeabur CLI
+        run: npm install -g zeabur
       - name: 登入 Zeabur
-        run: npx --yes zeabur@latest auth login --token "$ZEABUR_TOKEN"
+        run: zeabur auth login --token "$ZEABUR_TOKEN"
         env:
           ZEABUR_TOKEN: ${{ secrets.ZEABUR_TOKEN }}
       - name: 部署
         run: |
-          npx --yes zeabur@latest deploy -i=false \
+          zeabur deploy -i=false \
             --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
             --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
             --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"
-      # 在容器內執行，資料庫不必對外開放，也不需要把 DB 帳密放進 GitHub
-      # 映像是 distroless 沒有 shell，所以直接呼叫 binary 而非 sh -c
+      # 在容器內執行，資料庫不必對外開放，也不需要把 DB 帳密放進 GitHub。
+      # deploy 只上傳並觸發，Zeabur 端的建置是非同步的，新容器起來前 exec 會失敗，
+      # 因此重試到建置完成為止。
       - name: 套用資料庫遷移
         run: |
-          npx --yes zeabur@latest service exec -i=false \
-            --id "${{ vars.ZEABUR_SERVICE_ID }}" \
-            --env-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}" \
-            -- /sniweb migrate
+          for i in $(seq 1 30); do
+            if zeabur service exec -i=false \
+                 --id "${{ vars.ZEABUR_SERVICE_ID }}" \
+                 --env-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}" \
+                 -- /sniweb migrate; then
+              exit 0
+            fi
+            echo "第 $i 次失敗，20 秒後重試（新版本可能還在建置）"
+            sleep 20
+          done
+          echo "::error::遷移在 10 分鐘內未能執行成功"
+          exit 1

@@ -3,10 +3,13 @@ name: 部署測試站
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
+# 以 ref 分組，PR 的檢查才不會取消掉正在進行的 master 部署
 concurrency:
-  group: deploy-staging
+  group: deploy-staging-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -24,6 +27,8 @@ jobs:
   deploy:
     name: 部署
     needs: test
+    # PR 只跑檢查不部署
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: staging
     steps:

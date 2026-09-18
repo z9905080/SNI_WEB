@@ -1,0 +1,50 @@
+name: 部署測試站
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+# 以 ref 分組，PR 的檢查才不會取消掉正在進行的 master 部署
+concurrency:
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 快速測試
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+      # make lint／test-short 會呼叫 pnpm 但不會安裝相依套件，CI 上必須先裝
+      - run: mise exec -- pnpm --dir web install --frozen-lockfile
+      - run: make lint
+      - run: make test-short
+
+  deploy:
+    name: 部署
+    needs: test
+    # PR 只跑檢查不部署
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+      - name: 安裝 Zeabur CLI
+        run: npm install -g zeabur
+      - name: 登入 Zeabur
+        run: zeabur auth login --token "$ZEABUR_TOKEN"
+        env:
+          ZEABUR_TOKEN: ${{ secrets.ZEABUR_TOKEN }}
+      - name: 部署
+        run: |
+          zeabur deploy -i=false \
+            --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
+            --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
+            --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"
+      # 資料庫遷移由服務啟動時自動套用（見 backend/cmd/sniweb/main.go 的 serve），
+      # 因為 Zeabur 沒有 job 型別的服務，deploy 也只上傳並觸發、建置是非同步的，
+      # 沒有可靠的時機能從 CI 執行遷移。

@@ -1,0 +1,11 @@
+export type Settings = { web_title: string; web_sub_title: string; facebook_url: string }
+export type PageRef = { id: number; name: string }
+export type Group = { id: number; name: string; pages: PageRef[] }
+export type Page = { id: number; group_id: number; name: string; html: string }
+export type Carousel = { id: number; image: string; url: string }
+export type Marquee = { id: number; text: string; color: string }
+export type SiteData = Settings & { menu: Group[] }
+export type PageData = { page: Page | null; carousels: Carousel[]; marquees: Marquee[] }
+export type ImageItem = { name: string; url: string; size: number; mod_time: string }
+export type ImageUsages = { pages: PageRef[]; carousels: Carousel[] }
+export type User = { id: number; account: string; name: string }

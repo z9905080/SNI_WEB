@@ -19,3 +19,6 @@ coverage.out
 
 # 環境變數
 .env
+
+# 本機工具的暫存產物
+/.webwright/

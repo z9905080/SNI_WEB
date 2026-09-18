@@ -40,20 +40,6 @@ jobs:
             --project-id "${{ vars.ZEABUR_PROJECT_ID }}" \
             --service-id "${{ vars.ZEABUR_SERVICE_ID }}" \
             --environment-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}"
-      # 在容器內執行，資料庫不必對外開放，也不需要把 DB 帳密放進 GitHub。
-      # deploy 只上傳並觸發，Zeabur 端的建置是非同步的，新容器起來前 exec 會失敗，
-      # 因此重試到建置完成為止。
-      - name: 套用資料庫遷移
-        run: |
-          for i in $(seq 1 30); do
-            if zeabur service exec -i=false \
-                 --id "${{ vars.ZEABUR_SERVICE_ID }}" \
-                 --env-id "${{ vars.ZEABUR_ENVIRONMENT_ID }}" \
-                 -- /sniweb migrate; then
-              exit 0
-            fi
-            echo "第 $i 次失敗，20 秒後重試（新版本可能還在建置）"
-            sleep 20
-          done
-          echo "::error::遷移在 10 分鐘內未能執行成功"
-          exit 1
+      # 資料庫遷移由服務啟動時自動套用（見 backend/cmd/sniweb/main.go 的 serve），
+      # 因為 Zeabur 沒有 job 型別的服務，deploy 也只上傳並觸發、建置是非同步的，
+      # 沒有可靠的時機能從 CI 執行遷移。

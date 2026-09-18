@@ -64,20 +64,16 @@ func MySQL(t *testing.T) (*sql.DB, string) {
 	defer admin.Close()
 	Exec(t, admin, "CREATE DATABASE `"+name+"` CHARACTER SET utf8mb4")
 
-	loader, err := sql.Open("mysql", baseDSN+name+"?multiStatements=true")
-	if err != nil {
-		t.Fatal(err)
-	}
-	// 走正式環境同一條遷移路徑，遷移檔壞掉時測試就會抓到
-	if _, _, err := db.Migrate(context.Background(), loader); err != nil {
-		t.Fatalf("套用遷移失敗：%v", err)
-	}
-	loader.Close()
-
 	dsn := baseDSN + name
 	conn, err := db.Open(context.Background(), dsn)
 	if err != nil {
 		t.Fatal(err)
+	}
+	// 走正式環境同一條路徑：同樣用 db.Open 的連線設定（goose 的表格鎖靠
+	// RowsAffected 判斷取鎖成敗，換成裸的 sql.Open 會一直取不到而卡住），
+	// 遷移檔壞掉時測試就會抓到
+	if _, err := db.Migrate(context.Background(), conn); err != nil {
+		t.Fatalf("套用遷移失敗：%v", err)
 	}
 	t.Cleanup(func() {
 		conn.Close()

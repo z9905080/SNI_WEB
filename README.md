@@ -59,11 +59,13 @@ make dev          # Go :8080 + Vite :5173（/api、/php/picture 代理到 Go）
 
 ## 部署（Zeabur）
 
-GitHub Actions 會自動部署：推到 `rewrite/react-go` 部署測試站，打 `v*` tag 部署正式站（見 `.github/workflows/`）。兩者都會在部署後於容器內執行 `/sniweb migrate`，所以資料庫不需要對外開放，GitHub 也不必存放 DB 帳密。
+GitHub Actions 會自動部署：推到 `rewrite/react-go` 部署測試站，打 `v*` tag 部署正式站（見 `.github/workflows/`）。
+
+資料庫遷移由**服務啟動時自動套用**，不是 CI 的步驟。Zeabur 沒有 job 型別的服務，`zeabur deploy` 也只上傳並觸發、建置是非同步的，`zeabur service exec` 在這個服務上無法使用（實測重試 31 次、10 分鐘全部回 `INTERNAL_ERROR`），因此沒有可靠的時機從 CI 執行遷移。goose 以資料表加鎖，多副本同時啟動是安全的。
 
 首次建立環境時：
 
-1. 建立 MySQL 服務。schema 由 `/sniweb migrate` 建立，不需要手動匯入；若是從舊站搬遷，另見下方「資料庫」段落。
+1. 建立 MySQL 服務。schema 由服務啟動時自動建立，不需要手動匯入；若是從舊站搬遷，另見下方「資料庫」段落。
 2. 以 repo 根目錄的 `Dockerfile` 建立 app 服務，設定環境變數：
    `DATABASE_URL`、`PUBLIC_BASE_URL`（例如 `https://www.seicho-no-ie.org.tw`），
    以及 `STORAGE_DRIVER`（`disk` 或 `s3`）與對應變數、`GA_MEASUREMENT_ID`、`COUNTER_SCRIPT_URL`。
@@ -77,7 +79,8 @@ GitHub Actions 會自動部署：推到 `rewrite/react-go` 部署測試站，打
 ## 資料庫
 
 沿用舊站的 7 張表。schema 以 [goose](https://github.com/pressly/goose) 管理，遷移檔放在
-`backend/internal/db/migrations/`，由 `sniweb migrate` 套用（記錄在 `goose_db_version` 表，可重複執行）。
+`backend/internal/db/migrations/`。`sniweb serve` 啟動時會自動套用，也可以用 `sniweb migrate`
+單獨執行（記錄在 `goose_db_version` 表，可重複執行）。
 
 sqlc 的 `schema` 也指向同一個目錄，因此產生的程式碼與實際 schema 不會分歧。要改 schema 就新增
 `0002_xxx.sql`（含 `-- +goose Up`／`-- +goose Down` 兩段），再跑 `make gen`。

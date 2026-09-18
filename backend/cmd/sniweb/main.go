@@ -74,6 +74,18 @@ func serve(ctx context.Context, getenv func(string) string, logOut io.Writer) er
 	}
 	defer conn.Close()
 
+	// 先套用遷移再開始服務：Zeabur 沒有 job 型別的服務，deploy 也是非同步的，
+	// 沒有可靠的時機從外部執行遷移。goose 以資料表加鎖，多副本同時啟動是安全的。
+	applied, err := db.Migrate(ctx, conn)
+	if err != nil {
+		return err
+	}
+	if len(applied) == 0 {
+		slog.Info("schema 已是最新版本")
+	} else {
+		slog.Info("已套用遷移", "versions", applied)
+	}
+
 	var images storage.Storage
 	if cfg.StorageDriver == "s3" {
 		images = storage.NewS3(storage.S3Options(cfg.S3))

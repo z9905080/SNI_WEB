@@ -21,14 +21,14 @@ func migrateCmd(ctx context.Context, stdout io.Writer, getenv func(string) strin
 	}
 	defer conn.Close()
 
-	before, after, err := db.Migrate(ctx, conn)
+	applied, err := db.Migrate(ctx, conn)
 	if err != nil {
 		return err
 	}
-	if before == after {
-		fmt.Fprintf(stdout, "資料庫已是最新版本（version=%d）\n", after)
+	if len(applied) == 0 {
+		fmt.Fprintln(stdout, "資料庫已是最新版本")
 		return nil
 	}
-	fmt.Fprintf(stdout, "遷移完成：version %d -> %d\n", before, after)
+	fmt.Fprintf(stdout, "遷移完成，套用版本：%v\n", applied)
 	return nil
 }

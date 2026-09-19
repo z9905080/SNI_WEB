@@ -125,6 +125,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.ServeFileFS(w, r, h.dist, name)
 			return
 		}
+		// assets 下的檔名帶內容雜湊，部署後舊檔就不存在了。這裡若掉進 SPA fallback，
+		// 拿著舊 index.html 的瀏覽器會把回傳的 HTML 當成 JS 解析，錯誤訊息完全看不出原因。
+		if strings.HasPrefix(name, "assets/") {
+			http.NotFound(w, r)
+			return
+		}
 	}
 	h.serveIndex(w, r)
 }

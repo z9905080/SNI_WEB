@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
-import { expect, it } from 'vitest'
+import { afterEach, expect, it } from 'vitest'
 import Header from './Header'
 import type { Group } from '@/shared/types'
 
@@ -85,4 +85,62 @@ it('手機抽屜：手風琴展開群組並導覽', async () => {
   await user.click(within(drawer).getByRole('link', { name: '練成會' }))
   expect(screen.getByTestId('where')).toHaveTextContent('/page/3')
   expect(screen.queryByRole('dialog')).toBeNull()
+})
+
+// jsdom 沒有排版，量測到的寬度都是 0（等同「量不到就全部展開」）。
+// 這裡假造寬度來驗證收折：可用空間 avail、每個項目與「更多」各佔 item。
+function mockWidths(avail: number, item: number) {
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.dataset.navbar === undefined ? 0 : avail
+    },
+  })
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.dataset.navitem === undefined ? 0 : item
+    },
+  })
+}
+
+afterEach(() => {
+  Reflect.deleteProperty(HTMLElement.prototype, 'clientWidth')
+  Reflect.deleteProperty(HTMLElement.prototype, 'offsetWidth')
+})
+
+const manyGroups: Group[] = Array.from({ length: 8 }, (_, i) => ({
+  id: i + 1,
+  name: `群組${i + 1}`,
+  pages: [{ id: 100 + i, name: `分頁${i + 1}` }],
+}))
+
+function renderMany() {
+  render(
+    <MemoryRouter>
+      <Header title="生長之家" subtitle="一句簡單的感謝" menu={manyGroups} />
+    </MemoryRouter>,
+  )
+  return screen.getByRole('navigation', { name: '主選單' })
+}
+
+it('放得下時不出現「更多」', () => {
+  mockWidths(1000, 100)
+  const nav = renderMany()
+  expect(within(nav).getByRole('button', { name: '群組8' })).toBeInTheDocument()
+  expect(within(nav).queryByRole('button', { name: '更多' })).toBeNull()
+})
+
+it('空間不足時把放不下的群組收進「更多」，點開仍能到達分頁', async () => {
+  mockWidths(350, 100) // 扣掉「更多」自己的 100，只放得下 2 個
+  const user = userEvent.setup()
+  const nav = renderMany()
+  expect(within(nav).getByRole('button', { name: '群組2' })).toBeInTheDocument()
+  expect(within(nav).queryByRole('button', { name: '群組3' })).toBeNull()
+
+  const more = within(nav).getByRole('button', { name: '更多' })
+  await user.click(more)
+  expect(more).toHaveAttribute('aria-expanded', 'true')
+  expect(within(nav).getByText('群組8')).toBeInTheDocument()
+  expect(within(nav).getByRole('link', { name: '分頁8' })).toHaveAttribute('href', '/page/107')
 })
